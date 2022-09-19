@@ -1,0 +1,39 @@
+@import (reference) '~antd/es/style/themes/index';
+
+.header {
+  height: 48px;
+  color: @primary-color;
+  font-weight: 600;
+  font-size: 24px;
+  text-align: left;
+}
+
+.contentWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer {
+  margin-top: 24px;
+  & > span {
+    color: #ff0000;
+  }
+}
+.listItem {
+  display: flex;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.listItem:hover {
+  color: @primary-color;
+}
+
+.selectedItem {
+  color: @primary-color;
+}
+
+.arrow {
+  margin: 0 24px;
+}

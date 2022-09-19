@@ -2,25 +2,24 @@
 /* eslint-disable */
 
 declare namespace API {
-  type CurrentUser = {
+  type LoginUser = {
     name?: string;
     avatar?: string;
     userid?: string;
-    email?: string;
-    signature?: string;
-    title?: string;
-    group?: string;
-    tags?: { key?: string; label?: string }[];
-    notifyCount?: number;
-    unreadCount?: number;
-    country?: string;
-    access?: string;
-    geographic?: {
-      province?: { label?: string; key?: string };
-      city?: { label?: string; key?: string };
-    };
-    address?: string;
+    email?: string; //email
+    token?: string; // 用户登录token
+    group?: string; // 部门
+    role?: number[]; // 角色列表
+    menu?: string[]; // 可访问菜单列表
     phone?: string;
+    // notifyCount?: number;
+    // unreadCount?: number;
+    // country?: string;
+    // access?: string;
+    // geographic?: {
+    //   province?: { label?: string; key?: string };
+    //   city?: { label?: string; key?: string };
+    // };
   };
 
   type LoginResult = {
@@ -48,7 +47,7 @@ declare namespace API {
     image?: string;
     images?: string;
     sale_service?: string;
-    introduce?: string;
+    introduction?: string;
     spec_items?: string;
     para_items?: string;
     sale_num?: number;
@@ -59,6 +58,28 @@ declare namespace API {
     status?: string;
     updatedAt?: string;
     createdAt?: string;
+  };
+
+  type SkuListItem = {
+    id?: number;
+    sn?: string;
+    name?: string;
+    price?: number;
+    num?: number;
+    alert_num?: number;
+    image?: string;
+    images?: string;
+    spu_id?: number;
+    spec?: string;
+    weight?: number;
+    create_time?: string;
+    update_time?: string;
+    category_id?: number;
+    category_name?: string;
+    brand_name?: string;
+    sale_num?: number;
+    comment_num?: number;
+    status?: string;
   };
 
   type RuleList = {

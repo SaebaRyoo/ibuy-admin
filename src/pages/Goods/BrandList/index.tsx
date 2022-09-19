@@ -58,7 +58,7 @@ const Goods: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      render: (_, record) => [<a key="config">编辑</a>, <a key="config">删除</a>],
+      render: () => [<a key="config">编辑</a>, <a key="delete">删除</a>],
     },
   ];
 

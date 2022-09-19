@@ -59,7 +59,7 @@ const Goods: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      render: (_, record) => [<a>查看</a>, <a>编辑</a>, <a>删除</a>],
+      render: () => [<a key="watch">查看</a>, <a key="edit">编辑</a>, <a key="del">删除</a>],
     },
   ];
 

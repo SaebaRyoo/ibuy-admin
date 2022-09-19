@@ -2,7 +2,9 @@ import React, { useRef, useState } from 'react';
 import { removeSpu, supList } from '@/services/aitao/goods/spu';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
-import { Button, message } from 'antd';
+import { Button, message, Switch } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
+import AddGoods from './AddGoods';
 
 /**
  *  Delete node
@@ -30,12 +32,12 @@ const handleRemove = async (selectedRows: API.SpuListItem[]) => {
 const Goods: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const [selectedRowsState, setSelectedRows] = useState<API.SpuListItem[]>([]);
+  const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
 
   const columns: ProColumns<API.SpuListItem>[] = [
     {
       title: '编号',
       dataIndex: 'id',
-      tip: 'The rule name is the unique key',
       render: (dom, entity) => {
         return <a>{dom}</a>;
       },
@@ -61,15 +63,15 @@ const Goods: React.FC = () => {
     {
       title: '标签',
       dataIndex: 'is_marketable',
-      valueEnum: {
-        0: {
-          text: '已下架',
-          status: 'Default',
-        },
-        1: {
-          text: '已上架',
-          status: 'Success',
-        },
+      render: (_, record) => {
+        // flag为true，则表示已上架
+        const flag = record.is_marketable == '1';
+        return (
+          <>
+            {flag ? '已上架' : '已下架'}&nbsp;&nbsp;
+            <Switch key="" defaultChecked={flag} />
+          </>
+        );
       },
     },
     {
@@ -79,6 +81,7 @@ const Goods: React.FC = () => {
     {
       title: '审核状态',
       dataIndex: 'status',
+      tip: '商品需要已审核才能售卖',
       hideInForm: true,
       valueEnum: {
         0: {
@@ -99,7 +102,12 @@ const Goods: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      render: (_, record) => [<a key="config">配置</a>],
+      render: (_, record) => [
+        <a key="watch">查看</a>,
+        <a key="edit">编辑</a>,
+        <a key="logs">日志</a>,
+        <a key="del">删除</a>,
+      ],
     },
   ];
 
@@ -119,6 +127,18 @@ const Goods: React.FC = () => {
             setSelectedRows(selectedRows);
           },
         }}
+        toolBarRender={() => [
+          <Button
+            onClick={() => {
+              setDrawerOpen(true);
+            }}
+            key="button"
+            icon={<PlusOutlined />}
+            type="primary"
+          >
+            添加商品
+          </Button>,
+        ]}
       />
       {selectedRowsState?.length > 0 && (
         <FooterToolbar
@@ -141,6 +161,7 @@ const Goods: React.FC = () => {
           <Button type="primary">批量审批</Button>
         </FooterToolbar>
       )}
+      <AddGoods drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} />
     </PageContainer>
   );
 };
