@@ -69,7 +69,7 @@ type SelectListProps = {
 };
 
 const SelectList: React.FC<SelectListProps> = ({ title, id, dataSource, changeKey }) => {
-  const { useSpu } = useModel('goods');
+  const { setSpu } = useModel('goods');
   return (
     <Card
       title={title}
@@ -89,7 +89,7 @@ const SelectList: React.FC<SelectListProps> = ({ title, id, dataSource, changeKe
           <List.Item
             onClick={() => {
               // 修改goods数据
-              useSpu((state) => ({
+              setSpu((state) => ({
                 ...state,
                 [changeKey + '_id']: item.id,
               }));

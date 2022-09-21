@@ -1,6 +1,6 @@
 import { Button, Drawer, Space } from 'antd';
 import React from 'react';
-import Steps from './Steps';
+import Steps from './components/Steps';
 
 export type AddGoodsPropsType = {
   drawerOpen: boolean;

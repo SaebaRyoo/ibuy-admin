@@ -22,6 +22,29 @@ declare namespace API {
     // };
   };
 
+  type RuleList = {
+    data?: SpuListItem[];
+    /** 列表的内容总数 */
+    total?: number;
+    success?: boolean;
+  };
+
+  type LoginParams = {
+    username?: string;
+    password?: string;
+    autoLogin?: boolean;
+    type?: string;
+  };
+
+  type ErrorResponse = {
+    /** 业务约定的错误码 */
+    errorCode: string;
+    /** 业务上的错误信息 */
+    errorMessage?: string;
+    /** 业务上的请求是否成功 */
+    success?: boolean;
+  };
+
   type LoginResult = {
     status?: string;
     type?: string;
@@ -70,7 +93,7 @@ declare namespace API {
     image?: string;
     images?: string;
     spu_id?: number;
-    spec?: string;
+    spec: string;
     weight?: number;
     create_time?: string;
     update_time?: string;
@@ -82,27 +105,9 @@ declare namespace API {
     status?: string;
   };
 
-  type RuleList = {
-    data?: SpuListItem[];
-    /** 列表的内容总数 */
-    total?: number;
-    success?: boolean;
-  };
-
-  type LoginParams = {
-    username?: string;
-    password?: string;
-    autoLogin?: boolean;
-    type?: string;
-  };
-
-  type ErrorResponse = {
-    /** 业务约定的错误码 */
-    errorCode: string;
-    /** 业务上的错误信息 */
-    errorMessage?: string;
-    /** 业务上的请求是否成功 */
-    success?: boolean;
+  type Goods = {
+    spu?: SpuListItem;
+    skuList?: Array<SkuListItem>;
   };
 
   // 品牌

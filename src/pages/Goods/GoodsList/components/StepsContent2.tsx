@@ -7,7 +7,7 @@ const Option = Select.Option;
 const TextArea = Input.TextArea;
 
 const Content2: React.FC = () => {
-  const { spu, useSpu } = useModel('goods');
+  const { spu, setSpu } = useModel('goods');
   const {
     category1_id,
     category2_id,
@@ -22,7 +22,7 @@ const Content2: React.FC = () => {
 
   const handleFormChange = (key: string, value: any) => {
     // 根据传入的key修改goods数据
-    useSpu((state) => ({
+    setSpu((state) => ({
       ...state,
       [key]: value,
     }));
