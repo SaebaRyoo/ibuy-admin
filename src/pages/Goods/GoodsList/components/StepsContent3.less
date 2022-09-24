@@ -2,6 +2,7 @@
 
 .header {
   height: 48px;
+  margin-top: 100px;
   color: @primary-color;
   font-weight: 600;
   font-size: 24px;
@@ -30,4 +31,39 @@
 .specTable {
   width: 100%;
   margin-top: 36px;
+}
+
+.goodsImages {
+  text-align: left;
+
+  .customPictureRender {
+    & > span {
+      display: flex;
+      justify-content: center;
+      color: @primary-color;
+      cursor: pointer;
+    }
+    .main {
+      color: #ff0000;
+      font-weight: bold;
+    }
+  }
+
+  .goodsImage_footer {
+    display: flex;
+    margin-top: 20px;
+
+    & > span {
+      display: flex;
+      align-self: center;
+      margin-left: 10px;
+      color: #bbbbbb;
+      font-size: 10px;
+    }
+  }
+}
+
+.richTectWrapper {
+  width: 100%;
+  height: 500px;
 }

@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { ReactElement, useState } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import { useModel } from 'umi';
-import { Checkbox, Modal, Upload, Form, Select } from 'antd';
+import { Checkbox, Modal, Upload, Form, Select, Button } from 'antd';
 import type { RcFile, UploadProps } from 'antd/es/upload';
 import type { UploadFile } from 'antd/es/upload/interface';
 import styles from './StepsContent3.less';
 import { EditableProTable } from '@ant-design/pro-components';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 type Item = {
   id: number;
@@ -72,7 +74,13 @@ const GoodsParaComponent = ({ optionData, data, setSpu }: GoodsParaProps) => {
   };
 
   return (
-    <Form name="basic" labelCol={{ span: 4 }} wrapperCol={{ span: 6 }} autoComplete="off">
+    <Form
+      className={styles.paraItems}
+      name="basic"
+      labelCol={{ span: 2 }}
+      wrapperCol={{ span: 6 }}
+      autoComplete="off"
+    >
       {Object.keys(optionData).length > 0 &&
         Object.keys(optionData).map((key) => (
           <Form.Item key={key} label={key} name={key}>
@@ -98,6 +106,7 @@ const GoodsImages: React.FC = () => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
+  const [mainImage, setMainImage] = useState<string | undefined>(undefined);
   const [fileList, setFileList] = useState<UploadFile[]>([
     {
       uid: '-1',
@@ -150,6 +159,18 @@ const GoodsImages: React.FC = () => {
     <div className={styles.goodsImages}>
       <Upload
         action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+        // customRequest={()=>{}} // 覆盖默认上传行为，自定义上传
+        // withCredentials={true} // 允许上传时携带cookie
+        itemRender={(originNode: ReactElement, file: UploadFile) => (
+          <div className={styles.customPictureRender}>
+            {originNode}
+            {mainImage === file.uid ? (
+              <span className={styles.main}>商品主图</span>
+            ) : (
+              <span onClick={() => setMainImage(file.uid)}>设为主图</span>
+            )}
+          </div>
+        )}
         listType="picture-card"
         multiple={true}
         fileList={fileList}
@@ -158,10 +179,77 @@ const GoodsImages: React.FC = () => {
       >
         {fileList.length >= 5 ? null : uploadButton}
       </Upload>
+      <div className={styles.goodsImage_footer}>
+        <Button type="primary">从图库中选择</Button>
+        <span>按住ctrl可同时批量选择多张图片上传，最多可以上传5张图片，建议尺寸800*800px</span>
+      </div>
       <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
         <img alt="example" style={{ width: '100%' }} src={previewImage} />
       </Modal>
     </div>
+  );
+};
+
+/**
+ * 商品描述
+ */
+interface StringMap {
+  [key: string]: any;
+}
+const Editor: { modules: StringMap | undefined; formats: string[] | undefined } = {
+  /*
+   * Quill modules to attach to editor
+   * See https://quilljs.com/docs/modules/ for complete options
+   */
+  modules: {
+    toolbar: [
+      [{ header: '1' }, { header: '2' }, { font: [] }],
+      [{ size: [] }],
+      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+      [{ list: 'ordered' }, { list: 'bullet' }, { indent: '-1' }, { indent: '+1' }],
+      ['link', 'image', 'video'],
+      ['clean'],
+    ],
+    clipboard: {
+      // toggle to add extra line breaks when pasting HTML:
+      matchVisual: false,
+    },
+  },
+  /*
+   * Quill editor formats
+   * See https://quilljs.com/docs/formats/
+   */
+  formats: [
+    'header',
+    'font',
+    'size',
+    'bold',
+    'italic',
+    'underline',
+    'strike',
+    'blockquote',
+    'list',
+    'bullet',
+    'indent',
+    'link',
+    'image',
+    'video',
+  ],
+};
+const RichTextComponent: React.FC = () => {
+  const [value, setValue] = useState('');
+  console.log(value);
+  return (
+    <ReactQuill
+      className={styles.richTectWrapper}
+      theme="snow"
+      value={value}
+      onChange={setValue}
+      modules={Editor.modules}
+      formats={Editor.formats}
+      bounds={'.app'}
+      placeholder="请在这里填写你的商品描述"
+    />
   );
 };
 
@@ -406,12 +494,11 @@ const Content3: React.FC = () => {
       <div className={styles.specList}>{genSpecList(specMap)}</div>
       <div className={styles.specTable}>{genSkuTable()}</div>
       <div className={styles.header}>商品参数</div>
-      <div className={styles.paraItems}>
-        <GoodsParaComponent optionData={paraMap} data={paraConvertData} setSpu={setSpu} />
-      </div>
+      <GoodsParaComponent optionData={paraMap} data={paraConvertData} setSpu={setSpu} />
       <div className={styles.header}>商品相册</div>
       <GoodsImages />
       <div className={styles.header}>商品描述</div>
+      <RichTextComponent />
     </div>
   );
 };
