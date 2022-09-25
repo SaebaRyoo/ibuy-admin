@@ -22,13 +22,6 @@ declare namespace API {
     // };
   };
 
-  type RuleList = {
-    data?: SpuListItem[];
-    /** 列表的内容总数 */
-    total?: number;
-    success?: boolean;
-  };
-
   type LoginParams = {
     username?: string;
     password?: string;
@@ -126,5 +119,25 @@ declare namespace API {
     image?: string; // 相册封面
     image_items?: Array; // 图片列表
     desc?: string; // 相册描述
+  };
+
+  // 分类商品类型
+  type Category = {
+    id?: number;
+    name?: string;
+    goods_num?: number;
+    is_show?: string; // 是否显示
+    is_menu?: string; // 是否导航
+    seq?: number; // 排序
+    parent_id?: number;
+    template_id?: number; // 模板id
+  };
+
+  // 表格数据形式
+  type RuleList = {
+    data?: SpuListItem[] | SkuListItem[] | Brand[] | Album[] | Category[];
+    /** 列表的内容总数 */
+    total?: number;
+    success?: boolean;
   };
 }

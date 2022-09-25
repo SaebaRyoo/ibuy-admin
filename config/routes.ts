@@ -17,6 +17,12 @@ export default [
       { path: '/goods/goodsList', name: '商品列表', icon: 'smile', component: './Goods/GoodsList' },
       { path: '/goods/brandList', name: '品牌列表', icon: 'smile', component: './Goods/BrandList' },
       { path: '/goods/albumList', name: '相册列表', icon: 'smile', component: './Goods/AlbumList' },
+      {
+        path: '/goods/categoryList',
+        name: '分类列表',
+        icon: 'smile',
+        component: './Goods/CategoryList',
+      },
       { component: './404' },
     ],
   },
