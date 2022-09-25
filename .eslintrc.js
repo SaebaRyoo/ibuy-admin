@@ -7,5 +7,6 @@ module.exports = {
     'react-hooks/rules-of-hooks': 'warn', // hook规则
     '@typescript-eslint/no-use-before-define': 'off', // 已定义，未使用变量warn
     'prefer-const': 'warn',
+    '@typescript-eslint/no-shadow': 'warn',
   },
 };

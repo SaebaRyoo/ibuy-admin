@@ -107,6 +107,7 @@ const Goods: React.FC = () => {
         <a key="edit">编辑</a>,
         <a key="logs">日志</a>,
         <a key="del">删除</a>,
+        <a key="check">审核</a>,
       ],
     },
   ];

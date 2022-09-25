@@ -98,6 +98,7 @@ const Login: React.FC = () => {
                   size: 'large',
                   prefix: <UserOutlined className={styles.prefixIcon} />,
                 }}
+                initialValue="admin"
                 placeholder="用户名: admin or user"
                 rules={[
                   {
@@ -112,6 +113,7 @@ const Login: React.FC = () => {
                   size: 'large',
                   prefix: <LockOutlined className={styles.prefixIcon} />,
                 }}
+                initialValue="ant.design"
                 placeholder="密码: ant.design"
                 rules={[
                   {
