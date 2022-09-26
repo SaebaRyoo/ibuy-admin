@@ -3,7 +3,7 @@ import { removePara, paraList } from '@/services/aitao/goods/para';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { Button, message } from 'antd';
-import { PlusOutlined, ArrowLeftOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import UpdateModal from './UpdateModal';
 
 /**
@@ -37,7 +37,6 @@ export type OpenParam = {
 const Goods: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const [selectedRowsState, setSelectedRows] = useState<API.Para[]>([]);
-  const [paraLevel, setCateGoryLevel] = useState<number>(1);
   const [openParam, setOpenParam] = useState<OpenParam>({ open: false, openType: '' });
 
   const columns: ProColumns<API.Para>[] = [
@@ -116,16 +115,6 @@ const Goods: React.FC = () => {
           },
         }}
         toolBarRender={() => [
-          paraLevel > 1 ? (
-            <Button
-              onClick={() => setCateGoryLevel((prev) => prev - 1)}
-              key="button"
-              icon={<ArrowLeftOutlined />}
-              type="primary"
-            >
-              返回上一级
-            </Button>
-          ) : null,
           <Button
             onClick={() => {
               setOpenParam({

@@ -3,6 +3,8 @@ import { removeBrand, brandList } from '@/services/aitao/goods/brand';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { Button, message } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
+import UpdateModal from './UpdateModal';
 
 /**
  *  Delete node
@@ -10,7 +12,7 @@ import { Button, message } from 'antd';
  *
  * @param selectedRows
  */
-const handleRemove = async (selectedRows: API.SpuListItem[]) => {
+const handleRemove = async (selectedRows: API.Brand[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
@@ -27,44 +29,74 @@ const handleRemove = async (selectedRows: API.SpuListItem[]) => {
   }
 };
 
+export type OpenParam = {
+  open: boolean;
+  openType: string;
+};
+
 const Goods: React.FC = () => {
   const actionRef = useRef<ActionType>();
-  const [selectedRowsState, setSelectedRows] = useState<API.SpuListItem[]>([]);
+  const [selectedRowsState, setSelectedRows] = useState<API.Brand[]>([]);
+  const [openParam, setOpenParam] = useState<OpenParam>({ open: false, openType: '' });
 
-  const columns: ProColumns<API.SpuListItem>[] = [
+  const columns: ProColumns<API.Brand>[] = [
     {
       title: '编号',
       dataIndex: 'id',
     },
     {
-      title: '商品名称',
+      title: '品牌名称',
       dataIndex: 'name',
       sorter: true,
       hideInForm: true,
-    },
-    {
-      title: '商品图片',
-      dataIndex: 'image',
     },
     {
       title: '品牌首字母',
       dataIndex: 'letter',
     },
     {
-      title: '排序',
-      dataIndex: 'seq',
+      title: '品牌图片',
+      dataIndex: 'image',
+    },
+    {
+      title: '相关',
+      dataIndex: 'about',
     },
     {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      render: () => [<a key="config">编辑</a>, <a key="delete">删除</a>],
+      render: () => [
+        <a
+          key="config"
+          onClick={() => {
+            setOpenParam({ open: true, openType: 'update' });
+          }}
+        >
+          编辑
+        </a>,
+        <a key="delete">删除</a>,
+      ],
     },
   ];
 
+  const handleConfirm = (value: any) => {
+    setOpenParam({
+      open: false,
+      openType: '',
+    });
+    console.log(value);
+  };
+
+  const handleCancel = () => {
+    setOpenParam({
+      open: false,
+      openType: '',
+    });
+  };
   return (
     <PageContainer>
-      <ProTable<API.SpuListItem, API.PageParams>
+      <ProTable<API.Brand, API.PageParams>
         headerTitle="品牌管理"
         actionRef={actionRef}
         rowKey="id"
@@ -78,13 +110,28 @@ const Goods: React.FC = () => {
             setSelectedRows(selectedRows);
           },
         }}
+        toolBarRender={() => [
+          <Button
+            onClick={() => {
+              setOpenParam({
+                open: true,
+                openType: 'add',
+              });
+            }}
+            key="button"
+            icon={<PlusOutlined />}
+            type="primary"
+          >
+            添加分类
+          </Button>,
+        ]}
       />
       {selectedRowsState?.length > 0 && (
         <FooterToolbar
           extra={
             <div>
               已选择
-              <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a> 个商品进行操作
+              <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a> 个品牌进行操作
             </div>
           }
         >
@@ -97,9 +144,13 @@ const Goods: React.FC = () => {
           >
             批量删除
           </Button>
-          <Button type="primary">批量审批</Button>
         </FooterToolbar>
       )}
+      <UpdateModal
+        openParam={openParam}
+        handleConfirm={handleConfirm}
+        handleCancel={handleCancel}
+      />
     </PageContainer>
   );
 };
