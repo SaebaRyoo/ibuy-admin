@@ -3,21 +3,13 @@ import { parse } from 'url';
 
 // mock tableListDataSource
 const genList = (current: number, pageSize: number) => {
-  const tableListDataSource: API.Category[] = [];
+  const tableListDataSource: API.Template[] = [];
 
   for (let i = 0; i < pageSize; i += 1) {
     const index = (current - 1) * 10 + i;
     tableListDataSource.push({
       id: index,
-      name: ['图书、音像、电子书刊', '个护化妆', '电子产品', '家用电器'][
-        Math.floor(Math.random() * 4)
-      ],
-      goods_num: Math.floor(Math.random() * 500),
-      is_show: '1',
-      is_menu: '1',
-      seq: 0,
-      parent_id: 0,
-      template_id: 1,
+      name: ['手机', '电视'][Math.floor(Math.random() * 2)],
     });
   }
   tableListDataSource.reverse();
@@ -33,7 +25,7 @@ function getRule(req: Request, res: Response, u: string) {
   }
   const { current = 1, pageSize = 10 } = req.query;
   const params = parse(realUrl, true).query as unknown as API.PageParams &
-    API.Category & {
+    API.Template & {
       sorter: any;
       filter: any;
     };
@@ -114,17 +106,9 @@ function postRule(req: Request, res: Response, u: string, b: Request) {
     case 'post':
       (() => {
         const i = Math.ceil(Math.random() * 10000);
-        const newRule: API.Category = {
+        const newRule: API.Template = {
           id: i,
-          name: ['图书、音像、电子书刊', '个护化妆', '电子产品', '家用电器'][
-            Math.floor(Math.random() * 5)
-          ],
-          goods_num: Math.floor(Math.random() * 500),
-          is_show: '1',
-          is_menu: '1',
-          seq: 0,
-          parent_id: 0,
-          template_id: 1,
+          name: ['手机', '电视'][Math.floor(Math.random() * 2)],
         };
         tableListDataSource.unshift(newRule);
         return res.json(newRule);
@@ -159,6 +143,6 @@ function postRule(req: Request, res: Response, u: string, b: Request) {
 }
 
 export default {
-  'GET /api/category/1': getRule,
-  'POST /api/category/1': postRule,
+  'GET /api/template': getRule,
+  'POST /api/template': postRule,
 };

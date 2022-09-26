@@ -3,20 +3,16 @@ import { parse } from 'url';
 
 // mock tableListDataSource
 const genList = (current: number, pageSize: number) => {
-  const tableListDataSource: API.Category[] = [];
+  const tableListDataSource: API.Para[] = [];
 
   for (let i = 0; i < pageSize; i += 1) {
     const index = (current - 1) * 10 + i;
+    const floor = Math.floor(Math.random() * 2);
     tableListDataSource.push({
       id: index,
-      name: ['图书、音像、电子书刊', '个护化妆', '电子产品', '家用电器'][
-        Math.floor(Math.random() * 4)
-      ],
-      goods_num: Math.floor(Math.random() * 500),
-      is_show: '1',
-      is_menu: '1',
+      name: ['出厂年份', '版本'][floor],
+      options: ['2018,2019,2020,2021,2022', '10,20,30'][floor],
       seq: 0,
-      parent_id: 0,
       template_id: 1,
     });
   }
@@ -33,7 +29,7 @@ function getRule(req: Request, res: Response, u: string) {
   }
   const { current = 1, pageSize = 10 } = req.query;
   const params = parse(realUrl, true).query as unknown as API.PageParams &
-    API.Category & {
+    API.Para & {
       sorter: any;
       filter: any;
     };
@@ -114,16 +110,12 @@ function postRule(req: Request, res: Response, u: string, b: Request) {
     case 'post':
       (() => {
         const i = Math.ceil(Math.random() * 10000);
-        const newRule: API.Category = {
+        const floor = Math.floor(Math.random() * 7);
+        const newRule: API.Para = {
           id: i,
-          name: ['图书、音像、电子书刊', '个护化妆', '电子产品', '家用电器'][
-            Math.floor(Math.random() * 5)
-          ],
-          goods_num: Math.floor(Math.random() * 500),
-          is_show: '1',
-          is_menu: '1',
+          name: ['出厂年份', '版本'][floor],
+          options: ['2018,2019,2020,2021,2022', '10,20,30'][floor],
           seq: 0,
-          parent_id: 0,
           template_id: 1,
         };
         tableListDataSource.unshift(newRule);
@@ -159,6 +151,6 @@ function postRule(req: Request, res: Response, u: string, b: Request) {
 }
 
 export default {
-  'GET /api/category/1': getRule,
-  'POST /api/category/1': postRule,
+  'GET /api/para': getRule,
+  'POST /api/para': postRule,
 };

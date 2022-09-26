@@ -3,20 +3,24 @@ import { parse } from 'url';
 
 // mock tableListDataSource
 const genList = (current: number, pageSize: number) => {
-  const tableListDataSource: API.Category[] = [];
+  const tableListDataSource: API.Spec[] = [];
 
   for (let i = 0; i < pageSize; i += 1) {
     const index = (current - 1) * 10 + i;
+    const floor = Math.floor(Math.random() * 7);
     tableListDataSource.push({
       id: index,
-      name: ['图书、音像、电子书刊', '个护化妆', '电子产品', '家用电器'][
-        Math.floor(Math.random() * 4)
-      ],
-      goods_num: Math.floor(Math.random() * 500),
-      is_show: '1',
-      is_menu: '1',
+      name: ['尺码', '网络', '手机屏幕尺寸', '机身内存', '存储', '像素', '颜色'][floor],
+      options: [
+        '165,170,175,180,185',
+        '联通2G,联通3G,联通4G,移动2G,移动3G,移动4G',
+        '5寸,5.5寸',
+        '16G,32G,64G,128G',
+        '16G,32G,64G',
+        '300万像素,800万像素',
+        '红,绿,蓝,白,黑',
+      ][floor],
       seq: 0,
-      parent_id: 0,
       template_id: 1,
     });
   }
@@ -33,7 +37,7 @@ function getRule(req: Request, res: Response, u: string) {
   }
   const { current = 1, pageSize = 10 } = req.query;
   const params = parse(realUrl, true).query as unknown as API.PageParams &
-    API.Category & {
+    API.Spec & {
       sorter: any;
       filter: any;
     };
@@ -114,16 +118,20 @@ function postRule(req: Request, res: Response, u: string, b: Request) {
     case 'post':
       (() => {
         const i = Math.ceil(Math.random() * 10000);
-        const newRule: API.Category = {
+        const floor = Math.floor(Math.random() * 7);
+        const newRule: API.Spec = {
           id: i,
-          name: ['图书、音像、电子书刊', '个护化妆', '电子产品', '家用电器'][
-            Math.floor(Math.random() * 5)
-          ],
-          goods_num: Math.floor(Math.random() * 500),
-          is_show: '1',
-          is_menu: '1',
+          name: ['尺码', '网络', '手机屏幕尺寸', '机身内存', '存储', '像素', '颜色'][floor],
+          options: [
+            '165,170,175,180,185',
+            '联通2G,联通3G,联通4G,移动2G,移动3G,移动4G',
+            '5寸,5.5寸',
+            '16G,32G,64G,128G',
+            '16G,32G,64G',
+            '300万像素,800万像素',
+            '红,绿,蓝,白,黑',
+          ][floor],
           seq: 0,
-          parent_id: 0,
           template_id: 1,
         };
         tableListDataSource.unshift(newRule);
@@ -159,6 +167,6 @@ function postRule(req: Request, res: Response, u: string, b: Request) {
 }
 
 export default {
-  'GET /api/category/1': getRule,
-  'POST /api/category/1': postRule,
+  'GET /api/spec': getRule,
+  'POST /api/spec': postRule,
 };
