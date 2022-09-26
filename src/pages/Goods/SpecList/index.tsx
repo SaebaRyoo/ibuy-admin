@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { removeBrand, brandList } from '@/services/aitao/goods/brand';
+import { removeSpec, specList } from '@/services/aitao/goods/spec';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { Button, message } from 'antd';
@@ -12,12 +12,12 @@ import UpdateModal from './UpdateModal';
  *
  * @param selectedRows
  */
-const handleRemove = async (selectedRows: API.Brand[]) => {
+const handleRemove = async (selectedRows: API.Spec[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
-    await removeBrand({
-      key: selectedRows.map((row) => row.id),
+    await removeSpec({
+      id: selectedRows.map((row) => row.id),
     });
     hide();
     message.success('Deleted successfully and will refresh soon');
@@ -36,46 +36,49 @@ export type OpenParam = {
 
 const Goods: React.FC = () => {
   const actionRef = useRef<ActionType>();
-  const [selectedRowsState, setSelectedRows] = useState<API.Brand[]>([]);
+  const [selectedRowsState, setSelectedRows] = useState<API.Spec[]>([]);
   const [openParam, setOpenParam] = useState<OpenParam>({ open: false, openType: '' });
 
-  const columns: ProColumns<API.Brand>[] = [
+  const columns: ProColumns<API.Spec>[] = [
     {
       title: '编号',
       dataIndex: 'id',
+      render: (dom, entity) => {
+        return <a>{dom}</a>;
+      },
     },
     {
-      title: '品牌名称',
+      title: '规格名称',
       dataIndex: 'name',
       sorter: true,
       hideInForm: true,
     },
     {
-      title: '品牌首字母',
-      dataIndex: 'letter',
+      title: '模板',
+      dataIndex: 'template_id',
     },
     {
-      title: '品牌图片',
-      dataIndex: 'image',
+      title: '可选值列表',
+      dataIndex: 'options',
     },
     {
-      title: '相关',
-      dataIndex: 'about',
+      title: '排序',
+      dataIndex: 'seq',
     },
     {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      render: () => [
+      render: (_, record) => [
         <a
-          key="config"
+          key="add"
           onClick={() => {
             setOpenParam({ open: true, openType: 'update' });
           }}
         >
           编辑
         </a>,
-        <a key="delete">删除</a>,
+        <a key="watch">删除</a>,
       ],
     },
   ];
@@ -94,16 +97,17 @@ const Goods: React.FC = () => {
       openType: '',
     });
   };
+
   return (
     <PageContainer>
-      <ProTable<API.Brand, API.PageParams>
-        headerTitle="品牌管理"
+      <ProTable<API.Spec, API.PageParams>
+        headerTitle="规格列表"
         actionRef={actionRef}
         rowKey="id"
         search={{
           labelWidth: 120,
         }}
-        request={brandList}
+        request={specList}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => {
@@ -131,7 +135,7 @@ const Goods: React.FC = () => {
           extra={
             <div>
               已选择
-              <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a> 个品牌进行操作
+              <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a> 个规格进行操作
             </div>
           }
         >
@@ -144,8 +148,10 @@ const Goods: React.FC = () => {
           >
             批量删除
           </Button>
+          <Button type="primary">批量审批</Button>
         </FooterToolbar>
       )}
+
       <UpdateModal
         openParam={openParam}
         handleConfirm={handleConfirm}

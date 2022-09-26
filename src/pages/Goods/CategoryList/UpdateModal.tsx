@@ -1,7 +1,6 @@
 import { Modal, Form, Input, Select, Radio, Button } from 'antd';
 import React from 'react';
 import { OpenParam } from './index';
-import styles from './UpdateModal.less';
 
 const Add = 'add';
 const Update = 'update';
@@ -17,23 +16,23 @@ type UpdateModalProps = {
 };
 
 const UpdateModal: React.FC<UpdateModalProps> = ({ openParam, handleConfirm, handleCancel }) => {
+  const [form] = Form.useForm();
   const { open, openType } = openParam;
   const onFinish = (values: any) => {
-    handleConfirm(values);
-    console.log('Success:', values);
+    form.validateFields().then((values) => {
+      handleConfirm(values);
+      console.log('Success:', values);
+    });
   };
 
-  const onFinishFailed = (errorInfo: any) => {
-    console.log('Failed:', errorInfo);
-  };
   return (
     <Modal
       title={TitleMap[openType]}
       open={open}
       footer={
-        <div className={styles.footer}>
+        <div>
           <Button onClick={handleCancel}>取消</Button>
-          <Button type="primary" htmlType="submit">
+          <Button onClick={onFinish} type="primary" htmlType="submit">
             确定
           </Button>
         </div>
@@ -41,11 +40,9 @@ const UpdateModal: React.FC<UpdateModalProps> = ({ openParam, handleConfirm, han
     >
       <Form
         name="basic"
+        form={form}
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 12 }}
-        initialValues={{ remember: true }}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
         <Form.Item

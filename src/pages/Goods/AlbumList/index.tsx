@@ -3,6 +3,8 @@ import { removeAlbum, albumList } from '@/services/aitao/goods/album';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { Button, message } from 'antd';
+import UpdateModal from './UpdateModal';
+import { PlusOutlined } from '@ant-design/icons';
 
 /**
  *  Delete node
@@ -27,9 +29,14 @@ const handleRemove = async (selectedRows: API.Album[]) => {
   }
 };
 
+export type OpenParam = {
+  open: boolean;
+  openType: string;
+};
 const Goods: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const [selectedRowsState, setSelectedRows] = useState<API.Album[]>([]);
+  const [openParam, setOpenParam] = useState<OpenParam>({ open: false, openType: '' });
 
   const columns: ProColumns<API.Album>[] = [
     {
@@ -45,11 +52,16 @@ const Goods: React.FC = () => {
     {
       title: '封面',
       dataIndex: 'image',
+      render: (_, record) => <img style={{ width: 80 }} src={record.image} />,
     },
     {
       title: '图片数量',
       dataIndex: 'image_items',
       render: (_, record) => <div>{record.image_items.length}</div>,
+    },
+    {
+      title: '排序',
+      dataIndex: 'seq',
     },
     {
       title: '描述',
@@ -59,10 +71,35 @@ const Goods: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      render: () => [<a key="watch">查看</a>, <a key="edit">编辑</a>, <a key="del">删除</a>],
+      render: () => [
+        <a key="watch">查看</a>,
+        <a
+          key="edit"
+          onClick={() => {
+            setOpenParam({ open: true, openType: 'update' });
+          }}
+        >
+          编辑
+        </a>,
+        <a key="del">删除</a>,
+      ],
     },
   ];
 
+  const handleConfirm = (value: any) => {
+    setOpenParam({
+      open: false,
+      openType: '',
+    });
+    console.log(value);
+  };
+
+  const handleCancel = () => {
+    setOpenParam({
+      open: false,
+      openType: '',
+    });
+  };
   return (
     <PageContainer>
       <ProTable<API.Album, API.PageParams>
@@ -79,13 +116,28 @@ const Goods: React.FC = () => {
             setSelectedRows(selectedRows);
           },
         }}
+        toolBarRender={() => [
+          <Button
+            onClick={() => {
+              setOpenParam({
+                open: true,
+                openType: 'add',
+              });
+            }}
+            key="button"
+            icon={<PlusOutlined />}
+            type="primary"
+          >
+            新建相册
+          </Button>,
+        ]}
       />
       {selectedRowsState?.length > 0 && (
         <FooterToolbar
           extra={
             <div>
               已选择
-              <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a> 个商品进行操作
+              <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a> 个相册进行操作
             </div>
           }
         >
@@ -98,9 +150,13 @@ const Goods: React.FC = () => {
           >
             批量删除
           </Button>
-          <Button type="primary">批量审批</Button>
         </FooterToolbar>
       )}
+      <UpdateModal
+        openParam={openParam}
+        handleConfirm={handleConfirm}
+        handleCancel={handleCancel}
+      />
     </PageContainer>
   );
 };

@@ -133,9 +133,35 @@ declare namespace API {
     template_id?: number; // 模板id
   };
 
+  // 模板类型
+  type Template = {
+    id?: number;
+    name?: string;
+    spec_num?: number;
+    para_num?: number;
+  };
+
+  // 规格类型
+  type Spec = {
+    id?: number;
+    name?: string;
+    options?: string;
+    seq: number;
+    template_id?: number;
+  };
+
+  // 参数类型
+  type Para = {
+    id?: number;
+    name?: string;
+    options?: string;
+    seq: number;
+    template_id?: number;
+  };
+
   // 表格数据形式
   type RuleList = {
-    data?: SpuListItem[] | SkuListItem[] | Brand[] | Album[] | Category[];
+    data?: any; // 就是后面的各种数据 SpuListItem[] | SkuListItem[] | Brand[] | Album[] | Category[]
     /** 列表的内容总数 */
     total?: number;
     success?: boolean;
