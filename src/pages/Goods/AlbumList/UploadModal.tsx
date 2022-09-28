@@ -1,24 +1,10 @@
 import { PlusOutlined } from '@ant-design/icons';
-import { Modal, Form, Input, Button, Upload } from 'antd';
+import { Modal, Form, Input, Button, Upload, Select } from 'antd';
 import React from 'react';
-import { OpenParam } from './index';
 
-const Add = 'add';
-const Update = 'update';
-const TitleMap = {
-  [Add]: '新建相册',
-  [Update]: '编辑相册',
-};
-
-type UpdateModalProps = {
-  openParam: OpenParam;
-  handleConfirm: (value: any) => void;
-  handleCancel: () => void;
-};
-
-const UpdateModal: React.FC<UpdateModalProps> = ({ openParam, handleConfirm, handleCancel }) => {
+const UploadModal: React.FC<CustomModalProps> = ({ openParam, handleConfirm, handleCancel }) => {
   const [form] = Form.useForm();
-  const { open, openType } = openParam;
+  const { open } = openParam;
   const onFinish = () => {
     form.validateFields().then((values) => {
       handleConfirm(values);
@@ -35,7 +21,7 @@ const UpdateModal: React.FC<UpdateModalProps> = ({ openParam, handleConfirm, han
   };
   return (
     <Modal
-      title={TitleMap[openType]}
+      title="上传图片"
       open={open}
       footer={
         <div>
@@ -53,19 +39,20 @@ const UpdateModal: React.FC<UpdateModalProps> = ({ openParam, handleConfirm, han
         wrapperCol={{ span: 12 }}
         scrollToFirstError
       >
-        <Form.Item
-          label="相册名称"
-          name="name"
-          rules={[{ required: true, message: '请填写相册名称' }]}
-        >
-          <Input />
+        <Form.Item label="选择相册" name="name" rules={[{ required: true, message: '请选择相册' }]}>
+          <Select
+            options={[
+              { label: '相册1', value: 1 },
+              { label: '相册2', value: 2 },
+            ]}
+          />
         </Form.Item>
         <Form.Item
-          label="相册封面"
+          label="选择图片"
           name="image"
           valuePropName="fileList"
           getValueFromEvent={normFile}
-          extra="只能上传jpg/png格式文件，文件不能超过50kb"
+          extra="只能上传jpg/png格式文件，文件不能超过100kb"
         >
           <Upload action="/upload.do" listType="picture-card">
             <div>
@@ -74,15 +61,9 @@ const UpdateModal: React.FC<UpdateModalProps> = ({ openParam, handleConfirm, han
             </div>
           </Upload>
         </Form.Item>
-        <Form.Item label="相册描述" name="desc">
-          <Input.TextArea />
-        </Form.Item>
-        <Form.Item label="排序" name="seq">
-          <Input />
-        </Form.Item>
       </Form>
     </Modal>
   );
 };
 
-export default UpdateModal;
+export default UploadModal;

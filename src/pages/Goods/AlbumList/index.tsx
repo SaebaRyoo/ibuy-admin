@@ -3,8 +3,9 @@ import { removeAlbum, albumList } from '@/services/aitao/goods/album';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { Button, message } from 'antd';
-import UpdateModal from './UpdateModal';
+import UpdateModal from './AlbumOperateModal';
 import { PlusOutlined } from '@ant-design/icons';
+import { history } from 'umi';
 
 /**
  *  Delete node
@@ -29,10 +30,6 @@ const handleRemove = async (selectedRows: API.Album[]) => {
   }
 };
 
-export type OpenParam = {
-  open: boolean;
-  openType: string;
-};
 const Goods: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const [selectedRowsState, setSelectedRows] = useState<API.Album[]>([]);
@@ -57,7 +54,7 @@ const Goods: React.FC = () => {
     {
       title: '图片数量',
       dataIndex: 'image_items',
-      render: (_, record) => <div>{record.image_items.length}</div>,
+      render: (_, record) => <div>{record.image_items?.split(',').length}</div>,
     },
     {
       title: '排序',
@@ -71,8 +68,17 @@ const Goods: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      render: () => [
-        <a key="watch">查看</a>,
+      render: (_, record) => [
+        <a
+          key="watch"
+          onClick={() =>
+            history.push('/goods/albumDetails', {
+              images: record.image_items,
+            })
+          }
+        >
+          查看
+        </a>,
         <a
           key="edit"
           onClick={() => {
