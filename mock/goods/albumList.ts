@@ -11,7 +11,7 @@ const genList = (current: number, pageSize: number) => {
       id: index,
       title: ['TCL', '华为', 'ihpone', '海尔', '小米'][Math.floor(Math.random() * 5)],
       image: 'http://test1.png',
-      image_items: ['http://test1.png', 'http://test2.png'],
+      image_items: 'http://test1.png,http://test2.png',
       desc: '这是一段描述',
     });
   }
@@ -113,7 +113,7 @@ function postRule(req: Request, res: Response, u: string, b: Request) {
           id: i,
           title: ['TCL', '华为', 'ihpone', '海尔', '小米'][Math.floor(Math.random() * 5)],
           image: 'http://test1.png',
-          image_items: ['http://test1.png', 'http://test2.png'],
+          image_items: 'http://test1.png,http://test2.png',
           desc: '这是一段描述',
         };
         tableListDataSource.unshift(newRule);
