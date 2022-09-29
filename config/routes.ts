@@ -45,6 +45,20 @@ export default [
       { component: './404' },
     ],
   },
+
+  {
+    path: '/order',
+    icon: 'crown',
+    name: '订单管理',
+    routes: [
+      {
+        path: '/order/order',
+        name: '订单列表',
+        icon: 'smile',
+        component: './Order/OrderList',
+      },
+    ],
+  },
   { path: '/', redirect: '/welcome' },
   { component: './404' },
 ];

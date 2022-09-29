@@ -33,3 +33,12 @@ declare type CustomModalProps = {
   handleConfirm: (value: any) => void;
   handleCancel: () => void;
 };
+
+declare type OpenPara = {
+  [key: string]: any;
+};
+
+declare type ModalProps = {
+  open: boolean;
+  params: OpenPara | null;
+};
