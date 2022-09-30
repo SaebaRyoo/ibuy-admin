@@ -34,6 +34,28 @@ const Goods: React.FC = () => {
   const [selectedRowsState, setSelectedRows] = useState<API.Order[]>([]);
   const [openParams, setOpenParams] = useState<ModalProps>({ open: false, params: null });
 
+  const btnToggle = (order_status?: string, pay_status?: string, shipping_status?: string) => {
+    // 订单未完成，未支付 || 订单未完成，已支付
+    if (
+      (order_status === '0' && pay_status === '0') ||
+      (order_status === '0' && pay_status === '1')
+    ) {
+      return <a>取消订单</a>;
+    } else if (order_status === '0' && pay_status === '2') {
+      // 订单未完成，支付失败
+      return <a>删除订单</a>;
+    } else if (order_status === '1' && pay_status === '1') {
+      // 订单已完成，支付成功
+      return <a>关闭订单</a>;
+    } else if (order_status === '0' && pay_status === '1' && shipping_status === '0') {
+      // 订单未完成，支付成功，未发货
+      return <a>订单发货</a>;
+    } else if (order_status === '0' && pay_status === '1' && shipping_status === '1') {
+      // 订单未完成，支付成功，已发货
+      return <a>订单跟踪</a>;
+    }
+    return null;
+  };
   const columns: ProColumns<API.Order>[] = [
     {
       title: '订单编号',
@@ -110,7 +132,7 @@ const Goods: React.FC = () => {
         >
           查看订单
         </a>,
-        <a key="close">关闭订单</a>,
+        btnToggle(record.order_status, record.pay_status, record.shipping_status),
       ],
     },
   ];

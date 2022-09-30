@@ -195,6 +195,26 @@ declare namespace API {
     is_delete?: string; //  是否删除
   };
 
+  // 订单明细
+  type OrderItem = {
+    id: string;
+    category_id1?: number; // 一级分类
+    category_id2?: number; // 二级分类
+    category_id3?: number; // 三级分类
+    spu_id?: number;
+    sku_id?: number;
+    order_id: string; // 订单ID
+    name?: string;
+    price?: number; // 单价
+    num?: number; // 数量
+    money?: number; // 总金额
+    pay_money?: number; // 实付金额
+    image?: string; // 图片
+    weight?: number; // 重量
+    post_fee?: number;
+    is_return?: string; //是否退货,0:未退货，1：已退货
+  };
+
   // 表格数据形式
   type RuleList = {
     data?: any; // 就是后面的各种数据 SpuListItem[] | SkuListItem[] | Brand[] | Album[] | Category[]
