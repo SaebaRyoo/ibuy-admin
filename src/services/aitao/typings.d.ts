@@ -215,6 +215,33 @@ declare namespace API {
     is_return?: string; //是否退货,0:未退货，1：已退货
   };
 
+  /*******  系统相关  *************************************************************/
+
+  // 菜单
+  type Menu_T = {
+    id: string;
+    name: string;
+    icon: string;
+    url?: string;
+    parent_id: string;
+  };
+
+  // 角色
+  type Role = {
+    id: number;
+    name: string;
+  };
+
+  // 用户
+  type SysUser = {
+    id: number;
+    username?: string;
+    password?: string;
+    status?: string; // 是否启用 0: 未启用 1: 已启用
+  };
+
+  /*******  其他  *************************************************************/
+
   // 表格数据形式
   type RuleList = {
     data?: any; // 就是后面的各种数据 SpuListItem[] | SkuListItem[] | Brand[] | Album[] | Category[]

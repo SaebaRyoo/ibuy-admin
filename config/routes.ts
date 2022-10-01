@@ -8,6 +8,7 @@ export default [
     ],
   },
   { path: '/welcome', name: '欢迎', icon: 'smile', component: './Chart' },
+  // 商品管理路由
   {
     path: '/goods',
     icon: 'crown',
@@ -45,7 +46,7 @@ export default [
       { component: './404' },
     ],
   },
-
+  // 订单管理路由
   {
     path: '/order',
     icon: 'crown',
@@ -56,6 +57,32 @@ export default [
         name: '订单列表',
         icon: 'smile',
         component: './Order/OrderList',
+      },
+    ],
+  },
+  // 系统管理路由
+  {
+    path: '/system',
+    icon: 'crown',
+    name: '系统管理',
+    routes: [
+      {
+        path: '/system/menu',
+        name: '菜单列表',
+        icon: 'smile',
+        component: './System/Menu',
+      },
+      {
+        path: '/system/role',
+        name: '角色列表',
+        icon: 'smile',
+        component: './System/Role',
+      },
+      {
+        path: '/system/sysuser',
+        name: '系统用户列表',
+        icon: 'smile',
+        component: './System/SysUser',
       },
     ],
   },
