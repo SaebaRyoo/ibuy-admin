@@ -29,10 +29,10 @@ const handleRemove = async (selectedRows: API.Order[]) => {
   }
 };
 
-const Goods: React.FC = () => {
+const Order: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const [selectedRowsState, setSelectedRows] = useState<API.Order[]>([]);
-  const [openParams, setOpenParams] = useState<ModalProps>({ open: false, params: null });
+  const [openParams, setOpenParams] = useState<ModalProps>({ open: false, params: {} });
 
   const btnToggle = (order_status?: string, pay_status?: string, shipping_status?: string) => {
     // 订单未完成，未支付 || 订单未完成，已支付
@@ -140,7 +140,7 @@ const Goods: React.FC = () => {
   const onClose = () => {
     setOpenParams({
       open: false,
-      params: null,
+      params: {},
     });
   };
 
@@ -191,4 +191,4 @@ const Goods: React.FC = () => {
   );
 };
 
-export default Goods;
+export default Order;

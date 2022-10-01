@@ -34,11 +34,7 @@ declare type CustomModalProps = {
   handleCancel: () => void;
 };
 
-declare type OpenPara = {
-  [key: string]: any;
-};
-
 declare type ModalProps = {
   open: boolean;
-  params: OpenPara | null;
+  [key: string]: any;
 };
