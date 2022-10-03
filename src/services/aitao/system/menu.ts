@@ -13,11 +13,11 @@ export async function menuList(
   },
   options?: { [key: string]: any },
 ) {
-  return request<API.RuleList>('/api/menu', {
-    method: 'GET',
-    params: {
-      ...params,
-    },
+  return request<API.RuleList>(`/api/menu/search/${params.current}/${params.pageSize}`, {
+    method: 'POST',
+    // params: {
+    //   ...params,
+    // },
     ...(options || {}),
   });
 }

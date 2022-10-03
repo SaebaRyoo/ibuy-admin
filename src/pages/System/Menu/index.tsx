@@ -34,19 +34,42 @@ export type OpenMenu_Tm = {
 // type TreeItem = {
 //   title: string;
 //   key: string;
-//   children?: TreeItem;
+//   children?: TreeItem | [];
 // };
-// const createTreeData = (arr: any[]): TreeItem[] => {
-//   const result: TreeItem[] = [];
-//   const loop = (data: any[]) => {
-//     data.forEach((item) => {
-//       if (item.parent_id === '0') {
-//       }
-//     });
-//   };
-//   loop(arr);
+// const levelOne = [];
+// const otherLevels = [];
+// const categoryLevels = (data: any[]) => {
+//   data.forEach((item) => {
+//     if (item.parent_id === '0') {
+//       levelOne.push(item);
+//     } else {
+//       otherLevels.push(item);
+//     }
+//   });
+// };
+// // categoryLevels()
+// const createTreeData = (data: any[]): TreeItem[] => {
+//   const result: TreeItem[] = []
+//   data.forEach((item) => {
+//     if (item.parent_id === '0') {
+//       result.push({
+//         title: "",
+//         key: "",
+//         children: []
+//       });
+//     }
+//   });
+
+//   data.forEach((item) => {
+//     if (item.parent_id.splite("-").length === 1) {
+//       const index = result.findIndex((d) => d.key ===item.parent_id);
+//       result[index].children.push({
+
+//       })
+//     }
+//   });
 //   return result;
-// };
+// }
 
 const Menu: React.FC = () => {
   const actionRef = useRef<ActionType>();
@@ -118,7 +141,21 @@ const Menu: React.FC = () => {
         search={{
           labelWidth: 120,
         }}
-        request={menuList}
+        request={async (params: { pageSize?: number; current?: number }) => {
+          const result = await menuList({
+            current: params.current,
+            pageSize: params.pageSize,
+          });
+          const { list, total } = result.data;
+          return {
+            data: list,
+            // success 请返回 true，
+            // 不然 table 会停止解析数据，即使有数据
+            success: true,
+            // 不传会使用 data 的长度，如果是分页一定要传
+            total: total,
+          };
+        }}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => {
