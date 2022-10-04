@@ -8,7 +8,7 @@
  */
 export default {
   dev: {
-    // localhost:8000/api/** -> https://preview.pro.ant.design/api/**
+    // localhost:8000/api/** -> http://127.0.0.1:8002/**
     '/api/': {
       // 要代理的地址
       target: 'http://127.0.0.1:8002',
