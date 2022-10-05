@@ -29,3 +29,37 @@ export async function menuList(options?: { [key: string]: any }) {
     ...(options || {}),
   });
 }
+
+// 添加菜单
+export async function addMenu(params: API.Menu_T, options?: { [key: string]: any }) {
+  return request<API.RuleList>(`/api/menu`, {
+    method: 'POST',
+    data: params,
+    ...(options || {}),
+  });
+}
+
+// 根据id查询数据
+export async function findMenu(params: { id: string }, options?: { [key: string]: any }) {
+  return request<API.RuleList>(`/api/menu/${params.id}`, {
+    method: 'GET',
+    ...(options || {}),
+  });
+}
+
+// 更新菜单
+export async function editMenu(params: API.Menu_T, options?: { [key: string]: any }) {
+  return request<API.RuleList>(`/api/menu/${params.id}`, {
+    method: 'PUT',
+    data: params,
+    ...(options || {}),
+  });
+}
+
+// 根据id删除数据
+export async function delMenu(params: { id: string }, options?: { [key: string]: any }) {
+  return request<API.RuleList>(`/api/menu/${params.id}`, {
+    method: 'DELETE',
+    ...(options || {}),
+  });
+}

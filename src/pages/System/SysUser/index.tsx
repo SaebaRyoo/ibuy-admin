@@ -69,7 +69,7 @@ const Menu: React.FC = () => {
         <a
           key="add"
           onClick={() => {
-            setOpenPrams({ open: true, openType: 'update' });
+            setOpenPrams({ open: true, openType: 'edit' });
           }}
         >
           编辑

@@ -2,10 +2,10 @@ import { Modal, Form, Input, Button, Select } from 'antd';
 import React from 'react';
 
 const Add = 'add';
-const Update = 'update';
+const Edit = 'edit';
 const TitleMap = {
   [Add]: '添加角色',
-  [Update]: '编辑角色',
+  [Edit]: '编辑角色',
 };
 
 type UpdateModalProps = {

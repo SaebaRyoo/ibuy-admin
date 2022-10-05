@@ -3,10 +3,10 @@ import React from 'react';
 import { OpenParam } from './index';
 
 const Add = 'add';
-const Update = 'update';
+const Edit = 'edit';
 const TitleMap = {
   [Add]: '添加模板',
-  [Update]: '编辑模板',
+  [Edit]: '编辑模板',
 };
 
 type UpdateModalProps = {

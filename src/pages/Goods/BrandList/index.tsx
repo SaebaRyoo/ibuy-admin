@@ -70,7 +70,7 @@ const Goods: React.FC = () => {
         <a
           key="config"
           onClick={() => {
-            setOpenParam({ open: true, openType: 'update' });
+            setOpenParam({ open: true, openType: 'edit' });
           }}
         >
           编辑
