@@ -1,26 +1,46 @@
 import { Modal, Form, Input, Button, Select } from 'antd';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 const Add = 'add';
-const Update = 'update';
+const Edit = 'edit';
 const TitleMap = {
-  [Add]: '添加参数',
-  [Update]: '编辑参数',
+  [Add]: '添加菜单',
+  [Edit]: '编辑编辑',
 };
 
 type UpdateModalProps = {
   openParms: ModalProps;
-  handleConfirm: (values: any) => void;
+  handleConfirm: (openType: string, values: any) => void;
   handleCancel: () => void;
 };
 
 const UpdateModal: React.FC<UpdateModalProps> = ({ openParms, handleConfirm, handleCancel }) => {
   const [form] = Form.useForm();
-  const { open, openType } = openParms;
+  const { open, openType, nodeData = {} } = openParms;
+
+  useEffect(() => {
+    const { id, title, icon, url } = nodeData;
+    if (openType === Edit) {
+      form.setFieldsValue({
+        id: id,
+        name: title,
+        icon: icon,
+        url: url,
+      });
+    }
+
+    return function cleanUp() {
+      form.resetFields();
+    };
+  }, [open]);
+
   const onFinish = () => {
     form.validateFields().then((values) => {
-      handleConfirm(values);
-      console.log('Success:', values);
+      if (openType === Add) {
+        values.parentId = nodeData.id;
+      }
+      // values.id = nodeData.id + '-' + values.id;
+      handleConfirm(openType, values);
     });
   };
 
@@ -44,8 +64,13 @@ const UpdateModal: React.FC<UpdateModalProps> = ({ openParms, handleConfirm, han
         wrapperCol={{ span: 12 }}
         scrollToFirstError
       >
-        <Form.Item label="菜单ID" name="id" rules={[{ required: true, message: '请填写菜单ID' }]}>
-          <Input />
+        <Form.Item
+          // extra="在添加菜单时，你写的id只需要填‘1’， ‘2’， ‘3’或者其他的合法字符,程序会自动加上父节点前缀，比如选中在2-1节点下创建子节点，那么最终创建的节点id为2-1-1"
+          label="菜单ID"
+          name="id"
+          rules={[{ required: true, message: '请填写菜单ID' }]}
+        >
+          <Input disabled={openType === Edit} />
         </Form.Item>
         <Form.Item
           label="菜单名称"
@@ -63,7 +88,7 @@ const UpdateModal: React.FC<UpdateModalProps> = ({ openParms, handleConfirm, han
             ]}
           />
         </Form.Item>
-        <Form.Item label="父节点" name="url">
+        <Form.Item label="url" name="url">
           <Input />
         </Form.Item>
       </Form>

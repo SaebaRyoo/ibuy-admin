@@ -3,10 +3,10 @@ import { Modal, Form, Input, Button, Upload } from 'antd';
 import React from 'react';
 
 const Add = 'add';
-const Update = 'update';
+const Edit = 'edit';
 const TitleMap = {
   [Add]: '新建相册',
-  [Update]: '编辑相册',
+  [Edit]: '编辑相册',
 };
 
 const UpdateModal: React.FC<CustomModalProps> = ({ openParam, handleConfirm, handleCancel }) => {

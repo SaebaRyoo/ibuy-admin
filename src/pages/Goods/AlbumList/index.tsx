@@ -3,7 +3,7 @@ import { removeAlbum, albumList } from '@/services/aitao/goods/album';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { Button, message } from 'antd';
-import UpdateModal from './AlbumOperateModal';
+import AlbumOperateModal from './AlbumOperateModal';
 import { PlusOutlined } from '@ant-design/icons';
 import { history } from 'umi';
 
@@ -82,7 +82,7 @@ const Goods: React.FC = () => {
         <a
           key="edit"
           onClick={() => {
-            setOpenParam({ open: true, openType: 'update' });
+            setOpenParam({ open: true, openType: 'edit' });
           }}
         >
           编辑
@@ -158,7 +158,7 @@ const Goods: React.FC = () => {
           </Button>
         </FooterToolbar>
       )}
-      <UpdateModal
+      <AlbumOperateModal
         openParam={openParam}
         handleConfirm={handleConfirm}
         handleCancel={handleCancel}
