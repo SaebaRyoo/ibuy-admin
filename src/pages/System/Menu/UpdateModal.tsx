@@ -16,7 +16,8 @@ type UpdateModalProps = {
 
 const UpdateModal: React.FC<UpdateModalProps> = ({ openParms, handleConfirm, handleCancel }) => {
   const [form] = Form.useForm();
-  const { open, openType } = openParms;
+  const { open, openType, nodeData } = openParms;
+
   const onFinish = () => {
     form.validateFields().then((values) => {
       handleConfirm(values);
