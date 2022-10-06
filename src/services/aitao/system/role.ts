@@ -13,11 +13,43 @@ export async function roleList(
   },
   options?: { [key: string]: any },
 ) {
-  return request<API.RuleList>('/api/role', {
+  return request<API.RuleList>(`/api/role/search/${params.current}/${params.pageSize}`, {
+    method: 'POST',
+    data: params,
+    ...(options || {}),
+  });
+}
+
+// 添加角色
+export async function addRole(params: API.Role, options?: { [key: string]: any }) {
+  return request<API.RuleList>(`/api/role`, {
+    method: 'POST',
+    data: params,
+    ...(options || {}),
+  });
+}
+
+// 根据id查询数据
+export async function findRole(params: { id: string }, options?: { [key: string]: any }) {
+  return request<API.RuleList>(`/api/role/${params.id}`, {
     method: 'GET',
-    params: {
-      ...params,
-    },
+    ...(options || {}),
+  });
+}
+
+// 更新角色
+export async function editRole(params: API.Role, options?: { [key: string]: any }) {
+  return request<API.RuleList>(`/api/role/${params.id}`, {
+    method: 'PUT',
+    data: params,
+    ...(options || {}),
+  });
+}
+
+// 根据id删除数据
+export async function delRole(params: { id: number }, options?: { [key: string]: any }) {
+  return request<API.RuleList>(`/api/role/${params.id}`, {
+    method: 'DELETE',
     ...(options || {}),
   });
 }

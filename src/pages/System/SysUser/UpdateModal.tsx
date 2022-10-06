@@ -1,5 +1,5 @@
-import { Modal, Form, Input, Button, Select } from 'antd';
-import React from 'react';
+import { Modal, Form, Input, Button } from 'antd';
+import React, { useEffect } from 'react';
 
 const Add = 'add';
 const Edit = 'edit';
@@ -10,19 +10,32 @@ const TitleMap = {
 
 type UpdateModalProps = {
   openParms: ModalProps;
-  handleConfirm: (values: any) => void;
+  handleConfirm: (values: any, openType: string) => void;
   handleCancel: () => void;
 };
 
 const UpdateModal: React.FC<UpdateModalProps> = ({ openParms, handleConfirm, handleCancel }) => {
   const [form] = Form.useForm();
-  const { open, openType } = openParms;
+  const { open, openType, record = {} } = openParms;
   const onFinish = () => {
     form.validateFields().then((values) => {
-      handleConfirm(values);
-      console.log('Success:', values);
+      values.id = record.id;
+      handleConfirm(values, openType);
     });
   };
+  useEffect(() => {
+    const { username, password } = record;
+    if (openType === Edit) {
+      form.setFieldsValue({
+        username,
+        password,
+      });
+    }
+
+    return function cleanUp() {
+      form.resetFields();
+    };
+  }, [open]);
 
   return (
     <Modal
@@ -46,10 +59,17 @@ const UpdateModal: React.FC<UpdateModalProps> = ({ openParms, handleConfirm, han
       >
         <Form.Item
           label="用户名称"
-          name="name"
+          name="username"
           rules={[{ required: true, message: '请填写用户名称' }]}
         >
           <Input />
+        </Form.Item>
+        <Form.Item
+          label="用户密码"
+          name="password"
+          rules={[{ required: true, message: '请填写用户密码' }]}
+        >
+          <Input.Password />
         </Form.Item>
       </Form>
     </Modal>

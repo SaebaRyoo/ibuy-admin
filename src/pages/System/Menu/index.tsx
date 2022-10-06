@@ -6,11 +6,12 @@ import UpdateModal from './UpdateModal';
 import styles from './index.less';
 import { DataNode } from 'antd/lib/tree';
 import { useRequest } from '@/utils/hooks/useRequest';
+import { handleModalOperation } from '@/utils/common/handleModalOperation';
 
 const Add = 'add';
 const Edit = 'edit';
 // 生成Tree组件的数据结构
-const createTreeData = (data: any[]): DataNode[] => {
+const createTreeData = (data: any[] = []): DataNode[] => {
   const result: DataNode[] = [];
   // 通过分割id的长度，判断当前的menu处于什么层级
   let maxLen = 1;
@@ -20,7 +21,7 @@ const createTreeData = (data: any[]): DataNode[] => {
       maxLen = item.id.split('-').length;
     }
   });
-  const loop = (data: any, maxLen: number) => {
+  const loop = (data: any = [], maxLen: number) => {
     const cData = [...data];
     if (maxLen === 1) {
       cData?.forEach((item: any) => {
@@ -61,6 +62,7 @@ const Menu: React.FC = () => {
   const [checkedKeys, setCheckedKeys] = useState<React.Key[]>([]);
   const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
   const [modal, contextHolder] = Modal.useModal();
+  const [changeCount, setChangeCount] = useState<number>(0);
 
   const { data, loading } = useRequest<DataNode[]>(async () => {
     const { data } = await menuList();
@@ -70,7 +72,7 @@ const Menu: React.FC = () => {
       setExpandedKeys(keys);
     }, 100);
     return treeData;
-  }, []);
+  }, [changeCount]);
 
   const onExpand = (expandedKeysValue: React.Key[]) => {
     // if not set autoExpandParent to false, if children expanded, parent can not collapse.
@@ -89,18 +91,9 @@ const Menu: React.FC = () => {
       openType: '',
     });
 
-    if (openType === Add) {
-      const { success } = await addMenu(values);
-      if (success) {
-        message.success('添加成功');
-      }
-    } else {
-      const { success } = await editMenu(values);
-      if (success) {
-        message.success('编辑成功');
-      }
-    }
-    console.log(values);
+    const request =
+      openType === Add ? async () => await addMenu(values) : async () => await editMenu(values);
+    handleModalOperation(request, () => setChangeCount((prev) => prev + 1));
   };
 
   const handleCancel = () => {
@@ -127,6 +120,7 @@ const Menu: React.FC = () => {
                 title: '批量删除菜单',
                 content: '是否要删除选中的菜单',
                 onOk: () => {
+                  setChangeCount((prev) => prev + 1);
                   console.log('checked----->', checkedKeys);
                 },
               });
@@ -172,11 +166,10 @@ const Menu: React.FC = () => {
                       title: '删除节点',
                       content: '是否要删除节点',
                       onOk: async () => {
-                        const { success } = await delMenu({ id: nodeData.id });
-                        if (success) {
-                          return message.success('删除成功');
-                        }
-                        message.error('删除失败');
+                        handleModalOperation(
+                          async () => await delMenu({ id: nodeData.id }),
+                          () => setChangeCount((prev) => prev + 1),
+                        );
                       },
                     });
                   }}
