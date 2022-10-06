@@ -8,5 +8,6 @@ module.exports = {
     '@typescript-eslint/no-use-before-define': 'off', // 已定义，未使用变量warn
     'prefer-const': 'warn',
     '@typescript-eslint/no-shadow': 'warn',
+    '@typescript-eslint/no-unused-expressions': 'warn',
   },
 };

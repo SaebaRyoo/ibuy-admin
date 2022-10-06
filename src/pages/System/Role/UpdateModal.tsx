@@ -1,5 +1,5 @@
-import { Modal, Form, Input, Button, Select } from 'antd';
-import React from 'react';
+import { Modal, Form, Input, Button } from 'antd';
+import React, { useEffect } from 'react';
 
 const Add = 'add';
 const Edit = 'edit';
@@ -10,20 +10,31 @@ const TitleMap = {
 
 type UpdateModalProps = {
   openParms: ModalProps;
-  handleConfirm: (values: any) => void;
+  handleConfirm: (values: any, openType: string) => void;
   handleCancel: () => void;
 };
 
 const UpdateModal: React.FC<UpdateModalProps> = ({ openParms, handleConfirm, handleCancel }) => {
   const [form] = Form.useForm();
-  const { open, openType } = openParms;
+  const { open, openType, record = {} } = openParms;
   const onFinish = () => {
     form.validateFields().then((values) => {
-      handleConfirm(values);
-      console.log('Success:', values);
+      values.id = record.id;
+      handleConfirm(values, openType);
     });
   };
+  useEffect(() => {
+    const { name } = record;
+    if (openType === Edit) {
+      form.setFieldsValue({
+        name: name,
+      });
+    }
 
+    return function cleanUp() {
+      form.resetFields();
+    };
+  }, [open]);
   return (
     <Modal
       title={TitleMap[openType]}
