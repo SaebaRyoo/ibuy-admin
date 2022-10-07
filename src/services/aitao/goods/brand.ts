@@ -13,34 +13,42 @@ export async function brandList(
   },
   options?: { [key: string]: any },
 ) {
-  return request<API.RuleList>('/api/brand', {
-    method: 'GET',
-    params: {
-      ...params,
-    },
-    ...(options || {}),
-  });
-}
-
-/** 新增brand PUT /api/brand */
-export async function updateBrand(options?: { [key: string]: any }) {
-  return request<API.Brand>('/api/brand', {
-    method: 'PUT',
-    ...(options || {}),
-  });
-}
-
-/** 新增brand POST /api/brand */
-export async function addBrand(options?: { [key: string]: any }) {
-  return request<API.Brand>('/api/brand', {
+  return request<API.RuleList>(`/api/brand/search/${params.current}/${params.pageSize}`, {
     method: 'POST',
+    data: params,
     ...(options || {}),
   });
 }
 
-/** 删除brand DELETE /api/brand */
-export async function removeBrand(options?: { [key: string]: any }) {
-  return request<Record<string, any>>('/api/brand', {
+// 添加角色
+export async function addBrand(params: API.Brand, options?: { [key: string]: any }) {
+  return request<API.RuleList>(`/api/brand`, {
+    method: 'POST',
+    data: params,
+    ...(options || {}),
+  });
+}
+
+// 根据id查询数据
+export async function findBrand(params: { id: string }, options?: { [key: string]: any }) {
+  return request<API.RuleList>(`/api/brand/${params.id}`, {
+    method: 'GET',
+    ...(options || {}),
+  });
+}
+
+// 更新角色
+export async function editBrand(params: API.Brand, options?: { [key: string]: any }) {
+  return request<API.RuleList>(`/api/brand/${params.id}`, {
+    method: 'PATCH',
+    data: params,
+    ...(options || {}),
+  });
+}
+
+// 根据id删除数据
+export async function delBrand(params: { id: number }, options?: { [key: string]: any }) {
+  return request<API.RuleList>(`/api/brand/${params.id}`, {
     method: 'DELETE',
     ...(options || {}),
   });

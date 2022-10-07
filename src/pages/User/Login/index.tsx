@@ -1,5 +1,5 @@
 import Footer from '@/components/Footer';
-import { login } from '@/services/aitao/login';
+import { login } from '@/services/aitao/login/login';
 import {
   AlipayCircleOutlined,
   LockOutlined,

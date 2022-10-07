@@ -47,5 +47,5 @@ function getRule(req: Request, res: Response, u: string) {
 }
 
 export default {
-  'GET /api/role': getRule,
+  'GET /api/mock/role': getRule,
 };

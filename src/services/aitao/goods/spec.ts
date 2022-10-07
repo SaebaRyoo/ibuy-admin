@@ -2,7 +2,7 @@
 /* eslint-disable */
 import { request } from '@umijs/max';
 
-/** 获取spec列表 GET /api/spec */
+/** 获取spec列表 GET /api/mock/spec */
 export async function specList(
   params: {
     // query
@@ -13,7 +13,7 @@ export async function specList(
   },
   options?: { [id: string]: any },
 ) {
-  return request<API.RuleList>('/api/spec', {
+  return request<API.RuleList>('/api/mock/spec', {
     method: 'GET',
     params: {
       ...params,
@@ -22,25 +22,25 @@ export async function specList(
   });
 }
 
-/** 新增spec PUT /api/spec */
+/** 新增spec PUT /api/mock/spec */
 export async function updateSpec(options?: { [id: string]: any }) {
-  return request<API.Spec>('/api/spec', {
+  return request<API.Spec>('/api/mock/spec', {
     method: 'PUT',
     ...(options || {}),
   });
 }
 
-/** 新增spec POST /api/spec */
+/** 新增spec POST /api/mock/spec */
 export async function addSpec(options?: { [id: string]: any }) {
-  return request<API.Spec>('/api/spec', {
+  return request<API.Spec>('/api/mock/spec', {
     method: 'POST',
     ...(options || {}),
   });
 }
 
-/** 删除spec DELETE /api/spec */
+/** 删除spec DELETE /api/mock/spec */
 export async function removeSpec(options?: { [id: string]: any }) {
-  return request<Record<string, any>>('/api/spec', {
+  return request<Record<string, any>>('/api/mock/spec', {
     method: 'DELETE',
     ...(options || {}),
   });

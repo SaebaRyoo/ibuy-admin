@@ -2,7 +2,7 @@
 /* eslint-disable */
 import { request } from '@umijs/max';
 
-/** 获取album列表 GET /api/album */
+/** 获取album列表 GET /api/mock/album */
 export async function albumList(
   params: {
     // query
@@ -13,7 +13,7 @@ export async function albumList(
   },
   options?: { [key: string]: any },
 ) {
-  return request<API.RuleList>('/api/album', {
+  return request<API.RuleList>('/api/mock/album', {
     method: 'GET',
     params: {
       ...params,
@@ -22,25 +22,25 @@ export async function albumList(
   });
 }
 
-/** 新增album PUT /api/album */
+/** 新增album PUT /api/mock/album */
 export async function updateAlbum(options?: { [key: string]: any }) {
-  return request<API.Album>('/api/album', {
+  return request<API.Album>('/api/mock/album', {
     method: 'PUT',
     ...(options || {}),
   });
 }
 
-/** 新增album POST /api/album */
+/** 新增album POST /api/mock/album */
 export async function addAlbum(options?: { [key: string]: any }) {
-  return request<API.Album>('/api/album', {
+  return request<API.Album>('/api/mock/album', {
     method: 'POST',
     ...(options || {}),
   });
 }
 
-/** 删除album DELETE /api/album */
+/** 删除album DELETE /api/mock/album */
 export async function removeAlbum(options?: { [key: string]: any }) {
-  return request<Record<string, any>>('/api/album', {
+  return request<Record<string, any>>('/api/mock/album', {
     method: 'DELETE',
     ...(options || {}),
   });

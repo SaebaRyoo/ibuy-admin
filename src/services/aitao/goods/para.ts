@@ -2,7 +2,7 @@
 /* eslint-disable */
 import { request } from '@umijs/max';
 
-/** 获取para列表 GET /api/para */
+/** 获取para列表 GET /api/mock/para */
 export async function paraList(
   params: {
     // query
@@ -13,7 +13,7 @@ export async function paraList(
   },
   options?: { [id: string]: any },
 ) {
-  return request<API.RuleList>('/api/para', {
+  return request<API.RuleList>('/api/mock/para', {
     method: 'GET',
     params: {
       ...params,
@@ -22,25 +22,25 @@ export async function paraList(
   });
 }
 
-/** 新增para PUT /api/para */
+/** 新增para PUT /api/mock/para */
 export async function updatePara(options?: { [id: string]: any }) {
-  return request<API.Para>('/api/para', {
+  return request<API.Para>('/api/mock/para', {
     method: 'PUT',
     ...(options || {}),
   });
 }
 
-/** 新增para POST /api/para */
+/** 新增para POST /api/mock/para */
 export async function addPara(options?: { [id: string]: any }) {
-  return request<API.Para>('/api/para', {
+  return request<API.Para>('/api/mock/para', {
     method: 'POST',
     ...(options || {}),
   });
 }
 
-/** 删除para DELETE /api/para */
+/** 删除para DELETE /api/mock/para */
 export async function removePara(options?: { [id: string]: any }) {
-  return request<Record<string, any>>('/api/para', {
+  return request<Record<string, any>>('/api/mock/para', {
     method: 'DELETE',
     ...(options || {}),
   });

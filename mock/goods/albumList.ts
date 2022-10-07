@@ -149,6 +149,6 @@ function postRule(req: Request, res: Response, u: string, b: Request) {
 }
 
 export default {
-  'GET /api/album': getRule,
-  'POST /api/album': postRule,
+  'GET /api/mock/album': getRule,
+  'POST /api/mock/album': postRule,
 };

@@ -1,8 +1,8 @@
-import { PlusOutlined } from '@ant-design/icons';
-import { Modal, Form, Input, Button, Upload } from 'antd';
-import React from 'react';
-import { OpenParam } from './index';
-
+import { CloudUploadOutlined, LoadingOutlined } from '@ant-design/icons';
+import { Modal, Form, Input, Button, Upload, message } from 'antd';
+import { findBrand } from '@/services/aitao/goods/brand';
+import React, { useEffect, useState } from 'react';
+import { RcFile, UploadChangeParam, UploadFile, UploadProps } from 'antd/lib/upload';
 const Add = 'add';
 const Edit = 'edit';
 const TitleMap = {
@@ -11,28 +11,97 @@ const TitleMap = {
 };
 
 type UpdateModalProps = {
-  openParam: OpenParam;
-  handleConfirm: (value: any) => void;
+  openParam: ModalProps;
+  handleConfirm: (values: any, openType: string) => void;
   handleCancel: () => void;
+};
+
+const beforeUpload = (file: RcFile) => {
+  const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+  if (!isJpgOrPng) {
+    message.error('只能上传JPG/PNG文件!');
+  }
+  const isLt50KB = file.size / 1024 < 50;
+  if (!isLt50KB) {
+    message.error('图片不能大于50kb!');
+  }
+  return isJpgOrPng && isLt50KB;
 };
 
 const UpdateModal: React.FC<UpdateModalProps> = ({ openParam, handleConfirm, handleCancel }) => {
   const [form] = Form.useForm();
-  const { open, openType } = openParam;
+  const [loading, setLoading] = useState(false);
+  const [imageUrl, setImageUrl] = useState<string>();
+
+  const { open, openType, record = {} } = openParam;
+  const { id } = record;
+  const fetchBrand = async () => {
+    const { data = {} } = await findBrand({ id });
+    const { name, letter, image } = data;
+    // console.log('data---->', data);
+
+    const file = {
+      url: image,
+    };
+    form.setFieldsValue({
+      name,
+      letter,
+      image: [file],
+    });
+    setImageUrl(image);
+  };
+
+  useEffect(() => {
+    if (openType === Edit) {
+      fetchBrand();
+    }
+    return function cleanUp() {
+      setImageUrl('');
+      setLoading(false);
+      form.resetFields();
+    };
+  }, [open]);
+
+  const handleChange: UploadProps['onChange'] = (info: UploadChangeParam<UploadFile>) => {
+    console.log('info---->', info);
+    if (info.file.status === 'uploading') {
+      setLoading(true);
+      return;
+    }
+    if (info.file.status === 'error') {
+      message.error('上传失败');
+      return;
+    }
+    if (info.file.status === 'done') {
+      message.success('上传成功');
+      // get the real url from server
+      setImageUrl(info.file.response.data);
+    }
+  };
+
   const onFinish = () => {
     form.validateFields().then((values) => {
-      handleConfirm(values);
-      console.log('Success:', values);
+      values.image = imageUrl;
+      values.id = id;
+      handleConfirm(values, openType);
     });
   };
 
+  // 不加会报错 Uncaught TypeError: (fileList || []).forEach is not a function
   const normFile = (e: any) => {
-    console.log('Upload event:', e);
     if (Array.isArray(e)) {
       return e;
     }
     return e?.fileList;
   };
+
+  const uploadButton = (
+    <div>
+      {loading ? <LoadingOutlined /> : <CloudUploadOutlined />}
+      <div style={{ marginTop: 8 }}>上传图片</div>
+    </div>
+  );
+
   return (
     <Modal
       title={TitleMap[openType]}
@@ -71,11 +140,18 @@ const UpdateModal: React.FC<UpdateModalProps> = ({ openParam, handleConfirm, han
           rules={[{ required: true, message: '请上传品牌logo' }]}
           extra="只能上传jpg/png格式文件，文件不能超过50kb"
         >
-          <Upload action="/upload.do" listType="picture-card">
-            <div>
-              <PlusOutlined />
-              <div style={{ marginTop: 8 }}>Upload</div>
-            </div>
+          <Upload
+            name="file"
+            listType="picture-card"
+            showUploadList={false}
+            action="/api/file/upload"
+            headers={{
+              satoken: localStorage.getItem('satoken') || '',
+            }}
+            beforeUpload={beforeUpload}
+            onChange={handleChange}
+          >
+            {imageUrl ? <img src={imageUrl} alt="logo" style={{ width: '100%' }} /> : uploadButton}
           </Upload>
         </Form.Item>
       </Form>

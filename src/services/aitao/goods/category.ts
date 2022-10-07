@@ -2,7 +2,7 @@
 /* eslint-disable */
 import { request } from '@umijs/max';
 
-/** 获取category列表 GET /api/category/1 */
+/** 获取category列表 GET /api/mock/category/1 */
 export async function categoryList(
   params: {
     // query
@@ -13,7 +13,7 @@ export async function categoryList(
   },
   options?: { [id: string]: any },
 ) {
-  return request<API.RuleList>('/api/category/1', {
+  return request<API.RuleList>('/api/mock/category/1', {
     method: 'GET',
     params: {
       ...params,
@@ -22,25 +22,25 @@ export async function categoryList(
   });
 }
 
-/** 新增category PUT /api/category/1 */
+/** 新增category PUT /api/mock/category/1 */
 export async function updateCategory(options?: { [id: string]: any }) {
-  return request<API.Category>('/api/category/1', {
+  return request<API.Category>('/api/mock/category/1', {
     method: 'PUT',
     ...(options || {}),
   });
 }
 
-/** 新增category POST /api/category/1 */
+/** 新增category POST /api/mock/category/1 */
 export async function addCategory(options?: { [id: string]: any }) {
-  return request<API.Category>('/api/category/1', {
+  return request<API.Category>('/api/mock/category/1', {
     method: 'POST',
     ...(options || {}),
   });
 }
 
-/** 删除category DELETE /api/category/1 */
+/** 删除category DELETE /api/mock/category/1 */
 export async function removeCategory(options?: { [id: string]: any }) {
-  return request<Record<string, any>>('/api/category/1', {
+  return request<Record<string, any>>('/api/mock/category/1', {
     method: 'DELETE',
     ...(options || {}),
   });
