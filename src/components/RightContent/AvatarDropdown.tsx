@@ -1,4 +1,4 @@
-import { outLogin } from '@/services/aitao/login';
+import { outLogin } from '@/services/aitao/login/login';
 import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
 import { history, useModel } from '@umijs/max';
 import { Avatar, Menu, Spin } from 'antd';

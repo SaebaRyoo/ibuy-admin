@@ -2,7 +2,7 @@
 /* eslint-disable */
 import { request } from '@umijs/max';
 
-/** 获取template列表 GET /api/template */
+/** 获取template列表 GET /api/mock/template */
 export async function templateList(
   params: {
     // query
@@ -13,7 +13,7 @@ export async function templateList(
   },
   options?: { [id: string]: any },
 ) {
-  return request<API.RuleList>('/api/template', {
+  return request<API.RuleList>('/api/mock/template', {
     method: 'GET',
     params: {
       ...params,
@@ -22,25 +22,25 @@ export async function templateList(
   });
 }
 
-/** 新增template PUT /api/template */
+/** 新增template PUT /api/mock/template */
 export async function updateTemplate(options?: { [id: string]: any }) {
-  return request<API.Template>('/api/template', {
+  return request<API.Template>('/api/mock/template', {
     method: 'PUT',
     ...(options || {}),
   });
 }
 
-/** 新增template POST /api/template */
+/** 新增template POST /api/mock/template */
 export async function addTemplate(options?: { [id: string]: any }) {
-  return request<API.Template>('/api/template', {
+  return request<API.Template>('/api/mock/template', {
     method: 'POST',
     ...(options || {}),
   });
 }
 
-/** 删除template DELETE /api/template */
+/** 删除template DELETE /api/mock/template */
 export async function removeTemplate(options?: { [id: string]: any }) {
-  return request<Record<string, any>>('/api/template', {
+  return request<Record<string, any>>('/api/mock/template', {
     method: 'DELETE',
     ...(options || {}),
   });

@@ -199,6 +199,6 @@ function postRule(req: Request, res: Response, u: string, b: Request) {
 }
 
 export default {
-  'GET /api/order': getRule,
-  'POST /api/order': postRule,
+  'GET /api/mock/order': getRule,
+  'POST /api/mock/order': postRule,
 };

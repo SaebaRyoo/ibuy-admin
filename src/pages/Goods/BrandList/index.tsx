@@ -1,11 +1,14 @@
 import React, { useRef, useState } from 'react';
-import { removeBrand, brandList } from '@/services/aitao/goods/brand';
+import { brandList, addBrand, editBrand, delBrand } from '@/services/aitao/goods/brand';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
-import { Button, message } from 'antd';
+import { Button, message, Modal } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import UpdateModal from './UpdateModal';
+import { handleModalOperation } from '@/utils/common/handleModalOperation';
 
+const Add = 'add';
+const Edit = 'edit';
 /**
  *  Delete node
  * @zh-CN 删除节点
@@ -16,9 +19,6 @@ const handleRemove = async (selectedRows: API.Brand[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
-    await removeBrand({
-      key: selectedRows.map((row) => row.id),
-    });
     hide();
     message.success('Deleted successfully and will refresh soon');
     return true;
@@ -29,15 +29,11 @@ const handleRemove = async (selectedRows: API.Brand[]) => {
   }
 };
 
-export type OpenParam = {
-  open: boolean;
-  openType: string;
-};
-
 const Goods: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const [selectedRowsState, setSelectedRows] = useState<API.Brand[]>([]);
-  const [openParam, setOpenParam] = useState<OpenParam>({ open: false, openType: '' });
+  const [openParam, setOpenParam] = useState<ModalProps>({ open: false, openType: '' });
+  const [modal, contextHolder] = Modal.useModal();
 
   const columns: ProColumns<API.Brand>[] = [
     {
@@ -57,6 +53,9 @@ const Goods: React.FC = () => {
     {
       title: '品牌图片',
       dataIndex: 'image',
+      render: (_, record) => {
+        return <img style={{ maxHeight: 40 }} src={record.image} />;
+      },
     },
     {
       title: '相关',
@@ -66,26 +65,45 @@ const Goods: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      render: () => [
+      render: (_, record) => [
         <a
-          key="config"
+          key="edit"
           onClick={() => {
-            setOpenParam({ open: true, openType: 'edit' });
+            setOpenParam({ open: true, openType: Edit, record });
           }}
         >
           编辑
         </a>,
-        <a key="delete">删除</a>,
+        <a
+          onClick={(e) => {
+            e.stopPropagation();
+            modal.confirm({
+              title: '删除节点',
+              content: '是否要删除节点',
+              onOk: async () => {
+                handleModalOperation(
+                  async () => await delBrand({ id: record.id }),
+                  () => actionRef.current?.reset && actionRef.current.reset(),
+                );
+              },
+            });
+          }}
+          key="del"
+        >
+          删除
+        </a>,
       ],
     },
   ];
 
-  const handleConfirm = (value: any) => {
+  const handleConfirm = (values: any, openType: string) => {
     setOpenParam({
       open: false,
       openType: '',
     });
-    console.log(value);
+    const request =
+      openType === Add ? async () => await addBrand(values) : async () => await editBrand(values);
+    handleModalOperation(request, () => actionRef.current?.reset && actionRef.current.reset());
   };
 
   const handleCancel = () => {
@@ -103,7 +121,17 @@ const Goods: React.FC = () => {
         search={{
           labelWidth: 120,
         }}
-        request={brandList}
+        request={async (params, sort, filter) => {
+          const { data } = await brandList(params);
+          return {
+            data: data.list || [],
+            // success 请返回 true，
+            // 不然 table 会停止解析数据，即使有数据
+            success: true,
+            // 不传会使用 data 的长度，如果是分页一定要传
+            total: data.total,
+          };
+        }}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => {
@@ -115,7 +143,7 @@ const Goods: React.FC = () => {
             onClick={() => {
               setOpenParam({
                 open: true,
-                openType: 'add',
+                openType: Add,
               });
             }}
             key="button"
@@ -146,6 +174,7 @@ const Goods: React.FC = () => {
           </Button>
         </FooterToolbar>
       )}
+      {contextHolder}
       <UpdateModal
         openParam={openParam}
         handleConfirm={handleConfirm}

@@ -192,6 +192,6 @@ function postRule(req: Request, res: Response, u: string, b: Request) {
 }
 
 export default {
-  'GET /api/spu': getRule,
-  'POST /api/spu': postRule,
+  'GET /api/mock/spu': getRule,
+  'POST /api/mock/spu': postRule,
 };

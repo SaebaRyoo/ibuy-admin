@@ -2,7 +2,7 @@
 /* eslint-disable */
 import { request } from '@umijs/max';
 
-/** 获取spu列表 GET /api/spu */
+/** 获取spu列表 GET /api/mock/spu */
 export async function supList(
   params: {
     // query
@@ -13,7 +13,7 @@ export async function supList(
   },
   options?: { [id: string]: any },
 ) {
-  return request<API.RuleList>('/api/spu', {
+  return request<API.RuleList>('/api/mock/spu', {
     method: 'GET',
     params: {
       ...params,
@@ -22,25 +22,25 @@ export async function supList(
   });
 }
 
-/** 新增spu PUT /api/spu */
+/** 新增spu PUT /api/mock/spu */
 export async function updateSpu(options?: { [id: string]: any }) {
-  return request<API.SpuListItem>('/api/spu', {
+  return request<API.SpuListItem>('/api/mock/spu', {
     method: 'PUT',
     ...(options || {}),
   });
 }
 
-/** 新增spu POST /api/spu */
+/** 新增spu POST /api/mock/spu */
 export async function addSpu(options?: { [id: string]: any }) {
-  return request<API.SpuListItem>('/api/spu', {
+  return request<API.SpuListItem>('/api/mock/spu', {
     method: 'POST',
     ...(options || {}),
   });
 }
 
-/** 删除spu DELETE /api/spu */
+/** 删除spu DELETE /api/mock/spu */
 export async function removeSpu(options?: { [id: string]: any }) {
-  return request<Record<string, any>>('/api/spu', {
+  return request<Record<string, any>>('/api/mock/spu', {
     method: 'DELETE',
     ...(options || {}),
   });

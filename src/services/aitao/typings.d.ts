@@ -56,7 +56,7 @@ declare namespace API {
   /*******  商品相关  *************************************************************/
 
   type SpuListItem = {
-    id?: number;
+    id: number;
     sn?: string;
     name?: string;
     caption?: string;
@@ -83,7 +83,7 @@ declare namespace API {
   };
 
   type SkuListItem = {
-    id?: number;
+    id: number;
     sn?: string;
     name?: string;
     price?: number;
@@ -111,7 +111,7 @@ declare namespace API {
 
   // 品牌
   type Brand = {
-    id?: number;
+    id: number;
     name: string;
     image?: string; // 品牌图片地址
     letter?: string; // 品牌的首字母
@@ -120,7 +120,7 @@ declare namespace API {
 
   // 图片管理
   type Album = {
-    id?: number;
+    id: number;
     title?: string; // 相册名称
     image?: string; // 相册封面
     image_items?: string; // 图片列表
@@ -129,7 +129,7 @@ declare namespace API {
 
   // 分类商品类型
   type Category = {
-    id?: number;
+    id: number;
     name?: string;
     goods_num?: number;
     is_show?: string; // 是否显示
@@ -141,7 +141,7 @@ declare namespace API {
 
   // 模板类型
   type Template = {
-    id?: number;
+    id: number;
     name?: string;
     spec_num?: number;
     para_num?: number;
@@ -149,7 +149,7 @@ declare namespace API {
 
   // 规格类型
   type Spec = {
-    id?: number;
+    id: number;
     name?: string;
     options?: string;
     seq: number;
@@ -158,7 +158,7 @@ declare namespace API {
 
   // 参数类型
   type Para = {
-    id?: number;
+    id: number;
     name?: string;
     options?: string;
     seq: number;
