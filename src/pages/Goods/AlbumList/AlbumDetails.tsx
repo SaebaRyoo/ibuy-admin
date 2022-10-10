@@ -1,125 +1,155 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import type { CheckboxChangeEvent } from 'antd/es/checkbox';
-import { Button, Checkbox } from 'antd';
+import { Button, Checkbox, message, Modal } from 'antd';
 import { history } from 'umi';
 import styles from './AlbumDetails.less';
 import { FooterToolbar } from '@ant-design/pro-components';
 import UploadModal from './UploadModal';
 import TransferModal from './TransferModal';
-const sleep = (delay: number | undefined) => new Promise((resolve) => setTimeout(resolve, delay));
+import { findALlAlbums, editAlbum } from '@/services/aitao/goods/album';
+import { uuid } from '@/utils/common/uuid';
+import { values } from 'lodash';
+
+// const sleep = (delay: number | undefined) => new Promise((resolve) => setTimeout(resolve, delay));
 
 type StateParam = {
-  images: string;
+  record: API.Album;
 };
 
 const Remove_Operate = 'remove';
 const Transfer_Operate = 'transfer';
 
+type Img = {
+  uid: string;
+  url: string;
+  status: boolean;
+};
+
 const AlbumDetails: React.FC = () => {
   const [selectedImgs, setSelectKeys] = useState<string[]>([]);
-  const [imgArr, setImgArr] = useState<string[]>([]);
-  const [openParam, setOpenParam] = useState<OpenParam>({ open: false });
-  const [transferModal, setTransferModal] = useState<OpenParam>({ open: false });
+  const [imgArr, setImgArr] = useState<Img[]>([]);
+  const [openParam, setOpenParam] = useState<ModalProps>({ open: false });
+  const [transferModal, setTransferModal] = useState<ModalProps>({ open: false });
+  const [albumList, setAlbumList] = useState<API.Album[]>([]);
+  const [id, setId] = useState<number>(-1);
+  const [modal, contextHolder] = Modal.useModal();
+
+  // console.log('albumList----->', albumList);
+  // console.log('selectedImgs----->', selectedImgs);
+  // console.log('imgArr----->', imgArr);
 
   useEffect(() => {
-    const { images } = history.location.state as StateParam;
-    // 初始化受控数据
-    const imgs = images ? images.split(',') : [];
-    setImgArr(imgs);
+    (async () => {
+      const { data = [] } = await findALlAlbums();
+      setAlbumList(data);
+    })();
   }, []);
 
-  console.log(selectedImgs);
-  const handleChecked = (img: string) => {
+  useLayoutEffect(() => {
+    const { record } = history.location.state as StateParam;
+    const { imageItems = '', id } = record;
+    // 初始化受控数据
+    const imgs: Img[] = imageItems ? JSON.parse(imageItems) : [];
+    setImgArr(imgs);
+    setId(id);
+  }, []);
+
+  const handleChecked = (uid: string) => {
     setSelectKeys((prev) => {
       const old: string[] = [...prev];
+      let flag = false;
+      old.forEach((prevId, i) => {
+        if (prevId === uid) {
+          flag = true;
+          old.splice(i, 1);
+        }
+      });
 
-      const index = old.indexOf(img);
-      if (index >= 0) {
-        // 有元素，删除
-        old.splice(index, 1);
-      } else {
-        // 没有元素，需要push进去
-        old.push(img);
+      if (!flag) {
+        old.push(uid);
       }
       return old;
     });
-  };
-
-  const handleOperation = async (operate: string, img: string) => {
-    const imgArrCopy = [...imgArr];
-    const i = imgArrCopy.indexOf(img);
-    if (i >= 0) {
-      imgArrCopy.splice(i, 1);
-    }
-
-    // 删除
-    if (operate === Remove_Operate) {
-      // 1-remove. 批量删除接口请求
-      await sleep(1000);
-      console.log('删除成功');
-    }
-
-    // 转移
-    if (operate === Remove_Operate) {
-      // 1-transfer. 批量转移接口请求
-      await sleep(1000);
-      console.log('转移成功');
-    }
-
-    setImgArr(imgArrCopy);
   };
 
   /**
    * 批量操作图片
    * @param selectedImgs
    */
-  const handleGroupOperation = async (operate: string, selectedImgs: string[]) => {
+  const handleOperation = async (
+    operate: string, // 什么操作
+    selectedImgs: string[], // 当前需要操作的图片的uid的list
+    albumName?: string, // 相册名称，只在转移相册时传入
+  ) => {
     const imgArrCopy = [...imgArr];
-    selectedImgs.forEach((img) => {
-      const i = imgArrCopy.indexOf(img);
-      if (i >= 0) {
-        imgArrCopy.splice(i, 1);
-      }
+    selectedImgs.forEach((uid) => {
+      imgArrCopy.forEach((img, i) => {
+        if (img.uid === uid) {
+          imgArrCopy.splice(i, 1);
+        }
+      });
     });
 
+    console.log('imgArrCopy----->', imgArrCopy);
     // 批量删除
     if (operate === Remove_Operate) {
       // 1-remove. 批量删除接口请求
-      await sleep(1000);
-      console.log('批量删除成功');
+      const { success } = await editAlbum({ id: id, imageItems: JSON.stringify(imgArrCopy) });
+      if (success) {
+        message.success('删除成功');
+      } else {
+        message.error('删除失败');
+      }
     }
 
-    // 批量转移
+    // TODO: 批量转移 后端功能未实现
     if (operate === Remove_Operate) {
       // 1-transfer. 批量转移接口请求
-      await sleep(1000);
-      console.log('批量转移成功');
+      // const { success } = await editAlbum({ id: id, imageItems: JSON.stringify(imgArrCopy) });
+      // if (success) {
+      //   message.success('转移成功');
+      // } else {
+      //   message.error('转移失败');
+      // }
     }
+    setSelectKeys([]);
     // 2. 如果成功后替换数组
     setImgArr(imgArrCopy);
   };
 
-  const handleConfirm = (value: any) => {
-    setOpenParam({
-      open: false,
-    });
-    console.log(value);
+  // 上传图片模态框确认方法
+  const handleConfirm = async (value: any) => {
+    const imgArrCopy = [...imgArr];
+    const uploadImage = { uid: uuid(12, 16), url: value.image, status: true };
+    imgArrCopy.push(uploadImage);
+    const { success } = await editAlbum({ id: id, imageItems: JSON.stringify(imgArrCopy) });
+    if (success) {
+      setOpenParam({
+        open: false,
+      });
+      message.success('添加成功');
+    } else {
+      message.success('添加失败');
+    }
   };
 
+  // 上传图片模态框取消方法
   const handleCancel = () => {
     setOpenParam({
       open: false,
     });
   };
 
-  const handleTransferModalConfirm = (value: any) => {
-    handleOperation(Transfer_Operate, '');
+  // 转移图片模态框确认方法
+  const handleTransferModalConfirm = (value: any, selectedUid: string[]) => {
+    handleOperation(Transfer_Operate, selectedUid, value.name);
     setTransferModal({
       open: false,
     });
-    console.log(value);
+    // console.log(value);
   };
 
+  // 转移图片模态框取消方法
   const handleTransferModalCancel = () => {
     setTransferModal({
       open: false,
@@ -141,22 +171,36 @@ const AlbumDetails: React.FC = () => {
       </div>
 
       <div className={styles.content}>
-        {imgArr.map((img: string) => (
-          <div key={img}>
+        {imgArr.map((img: Img) => (
+          <div key={img.uid}>
             <img
               alt="img"
-              src={img}
+              src={img.url}
               onError={(e: any) => {
                 e.target.src = '/icons/icon-128x128.png';
               }}
             />
             <div>
               <Checkbox
-                checked={selectedImgs.includes(img)}
-                onChange={(e: CheckboxChangeEvent) => handleChecked(img)}
+                checked={selectedImgs.includes(img.uid)}
+                onChange={(e: CheckboxChangeEvent) => handleChecked(img.uid)}
               />
-              <a onClick={() => setTransferModal({ open: true })}>转移相册</a>
-              <a>删除相片</a>
+              <a onClick={() => setTransferModal({ open: true, selectedUid: [img.uid] })}>
+                转移相册
+              </a>
+              <a
+                onClick={() => {
+                  modal.confirm({
+                    title: '删除节点',
+                    content: '是否要删除节点',
+                    onOk: async () => {
+                      handleOperation(Remove_Operate, [img.uid]);
+                    },
+                  });
+                }}
+              >
+                删除相片
+              </a>
             </div>
           </div>
         ))}
@@ -173,30 +217,30 @@ const AlbumDetails: React.FC = () => {
         >
           <Button
             onClick={async () => {
-              await handleGroupOperation(Remove_Operate, selectedImgs);
-              setSelectKeys([]);
+              setTransferModal({ open: true, selectedUid: selectedImgs });
             }}
           >
             批量转移
           </Button>
           <Button
             onClick={async () => {
-              await handleGroupOperation(Transfer_Operate, selectedImgs);
-              setSelectKeys([]);
+              await handleOperation(Transfer_Operate, selectedImgs);
             }}
           >
             批量删除
           </Button>
         </FooterToolbar>
       )}
-
+      {contextHolder}
       <UploadModal
         openParam={openParam}
+        albumList={albumList}
         handleConfirm={handleConfirm}
         handleCancel={handleCancel}
       />
       <TransferModal
         openParam={transferModal}
+        albumList={albumList}
         handleConfirm={handleTransferModalConfirm}
         handleCancel={handleTransferModalCancel}
       />

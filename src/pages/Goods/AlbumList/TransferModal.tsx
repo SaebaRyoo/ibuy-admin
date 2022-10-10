@@ -1,15 +1,31 @@
 import { Modal, Form, Button, Select } from 'antd';
-import React from 'react';
+import React, { useEffect } from 'react';
 
-const UploadModal: React.FC<CustomModalProps> = ({ openParam, handleConfirm, handleCancel }) => {
+type TransferModalProps = {
+  openParam: ModalProps;
+  albumList: API.Album[];
+  handleConfirm: (value: any, selectedUid: string[]) => void;
+  handleCancel: () => void;
+};
+const TransferModal: React.FC<TransferModalProps> = ({
+  openParam,
+  albumList,
+  handleConfirm,
+  handleCancel,
+}) => {
   const [form] = Form.useForm();
-  const { open } = openParam;
+  const { open, selectedUid = [] } = openParam;
   const onFinish = () => {
     form.validateFields().then((values) => {
-      handleConfirm(values);
-      console.log('Success:', values);
+      handleConfirm(values, selectedUid);
     });
   };
+
+  useEffect(() => {
+    return function cleanUp() {
+      form.resetFields();
+    };
+  }, [open]);
 
   return (
     <Modal
@@ -36,16 +52,11 @@ const UploadModal: React.FC<CustomModalProps> = ({ openParam, handleConfirm, han
           name="name"
           rules={[{ required: true, message: '请选择转移相册' }]}
         >
-          <Select
-            options={[
-              { label: '相册1', value: 1 },
-              { label: '相册2', value: 2 },
-            ]}
-          />
+          <Select options={albumList?.map((album) => ({ label: album.title, value: album.id }))} />
         </Form.Item>
       </Form>
     </Modal>
   );
 };
 
-export default UploadModal;
+export default TransferModal;
