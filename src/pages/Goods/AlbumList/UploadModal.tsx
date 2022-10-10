@@ -1,19 +1,75 @@
-import { PlusOutlined } from '@ant-design/icons';
-import { Modal, Form, Input, Button, Upload, Select } from 'antd';
-import React from 'react';
+import { CloudUploadOutlined, LoadingOutlined, PlusOutlined } from '@ant-design/icons';
+import { Modal, Form, Input, Button, Upload, Select, message, UploadFile, UploadProps } from 'antd';
+import { RcFile, UploadChangeParam } from 'antd/lib/upload';
+import React, { useEffect, useState } from 'react';
 
-const UploadModal: React.FC<CustomModalProps> = ({ openParam, handleConfirm, handleCancel }) => {
+type UpdateModalProps = {
+  openParam: ModalProps;
+  albumList: API.Album[];
+  handleConfirm: (value: any) => void;
+  handleCancel: () => void;
+};
+
+const beforeUpload = (file: RcFile) => {
+  const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+  if (!isJpgOrPng) {
+    message.error('只能上传JPG/PNG文件!');
+  }
+  const isLt50KB = file.size / 1024 < 50;
+  if (!isLt50KB) {
+    message.error('图片不能大于50kb!');
+  }
+  return isJpgOrPng && isLt50KB;
+};
+const UploadModal: React.FC<UpdateModalProps> = ({
+  openParam,
+  albumList,
+  handleConfirm,
+  handleCancel,
+}) => {
   const [form] = Form.useForm();
+  const [loading, setLoading] = useState(false);
+  const [imageUrl, setImageUrl] = useState<string>();
   const { open } = openParam;
-  const onFinish = () => {
-    form.validateFields().then((values) => {
-      handleConfirm(values);
-      console.log('Success:', values);
-    });
+
+  useEffect(() => {
+    return function cleanUp() {
+      setLoading(false);
+      setImageUrl('');
+      form.resetFields();
+    };
+  }, [open]);
+
+  const handleChange: UploadProps['onChange'] = (info: UploadChangeParam<UploadFile>) => {
+    if (info.file.status === 'uploading') {
+      setLoading(true);
+      return;
+    }
+    if (info.file.status === 'error') {
+      message.error('上传失败');
+      return;
+    }
+    if (info.file.status === 'done') {
+      message.success('上传成功');
+      // get the real url from server
+      setImageUrl(info.file.response.data);
+    }
   };
 
+  const uploadButton = (
+    <div>
+      {loading ? <LoadingOutlined /> : <CloudUploadOutlined />}
+      <div style={{ marginTop: 8 }}>上传图片</div>
+    </div>
+  );
+
+  const onFinish = () => {
+    form.validateFields().then((values) => {
+      values.image = imageUrl;
+      handleConfirm(values);
+    });
+  };
   const normFile = (e: any) => {
-    console.log('Upload event:', e);
     if (Array.isArray(e)) {
       return e;
     }
@@ -39,26 +95,25 @@ const UploadModal: React.FC<CustomModalProps> = ({ openParam, handleConfirm, han
         wrapperCol={{ span: 12 }}
         scrollToFirstError
       >
-        <Form.Item label="选择相册" name="name" rules={[{ required: true, message: '请选择相册' }]}>
-          <Select
-            options={[
-              { label: '相册1', value: 1 },
-              { label: '相册2', value: 2 },
-            ]}
-          />
-        </Form.Item>
         <Form.Item
           label="选择图片"
           name="image"
           valuePropName="fileList"
           getValueFromEvent={normFile}
-          extra="只能上传jpg/png格式文件，文件不能超过100kb"
+          extra="只能上传jpg/png格式文件，文件不能超过50kb"
         >
-          <Upload action="/upload.do" listType="picture-card">
-            <div>
-              <PlusOutlined />
-              <div style={{ marginTop: 8 }}>Upload</div>
-            </div>
+          <Upload
+            name="file"
+            listType="picture-card"
+            showUploadList={false}
+            action="/api/file/upload"
+            headers={{
+              satoken: localStorage.getItem('satoken') || '',
+            }}
+            beforeUpload={beforeUpload}
+            onChange={handleChange}
+          >
+            {imageUrl ? <img src={imageUrl} alt="logo" style={{ width: '100%' }} /> : uploadButton}
           </Upload>
         </Form.Item>
       </Form>

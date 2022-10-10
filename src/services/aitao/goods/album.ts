@@ -2,7 +2,19 @@
 /* eslint-disable */
 import { request } from '@umijs/max';
 
-/** 获取album列表 GET /api/mock/album */
+/**
+ *
+ * @param params 查询全部
+ * @param options
+ */
+export async function findALlAlbums(params?: any, options?: { [key: string]: any }) {
+  return request<API.RuleList>(`/api/album`, {
+    method: 'GET',
+    ...(options || {}),
+  });
+}
+
+/** 获取album列表 GET /api/album */
 export async function albumList(
   params: {
     // query
@@ -13,34 +25,42 @@ export async function albumList(
   },
   options?: { [key: string]: any },
 ) {
-  return request<API.RuleList>('/api/mock/album', {
-    method: 'GET',
-    params: {
-      ...params,
-    },
-    ...(options || {}),
-  });
-}
-
-/** 新增album PUT /api/mock/album */
-export async function updateAlbum(options?: { [key: string]: any }) {
-  return request<API.Album>('/api/mock/album', {
-    method: 'PUT',
-    ...(options || {}),
-  });
-}
-
-/** 新增album POST /api/mock/album */
-export async function addAlbum(options?: { [key: string]: any }) {
-  return request<API.Album>('/api/mock/album', {
+  return request<API.RuleList>(`/api/album/search/${params.current}/${params.pageSize}`, {
     method: 'POST',
+    data: params,
     ...(options || {}),
   });
 }
 
-/** 删除album DELETE /api/mock/album */
-export async function removeAlbum(options?: { [key: string]: any }) {
-  return request<Record<string, any>>('/api/mock/album', {
+// 添加角色
+export async function addAlbum(params: API.Album, options?: { [key: string]: any }) {
+  return request<API.RuleList>(`/api/album`, {
+    method: 'POST',
+    data: params,
+    ...(options || {}),
+  });
+}
+
+// 根据id查询数据
+export async function findAlbum(params: { id: string }, options?: { [key: string]: any }) {
+  return request<API.RuleList>(`/api/album/${params.id}`, {
+    method: 'GET',
+    ...(options || {}),
+  });
+}
+
+// 更新角色
+export async function editAlbum(params: API.Album, options?: { [key: string]: any }) {
+  return request<API.RuleList>(`/api/album/${params.id}`, {
+    method: 'PUT',
+    data: params,
+    ...(options || {}),
+  });
+}
+
+// 根据id删除数据
+export async function delAlbum(params: { id: number }, options?: { [key: string]: any }) {
+  return request<API.RuleList>(`/api/album/${params.id}`, {
     method: 'DELETE',
     ...(options || {}),
   });

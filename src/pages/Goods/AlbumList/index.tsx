@@ -1,12 +1,15 @@
 import React, { useRef, useState } from 'react';
-import { removeAlbum, albumList } from '@/services/aitao/goods/album';
+import { albumList, addAlbum, editAlbum, delAlbum } from '@/services/aitao/goods/album';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
-import { Button, message } from 'antd';
+import { Button, message, Modal } from 'antd';
 import AlbumOperateModal from './AlbumOperateModal';
 import { PlusOutlined } from '@ant-design/icons';
 import { history } from 'umi';
+import { handleModalOperation } from '@/utils/common/handleModalOperation';
 
+const Add = 'add';
+const Edit = 'edit';
 /**
  *  Delete node
  * @zh-CN 删除节点
@@ -17,9 +20,6 @@ const handleRemove = async (selectedRows: API.Album[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
-    await removeAlbum({
-      key: selectedRows.map((row) => row.id),
-    });
     hide();
     message.success('Deleted successfully and will refresh soon');
     return true;
@@ -33,7 +33,8 @@ const handleRemove = async (selectedRows: API.Album[]) => {
 const Goods: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const [selectedRowsState, setSelectedRows] = useState<API.Album[]>([]);
-  const [openParam, setOpenParam] = useState<OpenParam>({ open: false, openType: '' });
+  const [openParam, setOpenParam] = useState<ModalProps>({ open: false, openType: '' });
+  const [modal, contextHolder] = Modal.useModal();
 
   const columns: ProColumns<API.Album>[] = [
     {
@@ -53,12 +54,10 @@ const Goods: React.FC = () => {
     },
     {
       title: '图片数量',
-      dataIndex: 'image_items',
-      render: (_, record) => <div>{record.image_items?.split(',').length}</div>,
-    },
-    {
-      title: '排序',
-      dataIndex: 'seq',
+      dataIndex: 'imageItems',
+      render: (_, record) => (
+        <div>{record.imageItems ? JSON.parse(record.imageItems).length : 0}</div>
+      ),
     },
     {
       title: '描述',
@@ -71,33 +70,53 @@ const Goods: React.FC = () => {
       render: (_, record) => [
         <a
           key="watch"
-          onClick={() =>
+          onClick={() => {
+            console.log(record);
             history.push('/goods/albumDetails', {
-              images: record.image_items,
-            })
-          }
+              record,
+            });
+          }}
         >
           查看
         </a>,
         <a
           key="edit"
           onClick={() => {
-            setOpenParam({ open: true, openType: 'edit' });
+            setOpenParam({ open: true, openType: Edit, record });
           }}
         >
           编辑
         </a>,
-        <a key="del">删除</a>,
+        <a
+          onClick={(e) => {
+            e.stopPropagation();
+            modal.confirm({
+              title: '删除节点',
+              content: '是否要删除节点',
+              onOk: async () => {
+                handleModalOperation(
+                  async () => await delAlbum({ id: record.id }),
+                  () => actionRef.current?.reset && actionRef.current.reset(),
+                );
+              },
+            });
+          }}
+          key="del"
+        >
+          删除
+        </a>,
       ],
     },
   ];
 
-  const handleConfirm = (value: any) => {
+  const handleConfirm = (values: any, openType: string) => {
     setOpenParam({
       open: false,
       openType: '',
     });
-    console.log(value);
+    const request =
+      openType === Add ? async () => await addAlbum(values) : async () => await editAlbum(values);
+    handleModalOperation(request, () => actionRef.current?.reset && actionRef.current.reset());
   };
 
   const handleCancel = () => {
@@ -115,7 +134,17 @@ const Goods: React.FC = () => {
         search={{
           labelWidth: 120,
         }}
-        request={albumList}
+        request={async (params, sort, filter) => {
+          const { data } = await albumList(params);
+          return {
+            data: data.list || [],
+            // success 请返回 true，
+            // 不然 table 会停止解析数据，即使有数据
+            success: true,
+            // 不传会使用 data 的长度，如果是分页一定要传
+            total: data.total,
+          };
+        }}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => {
@@ -127,7 +156,7 @@ const Goods: React.FC = () => {
             onClick={() => {
               setOpenParam({
                 open: true,
-                openType: 'add',
+                openType: Add,
               });
             }}
             key="button"
@@ -158,6 +187,7 @@ const Goods: React.FC = () => {
           </Button>
         </FooterToolbar>
       )}
+      {contextHolder}
       <AlbumOperateModal
         openParam={openParam}
         handleConfirm={handleConfirm}

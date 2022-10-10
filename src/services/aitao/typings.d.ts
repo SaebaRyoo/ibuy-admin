@@ -123,7 +123,7 @@ declare namespace API {
     id: number;
     title?: string; // 相册名称
     image?: string; // 相册封面
-    image_items?: string; // 图片列表
+    imageItems?: string; // 图片列表
     desc?: string; // 相册描述
   };
 
