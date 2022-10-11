@@ -2,45 +2,67 @@
 /* eslint-disable */
 import { request } from '@umijs/max';
 
-/** 获取category列表 GET /api/mock/category/1 */
+/** 获取category列表 GET /api/category */
 export async function categoryList(
   params: {
-    // query
     /** 当前的页码 */
     current?: number;
     /** 页面的容量 */
     pageSize?: number;
   },
-  options?: { [id: string]: any },
+  options?: { [key: string]: any },
 ) {
-  return request<API.RuleList>('/api/mock/category/1', {
-    method: 'GET',
-    params: {
-      ...params,
-    },
-    ...(options || {}),
-  });
-}
-
-/** 新增category PUT /api/mock/category/1 */
-export async function updateCategory(options?: { [id: string]: any }) {
-  return request<API.Category>('/api/mock/category/1', {
-    method: 'PUT',
-    ...(options || {}),
-  });
-}
-
-/** 新增category POST /api/mock/category/1 */
-export async function addCategory(options?: { [id: string]: any }) {
-  return request<API.Category>('/api/mock/category/1', {
+  return request<API.RuleList>(`/api/category/search/${params.current}/${params.pageSize}`, {
     method: 'POST',
+    data: params,
     ...(options || {}),
   });
 }
 
-/** 删除category DELETE /api/mock/category/1 */
-export async function removeCategory(options?: { [id: string]: any }) {
-  return request<Record<string, any>>('/api/mock/category/1', {
+// 查询全部数据
+export async function findAll(params?: any, options?: { [key: string]: any }) {
+  return request<API.RuleList>(`/api/category`, {
+    method: 'GET',
+    ...(options || {}),
+  });
+}
+// 根据pid获取分类列表
+export async function listByPid(params: { pid: number }, options?: { [key: string]: any }) {
+  return request<API.RuleList>(`/api/category/list/${params.pid}`, {
+    method: 'GET',
+    ...(options || {}),
+  });
+}
+
+// 添加分类
+export async function addCategory(params: API.Category, options?: { [key: string]: any }) {
+  return request<API.RuleList>(`/api/category`, {
+    method: 'POST',
+    data: params,
+    ...(options || {}),
+  });
+}
+
+// 根据id查询数据
+export async function findCategory(params: { id: string }, options?: { [key: string]: any }) {
+  return request<API.RuleList>(`/api/category/${params.id}`, {
+    method: 'GET',
+    ...(options || {}),
+  });
+}
+
+// 更新分类
+export async function editCategory(params: API.Category, options?: { [key: string]: any }) {
+  return request<API.RuleList>(`/api/category/${params.id}`, {
+    method: 'PUT',
+    data: params,
+    ...(options || {}),
+  });
+}
+
+// 根据id删除数据
+export async function delCategory(params: { id: number }, options?: { [key: string]: any }) {
+  return request<API.RuleList>(`/api/category/${params.id}`, {
     method: 'DELETE',
     ...(options || {}),
   });

@@ -13,33 +13,33 @@ type OrderDetailsProps = {
 
 const mockDetails: API.Order = {
   id: '201807196398345',
-  total_num: 0, //合计数量
-  total_money: 0, //合计金额
-  pre_money: 0, //优惠金额
-  post_fee: 0, // 邮费
-  pay_money: 0, // 实付金额
-  pay_type: '1', // 支付类型，1、在线支付、0 货到付款
-  create_time: '2022-09-28 17:40:00', // 订单创建时间
-  update_time: '2022-09-28 17:40:00', // 订单更新时间
-  pay_time: '2022-09-28 17:40:00', //支付时间
-  consign_time: '2022-09-28 17:40:00', // 发货时间
-  end_time: '2022-09-28 17:40:00', // 交易完成时间
-  close_time: '2022-09-28 17:40:00', // 交易关闭时间
-  shipping_name: '邮政', // 物流名称
-  shipping_code: '1111111', // 物流单号
-  shipping_task_id: '2134444444', // 物流任务id
-  shipping_status: ['0', '1', '2'][Math.floor(Math.random() * 3)], // 0 未发货 1 已发货 2 已接收
+  totalNum: 0, //合计数量
+  totalMoney: 0, //合计金额
+  preMoney: 0, //优惠金额
+  postFee: 0, // 邮费
+  payMoney: 0, // 实付金额
+  payType: '1', // 支付类型，1、在线支付、0 货到付款
+  createTime: '2022-09-28 17:40:00', // 订单创建时间
+  updateTime: '2022-09-28 17:40:00', // 订单更新时间
+  payTime: '2022-09-28 17:40:00', //支付时间
+  consignTime: '2022-09-28 17:40:00', // 发货时间
+  endTime: '2022-09-28 17:40:00', // 交易完成时间
+  closeTime: '2022-09-28 17:40:00', // 交易关闭时间
+  shippingName: '邮政', // 物流名称
+  shippingCode: '1111111', // 物流单号
+  shippingTaskId: '2134444444', // 物流任务id
+  shippingStatus: ['0', '1', '2'][Math.floor(Math.random() * 3)], // 0 未发货 1 已发货 2 已接收
   username: ['张三', '李四', '王五'][Math.floor(Math.random() * 3)], // 用户名称
-  buyer_message: ['东西还行', '有点小贵', 'hhhhh'][Math.floor(Math.random() * 3)], // 买家留言
-  buyer_rate: ['0', '1'][Math.floor(Math.random() * 2)], //是否评价
-  receiver_contact: ['小明', '小红', '小刚'][Math.floor(Math.random() * 3)], // 收货人
-  receiver_mobile: ['15178788888', '15178781888', '15178748888'][Math.floor(Math.random() * 3)], // 收货人手机
-  receiver_address: ['北京四合院', '上海外滩边', '杭州西湖边'][Math.floor(Math.random() * 3)], // 收货人地址
-  source_type: '1', //订单来源：1:web，2：app，3：微信公众号，4：微信小程序  5 H5手机页面(目前只有web)
-  transaction_id: '297489787489273489328', // 交易流水号
-  order_status: ['0', '1', '2'][Math.floor(Math.random() * 3)], // 订单状态,0:未完成,1:已完成，2：已退货
-  pay_status: '0', // 支付状态,0:未支付，1：已支付，2：支付失败
-  is_delete: '0', //  是否删除
+  buyerMessage: ['东西还行', '有点小贵', 'hhhhh'][Math.floor(Math.random() * 3)], // 买家留言
+  buyerRate: ['0', '1'][Math.floor(Math.random() * 2)], //是否评价
+  receiverContact: ['小明', '小红', '小刚'][Math.floor(Math.random() * 3)], // 收货人
+  receiverMobile: ['15178788888', '15178781888', '15178748888'][Math.floor(Math.random() * 3)], // 收货人手机
+  receiverAddress: ['北京四合院', '上海外滩边', '杭州西湖边'][Math.floor(Math.random() * 3)], // 收货人地址
+  sourceType: '1', //订单来源：1:web，2：app，3：微信公众号，4：微信小程序  5 H5手机页面(目前只有web)
+  transactionId: '297489787489273489328', // 交易流水号
+  orderStatus: ['0', '1', '2'][Math.floor(Math.random() * 3)], // 订单状态,0:未完成,1:已完成，2：已退货
+  payStatus: '0', // 支付状态,0:未支付，1：已支付，2：支付失败
+  isDelete: '0', //  是否删除
 };
 const defaultSteps = [
   {
@@ -102,11 +102,11 @@ const OrderItemDetails: React.FC<OrderDetailsProps> = ({ openParams, onClose }) 
   const [current, setCurrent] = useState(0); // 0: 已经提交订单 1: 支付订单 2: 平台发货 3:确认收货 4: 完成评价
   const [steps, setSteps] = useState(defaultSteps);
   useEffect(() => {
-    if (mockDetails.pay_status == '0') {
+    if (mockDetails.payStatus == '0') {
       setCurrent(0);
       setSteps((prev) => {
         const copy = [...prev];
-        copy[0].subTitle = mockDetails.create_time;
+        copy[0].subTitle = mockDetails.createTime;
         return copy;
       });
     }
@@ -171,7 +171,7 @@ const OrderItemDetails: React.FC<OrderDetailsProps> = ({ openParams, onClose }) 
               </div>
               <div className={styles.detailsCell}>
                 <p>发货流水号</p>
-                <div>{mockDetails.transaction_id}</div>
+                <div>{mockDetails.transactionId}</div>
               </div>
               <div className={styles.detailsCell}>
                 <p>用户账号</p>
@@ -185,7 +185,7 @@ const OrderItemDetails: React.FC<OrderDetailsProps> = ({ openParams, onClose }) 
               </div>
               <div className={styles.detailsCell}>
                 <p>订单来源</p>
-                <div>{mockDetails.source_type}</div>
+                <div>{mockDetails.sourceType}</div>
               </div>
               <div className={styles.detailsCell}>
                 <p>订单类型</p>
@@ -197,7 +197,7 @@ const OrderItemDetails: React.FC<OrderDetailsProps> = ({ openParams, onClose }) 
               </div>
               <div className={styles.detailsCell}>
                 <p>物流单号</p>
-                <div>{mockDetails.shipping_code}</div>
+                <div>{mockDetails.shippingCode}</div>
               </div>
               <div className={styles.detailsCell}>
                 <p>自动确认收货时间</p>
@@ -224,11 +224,11 @@ const OrderItemDetails: React.FC<OrderDetailsProps> = ({ openParams, onClose }) 
             <div className={styles.details}>
               <div style={{ width: 300 }} className={styles.detailsCell}>
                 <p>收货人</p>
-                <div>{mockDetails.receiver_contact}</div>
+                <div>{mockDetails.receiverContact}</div>
               </div>
               <div style={{ width: 300 }} className={styles.detailsCell}>
                 <p>收手机号码</p>
-                <div>{mockDetails.receiver_mobile}</div>
+                <div>{mockDetails.receiverMobile}</div>
               </div>
               <div style={{ width: 300 }} className={styles.detailsCell}>
                 <p>邮政编码</p>
@@ -236,7 +236,7 @@ const OrderItemDetails: React.FC<OrderDetailsProps> = ({ openParams, onClose }) 
               </div>
               <div style={{ width: 300 }} className={styles.detailsCell}>
                 <p>收货地址</p>
-                <div>{mockDetails.receiver_address}</div>
+                <div>{mockDetails.receiverAddress}</div>
               </div>
             </div>
             <p className={styles.title}>
@@ -254,7 +254,7 @@ const OrderItemDetails: React.FC<OrderDetailsProps> = ({ openParams, onClose }) 
               bordered
             />
             <p className={styles.goodsTotMoney}>
-              合计: <span>¥{mockDetails.total_money}</span>
+              合计: <span>¥{mockDetails.totalMoney}</span>
             </p>
 
             <p className={styles.title}>
@@ -264,15 +264,15 @@ const OrderItemDetails: React.FC<OrderDetailsProps> = ({ openParams, onClose }) 
             <div className={styles.details}>
               <div style={{ width: 300 }} className={styles.detailsCell}>
                 <p>商品合计</p>
-                <div>{mockDetails.total_money}</div>
+                <div>{mockDetails.totalMoney}</div>
               </div>
               <div style={{ width: 300 }} className={styles.detailsCell}>
                 <p>运费</p>
-                <div>{mockDetails.post_fee}</div>
+                <div>{mockDetails.postFee}</div>
               </div>
               <div style={{ width: 300 }} className={styles.detailsCell}>
                 <p>优惠券</p>
-                <div>-¥{mockDetails.pre_money}</div>
+                <div>-¥{mockDetails.preMoney}</div>
               </div>
               <div style={{ width: 300 }} className={styles.detailsCell}>
                 <p>活动优惠</p>
@@ -280,7 +280,7 @@ const OrderItemDetails: React.FC<OrderDetailsProps> = ({ openParams, onClose }) 
               </div>
               <div style={{ width: 300 }} className={styles.detailsCell}>
                 <p>应付金额</p>
-                <div>-¥{mockDetails.pay_money}</div>
+                <div>-¥{mockDetails.payMoney}</div>
               </div>
               <div style={{ width: 300 }} className={styles.detailsCell}>
                 <p></p>

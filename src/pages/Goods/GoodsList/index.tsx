@@ -62,10 +62,10 @@ const Goods: React.FC = () => {
     },
     {
       title: '标签',
-      dataIndex: 'is_marketable',
+      dataIndex: 'isMarketable',
       render: (_, record) => {
         // flag为true，则表示已上架
-        const flag = record.is_marketable == '1';
+        const flag = record.isMarketable == '1';
         return (
           <>
             {flag ? '已上架' : '已下架'}&nbsp;&nbsp;
@@ -76,7 +76,7 @@ const Goods: React.FC = () => {
     },
     {
       title: '销量',
-      dataIndex: 'sale_num',
+      dataIndex: 'saleNum',
     },
     {
       title: '审核状态',

@@ -1,10 +1,24 @@
 import React, { useRef, useState } from 'react';
-import { removeCategory, categoryList } from '@/services/aitao/goods/category';
+import {
+  categoryList,
+  addCategory,
+  editCategory,
+  delCategory,
+} from '@/services/aitao/goods/category';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
-import { Button, message, Switch } from 'antd';
+import { Button, message, Modal } from 'antd';
 import { PlusOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import UpdateModal from './UpdateModal';
+import { handleModalOperation } from '@/utils/common/handleModalOperation';
+
+const Add = 'add';
+const Edit = 'edit';
+type PageParams = {
+  current?: number;
+  pageSize?: number;
+  parentId: number;
+};
 
 /**
  *  Delete node
@@ -16,9 +30,6 @@ const handleRemove = async (selectedRows: API.Category[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
-    await removeCategory({
-      id: selectedRows.map((row) => row.id),
-    });
     hide();
     message.success('Deleted successfully and will refresh soon');
     return true;
@@ -35,34 +46,29 @@ const TitleMap = {
   3: '三级分类',
 };
 
-export type OpenParam = {
-  open: boolean;
-  openType: string;
-};
-
 const Goods: React.FC = () => {
   const actionRef = useRef<ActionType>();
+  const [modal, contextHolder] = Modal.useModal();
   const [selectedRowsState, setSelectedRows] = useState<API.Category[]>([]);
   const [categoryLevel, setCateGoryLevel] = useState<number>(1);
-  const [openParam, setOpenParam] = useState<OpenParam>({ open: false, openType: '' });
+  const [openParam, setOpenParam] = useState<ModalProps>({ open: false, openType: '' });
+  // 设置额外的参数parentId, 查询当前分类的下一级
+  const [extraParams, setExtraParams] = useState<{ parentId: number }>({ parentId: 0 });
+  // 记录当前层级的parentId,用来返回上一级
+  const [pidList, setCurrentLevelParentId] = useState<number[]>([0]);
 
   const columns: ProColumns<API.Category>[] = [
     {
       title: '编号',
       dataIndex: 'id',
-      render: (dom, entity) => {
-        return <a>{dom}</a>;
-      },
     },
     {
       title: '商品名称',
       dataIndex: 'name',
-      sorter: true,
-      hideInForm: true,
     },
     {
       title: '商品数量',
-      dataIndex: 'goods_num',
+      dataIndex: 'goodsNum',
     },
     {
       title: '数量单位',
@@ -70,26 +76,18 @@ const Goods: React.FC = () => {
     },
     {
       title: '是否导航',
-      dataIndex: 'is_menu',
+      dataIndex: 'isMenu',
       render: (_, record) => {
-        const flag = record.is_menu == '1';
-        return (
-          <>
-            <Switch key="" defaultChecked={flag} />
-          </>
-        );
+        const flag = record.isMenu == '1';
+        return <div>{flag ? '是' : '否'}</div>;
       },
     },
     {
       title: '是否显示',
-      dataIndex: 'is_show',
+      dataIndex: 'isShow',
       render: (_, record) => {
-        const flag = record.is_show == '1';
-        return (
-          <>
-            <Switch key="" defaultChecked={flag} />
-          </>
-        );
+        const flag = record.isShow == '1';
+        return <div>{flag ? '是' : '否'}</div>;
       },
     },
     {
@@ -104,7 +102,7 @@ const Goods: React.FC = () => {
         categoryLevel >= 1 && categoryLevel < 3 ? (
           <a
             onClick={() => {
-              setOpenParam({ open: true, openType: 'add' });
+              setOpenParam({ open: true, openType: 'add', id: record.id, curType: true });
             }}
             key="add"
           >
@@ -113,15 +111,22 @@ const Goods: React.FC = () => {
         ) : null,
         categoryLevel >= 1 && categoryLevel < 3 ? (
           <a
-            onClick={(record) => {
+            onClick={() => {
               setCateGoryLevel((prev) => prev + 1);
+              setExtraParams({ parentId: record.id });
+              setCurrentLevelParentId((prev) => {
+                const copy = [...prev];
+                copy.push(record.parentId);
+                return copy;
+              });
             }}
             key="watch"
           >
             查看下级
           </a>
         ) : null,
-        <a key="transmit">转移商品</a>,
+        // TODO: 转移商品暂不实现
+        // <a key="transfer">转移商品</a>,
       ],
     },
     {
@@ -132,22 +137,43 @@ const Goods: React.FC = () => {
         <a
           key="add"
           onClick={() => {
-            setOpenParam({ open: true, openType: 'edit' });
+            setOpenParam({ open: true, openType: 'edit', id: record.id });
           }}
         >
           编辑
         </a>,
-        <a key="watch">删除</a>,
+        <a
+          onClick={(e) => {
+            e.stopPropagation();
+            modal.confirm({
+              title: '删除节点',
+              content: '是否要删除节点',
+              onOk: async () => {
+                handleModalOperation(
+                  async () => await delCategory({ id: record.id }),
+                  () => actionRef.current?.reset && actionRef.current.reset(),
+                );
+              },
+            });
+          }}
+          key="del"
+        >
+          删除
+        </a>,
       ],
     },
   ];
 
-  const handleConfirm = (value: any) => {
+  const handleConfirm = (values: any, openType: string) => {
     setOpenParam({
       open: false,
       openType: '',
     });
-    console.log(value);
+    const request =
+      openType === Add
+        ? async () => await addCategory(values)
+        : async () => await editCategory(values);
+    handleModalOperation(request, () => actionRef.current?.reset && actionRef.current.reset());
   };
 
   const handleCancel = () => {
@@ -159,14 +185,26 @@ const Goods: React.FC = () => {
 
   return (
     <PageContainer>
-      <ProTable<API.Category, API.PageParams>
+      <ProTable<API.Category, PageParams>
         headerTitle={`分类管理/${TitleMap[categoryLevel]}`}
         actionRef={actionRef}
         rowKey="id"
         search={{
           labelWidth: 120,
         }}
-        request={categoryList}
+        params={extraParams}
+        request={async (params, sort, filter) => {
+          // console.log('params----->', params);
+          const { data } = await categoryList(params);
+          return {
+            data: data.list || [],
+            // success 请返回 true，
+            // 不然 table 会停止解析数据，即使有数据
+            success: true,
+            // 不传会使用 data 的长度，如果是分页一定要传
+            total: data.total,
+          };
+        }}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => {
@@ -176,7 +214,16 @@ const Goods: React.FC = () => {
         toolBarRender={() => [
           categoryLevel > 1 ? (
             <Button
-              onClick={() => setCateGoryLevel((prev) => prev - 1)}
+              onClick={() => {
+                setCateGoryLevel((prev) => prev - 1);
+                const last = pidList[pidList.length - 1];
+                setCurrentLevelParentId((prev) => {
+                  const copy = [...prev];
+                  copy.splice(copy.length - 1, 1);
+                  return copy;
+                });
+                setExtraParams({ parentId: last });
+              }}
               key="button"
               icon={<ArrowLeftOutlined />}
               type="primary"
@@ -220,7 +267,7 @@ const Goods: React.FC = () => {
           <Button type="primary">批量审批</Button>
         </FooterToolbar>
       )}
-
+      {contextHolder}
       <UpdateModal
         openParam={openParam}
         handleConfirm={handleConfirm}

@@ -55,7 +55,7 @@ const Goods: React.FC = () => {
     },
     {
       title: '模板',
-      dataIndex: 'template_id',
+      dataIndex: 'templateId',
     },
     {
       title: '可选值列表',

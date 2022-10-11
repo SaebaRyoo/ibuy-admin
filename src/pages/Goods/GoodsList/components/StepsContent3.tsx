@@ -17,13 +17,13 @@ type Item = {
   spec: string;
   price: number;
   num: number;
-  sale_num: number;
-  alert_num: number;
+  saleNum: number;
+  alertNum: number;
   images: string;
-  sku_id: number;
+  skuId: number;
 };
 
-// 已经确定的产品规格数据 spu.spec_items
+// 已经确定的产品规格数据 spu.specItems
 // '{"网络":["联通2G", "联通3G"],"手机屏幕尺寸":["5寸", "5.5寸"],"机身内存":["16G"]}';
 
 // 一个spu(标准产品单位)下的所有规格数据,
@@ -36,7 +36,7 @@ const specMap = {
   像素: ['300万像素', '800万像素', '2000万像素'],
 };
 
-// spu.para_items
+// spu.paraItems
 // '{"出厂年份":"2022","版本":"1"}';
 
 // 一个spu(标准产品单位)下的所有参数数据,
@@ -69,7 +69,7 @@ const GoodsParaComponent = ({ optionData, data, setSpu }: GoodsParaProps) => {
     copyData[key] = value;
     setSpu((prev: any) => ({
       ...prev,
-      para_items: JSON.stringify(copyData),
+      paraItems: JSON.stringify(copyData),
     }));
   };
 
@@ -259,12 +259,12 @@ const RichTextComponent: React.FC = () => {
 const Content3: React.FC = () => {
   const [specColumns, setSpecColumns] = useState<any[]>([]);
   const { spu, setSpu, skuList, setSkuList } = useModel('goods');
-  const { spec_items, para_items } = spu;
+  const { specItems, paraItems } = spu;
 
   // 每个标准产品的规格数据是一个hashMap 字符串，需要转为object
-  const specConvertData = spec_items ? JSON.parse(spec_items) : {};
+  const specConvertData = specItems ? JSON.parse(specItems) : {};
   // 参数数据
-  const paraConvertData = para_items ? JSON.parse(para_items) : {};
+  const paraConvertData = paraItems ? JSON.parse(paraItems) : {};
   // console.log('specConvertData-----> ', specConvertData);
   console.log('paraConvertData-----> ', paraConvertData);
 
@@ -293,8 +293,8 @@ const Content3: React.FC = () => {
     },
     {
       title: '库存预警值',
-      dataIndex: 'alert_num',
-      key: 'alert_num',
+      dataIndex: 'alertNum',
+      key: 'alertNum',
       width: 120,
       formItemProps: () => {
         return {
@@ -304,8 +304,8 @@ const Content3: React.FC = () => {
     },
     {
       title: 'SKU编号',
-      dataIndex: 'sku_id',
-      key: 'sku_id',
+      dataIndex: 'skuId',
+      key: 'skuId',
       editable: false,
       width: 200,
     },
@@ -344,7 +344,7 @@ const Content3: React.FC = () => {
     setSpu((prev) => {
       return {
         ...prev,
-        spec_items: JSON.stringify(specConvertData),
+        specItems: JSON.stringify(specConvertData),
       };
     });
   };
@@ -420,7 +420,7 @@ const Content3: React.FC = () => {
         spec: JSON.stringify(spec),
         price: 0,
         num: 0,
-        alert_num: 0,
+        alertNum: 0,
         id: null,
         images: null,
       };
@@ -445,10 +445,10 @@ const Content3: React.FC = () => {
         name: sku.name,
         price: sku.price,
         num: sku.num,
-        alert_num: sku.alert_num,
+        alertNum: sku.alertNum,
         images: sku.images,
-        spu_id: sku.spu_id,
-        sale_num: sku.sale_num,
+        spuId: sku.spuId,
+        saleNum: sku.saleNum,
         ...spec,
       };
 
@@ -478,7 +478,7 @@ const Content3: React.FC = () => {
               if (item.spec === record.spec) {
                 item.price = Number(record.price);
                 item.num = Number(record.num);
-                item.alert_num = Number(record.alert_num);
+                item.alertNum = Number(record.alertNum);
               }
             });
             setSkuList(copyData);

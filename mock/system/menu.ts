@@ -13,7 +13,7 @@ const genList = (current: number, pageSize: number) => {
       name: ['商品管理', '订单管理', '用户管理'][floor],
       icon: ['home', 'order', 'user'][floor],
       url: ['商品管理', '订单管理', '用户管理'][floor],
-      parent_id: '0',
+      parentId: '0',
     });
   }
   tableListDataSource.reverse();

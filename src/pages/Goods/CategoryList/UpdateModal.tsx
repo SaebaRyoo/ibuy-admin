@@ -1,6 +1,6 @@
 import { Modal, Form, Input, Select, Radio, Button } from 'antd';
-import React from 'react';
-import { OpenParam } from './index';
+import React, { useEffect, useState } from 'react';
+import { findAll, findCategory } from '@/services/aitao/goods/category';
 
 const Add = 'add';
 const Edit = 'edit';
@@ -10,18 +10,61 @@ const TitleMap = {
 };
 
 type UpdateModalProps = {
-  openParam: OpenParam;
-  handleConfirm: (value: any) => void;
+  openParam: ModalProps;
+  handleConfirm: (values: any, openType: string) => void;
   handleCancel: () => void;
 };
 
 const UpdateModal: React.FC<UpdateModalProps> = ({ openParam, handleConfirm, handleCancel }) => {
   const [form] = Form.useForm();
-  const { open, openType } = openParam;
-  const onFinish = (values: any) => {
+  const [list, setList] = useState<API.Category[]>([]);
+
+  const { open, openType, id, curType = false } = openParam;
+
+  const fetchCategory = async () => {
+    // 根据id获取分类详情
+    const { data = {} } = await findCategory({ id });
+    const { name, goodsNum, isShow, isMenu, seq, templateId, parentId } = data;
+    form.setFieldsValue({
+      name,
+      goodsNum,
+      isShow,
+      isMenu,
+      seq,
+      parentId,
+      templateId,
+    });
+  };
+
+  const fetchList = async () => {
+    // 获取分类列表
+    const result = await findAll();
+    if (curType) {
+      // 当使用新增下一级的时候，新添加的分类的父节点就是当前分类的id
+      form.setFieldsValue({
+        parentId: id,
+      });
+    }
+    setList(result ? result.data : []);
+  };
+
+  useEffect(() => {
+    open && fetchList();
+    if (openType === Edit) {
+      open && fetchCategory();
+    }
+    return function cleanUp() {
+      form.resetFields();
+    };
+  }, [open]);
+
+  const onFinish = () => {
     form.validateFields().then((values) => {
-      handleConfirm(values);
-      console.log('Success:', values);
+      if (openType === Edit) {
+        values.id = id;
+      }
+      values.parentId = values.parentId === undefined ? 0 : values.parentId;
+      handleConfirm(values, openType);
     });
   };
 
@@ -52,41 +95,34 @@ const UpdateModal: React.FC<UpdateModalProps> = ({ openParam, handleConfirm, han
         >
           <Input />
         </Form.Item>
-        <Form.Item label="上级分类" name="parent_id">
+        <Form.Item label="上级分类" name="parentId">
           <Select
+            disabled={curType}
+            showSearch
+            optionFilterProp="label"
+            filterOption={(input, option) =>
+              (option!.label as unknown as string).toLowerCase().includes(input.toLowerCase())
+            }
             placeholder="不选择默认为顶级分类"
-            options={[
-              {
-                label: '图书、音像、电子书刊',
-                value: 1,
-              },
-              {
-                label: '个护化妆',
-                value: 2,
-              },
-              {
-                label: '电子产品',
-                value: 3,
-              },
-            ]}
+            options={list.map((item) => ({ label: `${item.name}/${item.id}`, value: item.id }))}
           />
         </Form.Item>
         <Form.Item label="排序" name="seq">
           <Input />
         </Form.Item>
-        <Form.Item label="是否显示" name="is_show">
+        <Form.Item label="是否显示" name="isShow">
           <Radio.Group>
-            <Radio value={1}>是</Radio>
-            <Radio value={0}>否</Radio>
+            <Radio value={'1'}>是</Radio>
+            <Radio value={'0'}>否</Radio>
           </Radio.Group>
         </Form.Item>
-        <Form.Item label="是否显示在导航栏" name="is_menu">
+        <Form.Item label="是否显示在导航栏" name="isMenu">
           <Radio.Group>
-            <Radio value={1}>是</Radio>
-            <Radio value={0}>否</Radio>
+            <Radio value={'1'}>是</Radio>
+            <Radio value={'0'}>否</Radio>
           </Radio.Group>
         </Form.Item>
-        <Form.Item label="选择模板" name="template_id">
+        <Form.Item label="选择模板" name="templateId">
           <Select
             options={[
               {

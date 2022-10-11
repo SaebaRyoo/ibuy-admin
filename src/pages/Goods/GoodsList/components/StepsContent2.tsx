@@ -9,15 +9,15 @@ const TextArea = Input.TextArea;
 const Content2: React.FC = () => {
   const { spu, setSpu } = useModel('goods');
   const {
-    category1_id,
-    category2_id,
-    category3_id,
+    category1Id,
+    category2Id,
+    category3Id,
     name,
     caption,
-    freight_id,
+    freightId,
     introduction,
     sn,
-    sale_service,
+    saleService,
   } = spu;
 
   const handleFormChange = (key: string, value: any) => {
@@ -63,13 +63,13 @@ const Content2: React.FC = () => {
 
       <Form.Item
         label="商品品牌"
-        name="brand_id"
+        name="brandId"
         rules={[{ required: true, message: '请选择商品品牌' }]}
       >
         <Select
           value={caption}
           onChange={(value) => {
-            handleFormChange('brand_id', value);
+            handleFormChange('brandId', value);
           }}
         >
           <Option value="1">华为</Option>
@@ -93,13 +93,13 @@ const Content2: React.FC = () => {
 
       <Form.Item
         label="运费模板"
-        name="freight_id"
+        name="freightId"
         rules={[{ required: true, message: '请选择运费模板' }]}
       >
         <Select
-          value={freight_id}
+          value={freightId}
           onChange={(value) => {
-            handleFormChange('freight_id', value);
+            handleFormChange('freightId', value);
           }}
         >
           <Option value="1">模板1</Option>
@@ -117,16 +117,16 @@ const Content2: React.FC = () => {
         />
       </Form.Item>
 
-      <Form.Item label="服务保证" name="sale_service">
+      <Form.Item label="服务保证" name="saleService">
         <Checkbox.Group
           options={[
             { label: '无忧退货', value: '0' },
             { label: '快速退款', value: '1' },
             { label: '免费包邮', value: '2' },
           ]}
-          value={[sale_service]}
+          value={[saleService]}
           onChange={(value) => {
-            handleFormChange('sale_service', value);
+            handleFormChange('saleService', value);
           }}
         />
       </Form.Item>
