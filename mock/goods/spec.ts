@@ -21,7 +21,7 @@ const genList = (current: number, pageSize: number) => {
         '红,绿,蓝,白,黑',
       ][floor],
       seq: 0,
-      template_id: 1,
+      templateId: 1,
     });
   }
   tableListDataSource.reverse();
@@ -132,7 +132,7 @@ function postRule(req: Request, res: Response, u: string, b: Request) {
             '红,绿,蓝,白,黑',
           ][floor],
           seq: 0,
-          template_id: 1,
+          templateId: 1,
         };
         tableListDataSource.unshift(newRule);
         return res.json(newRule);

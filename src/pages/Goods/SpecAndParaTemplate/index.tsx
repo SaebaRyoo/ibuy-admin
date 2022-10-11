@@ -31,11 +31,11 @@ const Goods: React.FC = () => {
     },
     {
       title: '规格数量',
-      dataIndex: 'spec_num',
+      dataIndex: 'specNum',
     },
     {
       title: '参数数量',
-      dataIndex: 'para_num',
+      dataIndex: 'paraNum',
     },
     {
       title: '设置',

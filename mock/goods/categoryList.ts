@@ -12,12 +12,12 @@ const genList = (current: number, pageSize: number) => {
       name: ['图书、音像、电子书刊', '个护化妆', '电子产品', '家用电器'][
         Math.floor(Math.random() * 4)
       ],
-      goods_num: Math.floor(Math.random() * 500),
-      is_show: '1',
-      is_menu: '1',
+      goodsNum: Math.floor(Math.random() * 500),
+      isShow: '1',
+      isMenu: '1',
       seq: 0,
-      parent_id: 0,
-      template_id: 1,
+      parentId: 0,
+      templateId: 1,
     });
   }
   tableListDataSource.reverse();
@@ -119,12 +119,12 @@ function postRule(req: Request, res: Response, u: string, b: Request) {
           name: ['图书、音像、电子书刊', '个护化妆', '电子产品', '家用电器'][
             Math.floor(Math.random() * 5)
           ],
-          goods_num: Math.floor(Math.random() * 500),
-          is_show: '1',
-          is_menu: '1',
+          goodsNum: Math.floor(Math.random() * 500),
+          isShow: '1',
+          isMenu: '1',
           seq: 0,
-          parent_id: 0,
-          template_id: 1,
+          parentId: 0,
+          templateId: 1,
         };
         tableListDataSource.unshift(newRule);
         return res.json(newRule);

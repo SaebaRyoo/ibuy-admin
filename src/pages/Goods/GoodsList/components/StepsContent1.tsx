@@ -108,34 +108,29 @@ const SelectList: React.FC<SelectListProps> = ({ title, id, dataSource, changeKe
 };
 const Content_1: React.FC = () => {
   const { spu } = useModel('goods');
-  const { category1_id, category2_id, category3_id } = spu;
+  const { category1Id, category2Id, category3Id } = spu;
   return (
     <div>
       <div className={styles.header}>选择分类</div>
       <div className={styles.contentWrapper}>
-        <SelectList
-          title="选择一级分类"
-          id={category1_id}
-          dataSource={data}
-          changeKey="category1"
-        />
-        {category1_id ? (
+        <SelectList title="选择一级分类" id={category1Id} dataSource={data} changeKey="category1" />
+        {category1Id ? (
           <>
             <RightCircleOutlined className={styles.arrow} />
             <SelectList
               title="选择二级分类"
-              id={category2_id}
+              id={category2Id}
               dataSource={data2}
               changeKey="category2"
             />
           </>
         ) : null}
-        {category2_id ? (
+        {category2Id ? (
           <>
             <RightCircleOutlined className={styles.arrow} />
             <SelectList
               title="选择三级分类"
-              id={category3_id}
+              id={category3Id}
               dataSource={data3}
               changeKey="category3"
             />

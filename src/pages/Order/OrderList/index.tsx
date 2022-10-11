@@ -34,23 +34,20 @@ const Order: React.FC = () => {
   const [selectedRowsState, setSelectedRows] = useState<API.Order[]>([]);
   const [openParams, setOpenParams] = useState<ModalProps>({ open: false, params: {} });
 
-  const btnToggle = (order_status?: string, pay_status?: string, shipping_status?: string) => {
+  const btnToggle = (orderStatus?: string, payStatus?: string, shippingStatus?: string) => {
     // 订单未完成，未支付 || 订单未完成，已支付
-    if (
-      (order_status === '0' && pay_status === '0') ||
-      (order_status === '0' && pay_status === '1')
-    ) {
+    if ((orderStatus === '0' && payStatus === '0') || (orderStatus === '0' && payStatus === '1')) {
       return <a>取消订单</a>;
-    } else if (order_status === '0' && pay_status === '2') {
+    } else if (orderStatus === '0' && payStatus === '2') {
       // 订单未完成，支付失败
       return <a>删除订单</a>;
-    } else if (order_status === '1' && pay_status === '1') {
+    } else if (orderStatus === '1' && payStatus === '1') {
       // 订单已完成，支付成功
       return <a>关闭订单</a>;
-    } else if (order_status === '0' && pay_status === '1' && shipping_status === '0') {
+    } else if (orderStatus === '0' && payStatus === '1' && shippingStatus === '0') {
       // 订单未完成，支付成功，未发货
       return <a>订单发货</a>;
-    } else if (order_status === '0' && pay_status === '1' && shipping_status === '1') {
+    } else if (orderStatus === '0' && payStatus === '1' && shippingStatus === '1') {
       // 订单未完成，支付成功，已发货
       return <a>订单跟踪</a>;
     }
@@ -63,7 +60,7 @@ const Order: React.FC = () => {
     },
     {
       title: '提交时间',
-      dataIndex: 'create_time',
+      dataIndex: 'createTime',
     },
     {
       title: '用户账号',
@@ -71,7 +68,7 @@ const Order: React.FC = () => {
     },
     {
       title: '订单金额',
-      dataIndex: 'total_money',
+      dataIndex: 'totalMoney',
     },
     {
       title: '支付方式',
@@ -79,7 +76,7 @@ const Order: React.FC = () => {
     },
     {
       title: '订单来源',
-      dataIndex: 'source_type',
+      dataIndex: 'sourceType',
       valueEnum: {
         1: {
           text: 'web',
@@ -100,7 +97,7 @@ const Order: React.FC = () => {
     },
     {
       title: '订单状态',
-      dataIndex: 'order_status',
+      dataIndex: 'orderStatus',
       valueEnum: {
         0: {
           text: '未支付',
@@ -132,7 +129,7 @@ const Order: React.FC = () => {
         >
           查看订单
         </a>,
-        btnToggle(record.order_status, record.pay_status, record.shipping_status),
+        btnToggle(record.orderStatus, record.payStatus, record.shippingStatus),
       ],
     },
   ];

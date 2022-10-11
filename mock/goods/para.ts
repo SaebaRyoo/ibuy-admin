@@ -13,7 +13,7 @@ const genList = (current: number, pageSize: number) => {
       name: ['出厂年份', '版本'][floor],
       options: ['2018,2019,2020,2021,2022', '10,20,30'][floor],
       seq: 0,
-      template_id: 1,
+      templateId: 1,
     });
   }
   tableListDataSource.reverse();
@@ -116,7 +116,7 @@ function postRule(req: Request, res: Response, u: string, b: Request) {
           name: ['出厂年份', '版本'][floor],
           options: ['2018,2019,2020,2021,2022', '10,20,30'][floor],
           seq: 0,
-          template_id: 1,
+          templateId: 1,
         };
         tableListDataSource.unshift(newRule);
         return res.json(newRule);
