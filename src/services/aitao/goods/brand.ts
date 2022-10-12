@@ -40,7 +40,7 @@ export async function findBrand(params: { id: string }, options?: { [key: string
 // 更新角色
 export async function editBrand(params: API.Brand, options?: { [key: string]: any }) {
   return request<API.RuleList>(`/api/brand/${params.id}`, {
-    method: 'PATCH',
+    method: 'PUT',
     data: params,
     ...(options || {}),
   });

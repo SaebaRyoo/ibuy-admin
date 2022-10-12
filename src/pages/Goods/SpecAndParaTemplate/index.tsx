@@ -1,19 +1,23 @@
 import React, { useRef, useState } from 'react';
-import { templateList } from '@/services/aitao/goods/template';
+import {
+  addTemplate,
+  templateList,
+  editTemplate,
+  delTemplate,
+} from '@/services/aitao/goods/template';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
-import { Button } from 'antd';
+import { Button, Modal } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import UpdateModal from './UpdateModal';
+import { handleModalOperation } from '@/utils/common/handleModalOperation';
 
-export type OpenParam = {
-  open: boolean;
-  openType: string;
-};
-
+const Add = 'add';
+const Edit = 'edit';
 const Goods: React.FC = () => {
   const actionRef = useRef<ActionType>();
-  const [openParam, setOpenParam] = useState<OpenParam>({ open: false, openType: '' });
+  const [openParam, setOpenParam] = useState<ModalProps>({ open: false, openType: '' });
+  const [modal, contextHolder] = Modal.useModal();
 
   const columns: ProColumns<API.Template>[] = [
     {
@@ -24,10 +28,8 @@ const Goods: React.FC = () => {
       },
     },
     {
-      title: '商品名称',
+      title: '模板名称',
       dataIndex: 'name',
-      sorter: true,
-      hideInForm: true,
     },
     {
       title: '规格数量',
@@ -51,22 +53,43 @@ const Goods: React.FC = () => {
         <a
           key="add"
           onClick={() => {
-            setOpenParam({ open: true, openType: 'edit' });
+            setOpenParam({ open: true, openType: Edit, record });
           }}
         >
           编辑
         </a>,
-        <a key="watch">删除</a>,
+        <a
+          onClick={(e) => {
+            e.stopPropagation();
+            modal.confirm({
+              title: '删除节点',
+              content: '是否要删除节点',
+              onOk: async () => {
+                handleModalOperation(
+                  async () => await delTemplate({ id: record.id }),
+                  () => actionRef.current?.reset && actionRef.current.reset(),
+                );
+              },
+            });
+          }}
+          key="del"
+        >
+          删除
+        </a>,
       ],
     },
   ];
 
-  const handleConfirm = (value: any) => {
+  const handleConfirm = (values: any, openType: string) => {
     setOpenParam({
       open: false,
       openType: '',
     });
-    console.log(value);
+    const request =
+      openType === Add
+        ? async () => await addTemplate(values)
+        : async () => await editTemplate(values);
+    handleModalOperation(request, () => actionRef.current?.reset && actionRef.current.reset());
   };
 
   const handleCancel = () => {
@@ -85,14 +108,24 @@ const Goods: React.FC = () => {
         search={{
           labelWidth: 120,
         }}
-        request={templateList}
+        request={async (params, sort, filter) => {
+          const { data } = await templateList(params);
+          return {
+            data: data.list || [],
+            // success 请返回 true，
+            // 不然 table 会停止解析数据，即使有数据
+            success: true,
+            // 不传会使用 data 的长度，如果是分页一定要传
+            total: data.total,
+          };
+        }}
         columns={columns}
         toolBarRender={() => [
           <Button
             onClick={() => {
               setOpenParam({
                 open: true,
-                openType: 'add',
+                openType: Add,
               });
             }}
             key="button"
@@ -103,6 +136,7 @@ const Goods: React.FC = () => {
           </Button>,
         ]}
       />
+      {contextHolder}
       <UpdateModal
         openParam={openParam}
         handleConfirm={handleConfirm}

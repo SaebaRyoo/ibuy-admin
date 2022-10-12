@@ -33,7 +33,7 @@ export default [
       },
       {
         path: '/goods/spec',
-        name: '模板列表',
+        name: '规格列表',
         icon: 'smile',
         component: './Goods/SpecList',
       },

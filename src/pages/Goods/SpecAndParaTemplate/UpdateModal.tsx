@@ -1,6 +1,6 @@
+import { findTemplate } from '@/services/aitao/goods/template';
 import { Modal, Form, Input, Button } from 'antd';
-import React from 'react';
-import { OpenParam } from './index';
+import React, { useEffect } from 'react';
 
 const Add = 'add';
 const Edit = 'edit';
@@ -10,18 +10,38 @@ const TitleMap = {
 };
 
 type UpdateModalProps = {
-  openParam: OpenParam;
-  handleConfirm: (value: any) => void;
+  openParam: ModalProps;
+  handleConfirm: (values: any, openType: string) => void;
   handleCancel: () => void;
 };
 
 const UpdateModal: React.FC<UpdateModalProps> = ({ openParam, handleConfirm, handleCancel }) => {
   const [form] = Form.useForm();
-  const { open, openType } = openParam;
+  const { open, openType, record = {} } = openParam;
+  const { id } = record;
+
+  const fetchTemplate = async () => {
+    const { data = {} } = await findTemplate({ id });
+    const { name } = data;
+
+    form.setFieldsValue({
+      name,
+    });
+  };
+
+  useEffect(() => {
+    if (openType === Edit) {
+      fetchTemplate();
+    }
+    return function cleanUp() {
+      form.resetFields();
+    };
+  }, [open]);
+
   const onFinish = (values: any) => {
     form.validateFields().then((values) => {
-      handleConfirm(values);
-      console.log('Success:', values);
+      values.id = id;
+      handleConfirm(values, openType);
     });
   };
 
