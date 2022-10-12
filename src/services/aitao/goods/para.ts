@@ -2,7 +2,7 @@
 /* eslint-disable */
 import { request } from '@umijs/max';
 
-/** 获取para列表 GET /api/mock/para */
+/** 获取para列表 GET /api/para */
 export async function paraList(
   params: {
     // query
@@ -11,36 +11,44 @@ export async function paraList(
     /** 页面的容量 */
     pageSize?: number;
   },
-  options?: { [id: string]: any },
+  options?: { [key: string]: any },
 ) {
-  return request<API.RuleList>('/api/mock/para', {
-    method: 'GET',
-    params: {
-      ...params,
-    },
-    ...(options || {}),
-  });
-}
-
-/** 新增para PUT /api/mock/para */
-export async function updatePara(options?: { [id: string]: any }) {
-  return request<API.Para>('/api/mock/para', {
-    method: 'PUT',
-    ...(options || {}),
-  });
-}
-
-/** 新增para POST /api/mock/para */
-export async function addPara(options?: { [id: string]: any }) {
-  return request<API.Para>('/api/mock/para', {
+  return request<API.RuleList>(`/api/para/search/${params.current}/${params.pageSize}`, {
     method: 'POST',
+    data: params,
     ...(options || {}),
   });
 }
 
-/** 删除para DELETE /api/mock/para */
-export async function removePara(options?: { [id: string]: any }) {
-  return request<Record<string, any>>('/api/mock/para', {
+// 添加参数
+export async function addPara(params: API.Para, options?: { [key: string]: any }) {
+  return request<API.RuleList>(`/api/para`, {
+    method: 'POST',
+    data: params,
+    ...(options || {}),
+  });
+}
+
+// 根据id查询数据
+export async function findPara(params: { id: string }, options?: { [key: string]: any }) {
+  return request<API.RuleList>(`/api/para/${params.id}`, {
+    method: 'GET',
+    ...(options || {}),
+  });
+}
+
+// 更新参数
+export async function editPara(params: API.Para, options?: { [key: string]: any }) {
+  return request<API.RuleList>(`/api/para/${params.id}`, {
+    method: 'PUT',
+    data: params,
+    ...(options || {}),
+  });
+}
+
+// 根据id删除数据
+export async function delPara(params: { id: number }, options?: { [key: string]: any }) {
+  return request<API.RuleList>(`/api/para/${params.id}`, {
     method: 'DELETE',
     ...(options || {}),
   });

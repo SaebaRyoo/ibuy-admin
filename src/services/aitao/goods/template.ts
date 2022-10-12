@@ -2,7 +2,7 @@
 /* eslint-disable */
 import { request } from '@umijs/max';
 
-/** 获取template列表 GET /api/mock/template */
+/** 获取template列表 GET /api/template */
 export async function templateList(
   params: {
     // query
@@ -11,36 +11,52 @@ export async function templateList(
     /** 页面的容量 */
     pageSize?: number;
   },
-  options?: { [id: string]: any },
+  options?: { [key: string]: any },
 ) {
-  return request<API.RuleList>('/api/mock/template', {
-    method: 'GET',
-    params: {
-      ...params,
-    },
-    ...(options || {}),
-  });
-}
-
-/** 新增template PUT /api/mock/template */
-export async function updateTemplate(options?: { [id: string]: any }) {
-  return request<API.Template>('/api/mock/template', {
-    method: 'PUT',
-    ...(options || {}),
-  });
-}
-
-/** 新增template POST /api/mock/template */
-export async function addTemplate(options?: { [id: string]: any }) {
-  return request<API.Template>('/api/mock/template', {
+  return request<API.RuleList>(`/api/template/search/${params.current}/${params.pageSize}`, {
     method: 'POST',
+    data: params,
     ...(options || {}),
   });
 }
 
-/** 删除template DELETE /api/mock/template */
-export async function removeTemplate(options?: { [id: string]: any }) {
-  return request<Record<string, any>>('/api/mock/template', {
+// 查询所有模板
+export async function findAllTemplates(params?: any, options?: { [key: string]: any }) {
+  return request<API.RuleList>(`/api/template`, {
+    method: 'GET',
+    ...(options || {}),
+  });
+}
+
+// 添加模板
+export async function addTemplate(params: API.Template, options?: { [key: string]: any }) {
+  return request<API.RuleList>(`/api/template`, {
+    method: 'POST',
+    data: params,
+    ...(options || {}),
+  });
+}
+
+// 根据id查询数据
+export async function findTemplate(params: { id: string }, options?: { [key: string]: any }) {
+  return request<API.RuleList>(`/api/template/${params.id}`, {
+    method: 'GET',
+    ...(options || {}),
+  });
+}
+
+// 更新模板
+export async function editTemplate(params: API.Template, options?: { [key: string]: any }) {
+  return request<API.RuleList>(`/api/template/${params.id}`, {
+    method: 'PUT',
+    data: params,
+    ...(options || {}),
+  });
+}
+
+// 根据id删除数据
+export async function delTemplate(params: { id: number }, options?: { [key: string]: any }) {
+  return request<API.RuleList>(`/api/template/${params.id}`, {
     method: 'DELETE',
     ...(options || {}),
   });

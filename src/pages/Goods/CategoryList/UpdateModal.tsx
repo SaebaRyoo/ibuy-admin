@@ -19,6 +19,7 @@ const UpdateModal: React.FC<UpdateModalProps> = ({ openParam, handleConfirm, han
   const [form] = Form.useForm();
   const [list, setList] = useState<API.Category[]>([]);
 
+  // curType用来标识当前是在特定的某个分类下添加子分类，用户无法选择分类列表，默认选中当前点击的分类
   const { open, openType, id, curType = false } = openParam;
 
   const fetchCategory = async () => {
