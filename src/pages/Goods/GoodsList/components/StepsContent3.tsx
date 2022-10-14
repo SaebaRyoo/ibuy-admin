@@ -256,7 +256,7 @@ const RichTextComponent: React.FC = () => {
 /**
  * 添加商品： 步骤3 组件
  */
-const Content3: React.FC = () => {
+const Content3: React.FC<{ openType: any }> = ({ openType }) => {
   const [specColumns, setSpecColumns] = useState<any[]>([]);
   const { spu, setSpu, skuList, setSkuList } = useModel('goods');
   const { specItems, paraItems } = spu;
@@ -433,7 +433,7 @@ const Content3: React.FC = () => {
   const genSkuTable = () => {
     const skuColumns = specColumns.concat(otherColumns);
     const editableKeys: React.Key[] | undefined = [];
-    const dataSource: Item[] = skuList.map((sku: API.SkuListItem, idx: number) => {
+    const dataSource: Item[] = skuList.map((sku: API.Sku, idx: number) => {
       const spec = sku.spec ? JSON.parse(sku.spec) : '{}';
       editableKeys.push(sku.spec);
       const obj: Item = {

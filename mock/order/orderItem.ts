@@ -90,9 +90,6 @@ function getRule(req: Request, res: Response, u: string) {
     }
   }
 
-  if (params.title) {
-    dataSource = dataSource.filter((data) => data?.title?.includes(params.title || ''));
-  }
   const result = {
     data: dataSource,
     total: tableListDataSource.length,

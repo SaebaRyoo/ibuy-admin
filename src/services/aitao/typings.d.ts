@@ -55,7 +55,7 @@ declare namespace API {
 
   /*******  商品相关  *************************************************************/
 
-  type SpuListItem = {
+  type Spu = {
     id: number;
     sn?: string;
     name?: string;
@@ -82,7 +82,7 @@ declare namespace API {
     createdAt?: string;
   };
 
-  type SkuListItem = {
+  type Sku = {
     id: number;
     sn?: string;
     name?: string;
@@ -105,8 +105,8 @@ declare namespace API {
   };
 
   type Goods = {
-    spu?: SpuListItem;
-    skuList?: Array<SkuListItem>;
+    spu?: Spu;
+    skuList?: Array<Sku>;
   };
 
   // 品牌
@@ -248,7 +248,7 @@ declare namespace API {
 
   // 表格数据形式
   type RuleList = {
-    data?: any; // 就是后面的各种数据 SpuListItem[] | SkuListItem[] | Brand[] | Album[] | Category[]
+    data?: any; // 就是后面的各种数据 Spu[] | Sku[] | Brand[] | Album[] | Category[]
     /** 列表的内容总数 */
     total?: number;
     success?: boolean;

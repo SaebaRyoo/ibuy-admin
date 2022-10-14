@@ -1,10 +1,11 @@
 import React, { useRef, useState } from 'react';
-import { removeSpu, supList } from '@/services/aitao/goods/spu';
+import { spuList } from '@/services/aitao/goods/goods';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { Button, message, Switch } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import AddGoods from './AddGoods';
+import { Add, Edit } from '@/utils/common/constant';
 
 /**
  *  Delete node
@@ -12,13 +13,10 @@ import AddGoods from './AddGoods';
  *
  * @param selectedRows
  */
-const handleRemove = async (selectedRows: API.SpuListItem[]) => {
+const handleRemove = async (selectedRows: API.Spu[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
-    await removeSpu({
-      id: selectedRows.map((row) => row.id),
-    });
     hide();
     message.success('Deleted successfully and will refresh soon');
     return true;
@@ -31,10 +29,10 @@ const handleRemove = async (selectedRows: API.SpuListItem[]) => {
 
 const Goods: React.FC = () => {
   const actionRef = useRef<ActionType>();
-  const [selectedRowsState, setSelectedRows] = useState<API.SpuListItem[]>([]);
-  const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
+  const [selectedRowsState, setSelectedRows] = useState<API.Spu[]>([]);
+  const [drawerOpen, setDrawerOpen] = useState<ModalProps>({ open: false, openType: '' });
 
-  const columns: ProColumns<API.SpuListItem>[] = [
+  const columns: ProColumns<API.Spu>[] = [
     {
       title: '编号',
       dataIndex: 'id',
@@ -45,20 +43,17 @@ const Goods: React.FC = () => {
     {
       title: '商品图片',
       dataIndex: 'image',
+      render: (_, record) => {
+        return <img style={{ maxHeight: 40 }} src={record.image} />;
+      },
     },
     {
       title: '商品名称',
       dataIndex: 'name',
-      sorter: true,
-      hideInForm: true,
     },
     {
       title: '货号',
       dataIndex: 'sn',
-    },
-    {
-      title: '副标题',
-      dataIndex: 'caption',
     },
     {
       title: '标签',
@@ -73,6 +68,10 @@ const Goods: React.FC = () => {
           </>
         );
       },
+    },
+    {
+      title: 'SKU库存',
+      dataIndex: 'abc',
     },
     {
       title: '销量',
@@ -104,8 +103,15 @@ const Goods: React.FC = () => {
       valueType: 'option',
       render: (_, record) => [
         <a key="watch">查看</a>,
-        <a key="edit">编辑</a>,
-        <a key="logs">日志</a>,
+        <a
+          key="edit"
+          onClick={() => {
+            setDrawerOpen({ open: true, openType: Edit });
+          }}
+        >
+          编辑
+        </a>,
+        // <a key="logs">日志</a>, //TODO: 待完成
         <a key="del">删除</a>,
         <a key="check">审核</a>,
       ],
@@ -114,14 +120,24 @@ const Goods: React.FC = () => {
 
   return (
     <PageContainer>
-      <ProTable<API.SpuListItem, API.PageParams>
+      <ProTable<API.Spu, API.PageParams>
         headerTitle="商品管理"
         actionRef={actionRef}
         rowKey="id"
         search={{
           labelWidth: 120,
         }}
-        request={supList}
+        request={async (params, sort, filter) => {
+          const { data } = await spuList(params);
+          return {
+            data: data.list || [],
+            // success 请返回 true，
+            // 不然 table 会停止解析数据，即使有数据
+            success: true,
+            // 不传会使用 data 的长度，如果是分页一定要传
+            total: data.total,
+          };
+        }}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => {
@@ -131,7 +147,7 @@ const Goods: React.FC = () => {
         toolBarRender={() => [
           <Button
             onClick={() => {
-              setDrawerOpen(true);
+              setDrawerOpen({ open: true, openType: Add });
             }}
             key="button"
             icon={<PlusOutlined />}
