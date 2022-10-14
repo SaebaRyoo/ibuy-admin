@@ -6,7 +6,7 @@ import styles from './StepsContent2.less';
 const Option = Select.Option;
 const TextArea = Input.TextArea;
 
-const Content2: React.FC = () => {
+const Content2: React.FC<{ openType: any }> = ({ openType }) => {
   const { spu, setSpu } = useModel('goods');
   const {
     category1Id,
@@ -124,7 +124,7 @@ const Content2: React.FC = () => {
             { label: '快速退款', value: '1' },
             { label: '免费包邮', value: '2' },
           ]}
-          value={[saleService]}
+          value={saleService ? [saleService] : []}
           onChange={(value) => {
             handleFormChange('saleService', value);
           }}
