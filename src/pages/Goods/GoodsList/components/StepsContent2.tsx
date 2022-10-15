@@ -1,24 +1,46 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useModel } from 'umi';
 import { Checkbox, Form, Input, Select } from 'antd';
 import styles from './StepsContent2.less';
+import { Edit, Watch } from '@/utils/common/constant';
 
 const Option = Select.Option;
 const TextArea = Input.TextArea;
 
 const Content2: React.FC<{ openType: any }> = ({ openType }) => {
-  const { spu, setSpu } = useModel('goods');
+  const [form] = Form.useForm();
+  const { spu, setSpu, category1List, category2List, category3List, brands } = useModel('goods');
   const {
-    category1Id,
-    category2Id,
-    category3Id,
     name,
     caption,
+    brandId,
     freightId,
     introduction,
     sn,
     saleService,
+    category1Id,
+    category2Id,
+    category3Id,
   } = spu;
+
+  const c1 = category1List.find((item) => item.id === category1Id);
+  const c2 = category2List.find((item) => item.id === category2Id);
+  const c3 = category3List.find((item) => item.id === category3Id);
+
+  useEffect(() => {
+    // 编辑和查看时的数据回显
+    if (openType === Edit || openType === Watch) {
+      form.setFieldsValue({
+        name,
+        caption,
+        brandId,
+        freightId,
+        introduction,
+        sn,
+        saleService,
+      });
+    }
+  }, []);
 
   const handleFormChange = (key: string, value: any) => {
     // 根据传入的key修改goods数据
@@ -29,10 +51,18 @@ const Content2: React.FC<{ openType: any }> = ({ openType }) => {
   };
 
   return (
-    <Form name="basic" labelCol={{ span: 8 }} wrapperCol={{ span: 8 }} autoComplete="off">
+    <Form
+      form={form}
+      name="basic"
+      labelCol={{ span: 8 }}
+      wrapperCol={{ span: 8 }}
+      autoComplete="off"
+    >
       <div className={styles.header}>基本信息</div>
       <Form.Item label="商品分类" name="abc" rules={[{ required: true }]}>
-        <div>数码 &gt; 手机 &gt; 华为</div>
+        <div>
+          {c1?.name} &gt; {c2?.name} &gt; {c3?.name}
+        </div>
       </Form.Item>
 
       <Form.Item
@@ -71,10 +101,8 @@ const Content2: React.FC<{ openType: any }> = ({ openType }) => {
           onChange={(value) => {
             handleFormChange('brandId', value);
           }}
-        >
-          <Option value="1">华为</Option>
-          <Option value="2">苹果</Option>
-        </Select>
+          options={brands.map((brand) => ({ label: brand.name, value: brand.id }))}
+        />
       </Form.Item>
 
       <Form.Item

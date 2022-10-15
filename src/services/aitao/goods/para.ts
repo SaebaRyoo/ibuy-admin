@@ -20,6 +20,13 @@ export async function paraList(
   });
 }
 
+// 查询全部数据
+export async function findAllParas(params?: any, options?: { [key: string]: any }) {
+  return request<API.RuleList>(`/api/para`, {
+    method: 'GET',
+    ...(options || {}),
+  });
+}
 // 添加参数
 export async function addPara(params: API.Para, options?: { [key: string]: any }) {
   return request<API.RuleList>(`/api/para`, {

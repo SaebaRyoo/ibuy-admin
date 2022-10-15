@@ -1,12 +1,16 @@
 import { Button, Drawer, message, Space, Steps } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import StepsContent1 from './components/StepsContent1';
 import StepsContent2 from './components/StepsContent2';
 import StepsContent3 from './components/StepsContent3';
-
-import styles from './AddGoods.less';
 import { Add, Edit, Watch } from '@/utils/common/constant';
 import { useModel } from '@umijs/max';
+import { findSpu } from '@/services/aitao/goods/goods';
+import { listByPid } from '@/services/aitao/goods/category';
+import { findAllBrands } from '@/services/aitao/goods/brand';
+import { findAllParas } from '@/services/aitao/goods/para';
+import { findAllSpecs } from '@/services/aitao/goods/spec';
+import styles from './AddGoods.less';
 
 const { Step } = Steps;
 
@@ -16,15 +20,95 @@ const TitleMap = {
   [Watch]: '查看商品',
 };
 
-export type AddGoodsPropsType = {
+type AddGoodsPropsType = {
   drawerOpen: ModalProps;
   setDrawerOpen: Function;
 };
 const AddGoods: React.FC<AddGoodsPropsType> = ({ drawerOpen, setDrawerOpen }) => {
   const [current, setCurrent] = useState(0);
-  const { spu } = useModel('goods');
+  const {
+    spu,
+    setSpu,
+    setCategory1List,
+    setCategory2List,
+    setCategory3List,
+    setBrands,
+    setParas,
+    setSpecs,
+  } = useModel('goods');
+  const { open, openType, record = {} } = drawerOpen;
 
-  const { open, openType } = drawerOpen;
+  // 获取Spu数据
+  const fetchSpu = async () => {
+    if (openType === Edit || openType === Watch) {
+      const { data } = await findSpu({ id: record.id });
+      setSpu(data);
+      return data;
+    }
+    return {};
+  };
+
+  // 获取分类数据
+  const fetchCategoryListByPid = async (pid: number) => {
+    const { data, success } = await listByPid({ pid });
+    if (success) {
+      return data || [];
+    }
+    return [];
+  };
+
+  const fetchCategoryData = (spu: API.Spu) => {
+    if (openType === Edit || openType === Watch) {
+      // 根据之前选的
+      fetchCategoryListByPid(0).then((list) => {
+        setCategory1List(list);
+      });
+      if (spu.category1Id) {
+        fetchCategoryListByPid(spu.category1Id).then((list) => {
+          setCategory2List(list);
+        });
+      }
+      if (spu.category2Id) {
+        fetchCategoryListByPid(spu.category2Id).then((list) => {
+          setCategory3List(list);
+        });
+      }
+    }
+  };
+
+  // 获取品牌数据
+  const fetchBrands = async () => {
+    const { data, success } = await findAllBrands();
+    if (success) {
+      setBrands(data);
+    }
+  };
+  // 获取属性数据
+  const fetchSpecs = async () => {
+    const { data, success } = await findAllSpecs();
+    if (success) {
+      setSpecs(data);
+    }
+  };
+  // 获取参数数据
+  const fetchParas = async () => {
+    const { data, success } = await findAllParas();
+    if (success) {
+      setParas(data);
+    }
+  };
+
+  useEffect(() => {
+    (async () => {
+      if (open) {
+        fetchBrands();
+        fetchSpecs();
+        fetchParas();
+        const spu: API.Spu = await fetchSpu();
+        fetchCategoryData(spu);
+      }
+    })();
+  }, [open]);
 
   const next = () => {
     const { category1Id, category2Id, category3Id, name, caption, freightId, introduction, sn } =
@@ -76,7 +160,14 @@ const AddGoods: React.FC<AddGoodsPropsType> = ({ drawerOpen, setDrawerOpen }) =>
       destroyOnClose={true}
       extra={
         <Space>
-          <Button onClick={() => setDrawerOpen({ open: false, openType: '' })}>Cancel</Button>
+          <Button
+            onClick={() => {
+              setCurrent(0);
+              setDrawerOpen({ open: false, openType: '' });
+            }}
+          >
+            Cancel
+          </Button>
         </Space>
       }
     >

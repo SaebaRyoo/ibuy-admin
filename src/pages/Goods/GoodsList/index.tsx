@@ -5,7 +5,7 @@ import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-componen
 import { Button, message, Switch } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import AddGoods from './AddGoods';
-import { Add, Edit } from '@/utils/common/constant';
+import { Add, Edit, Watch } from '@/utils/common/constant';
 
 /**
  *  Delete node
@@ -102,11 +102,18 @@ const Goods: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
-        <a key="watch">查看</a>,
+        <a
+          key="watch"
+          onClick={() => {
+            setDrawerOpen({ open: true, openType: Watch, record });
+          }}
+        >
+          查看
+        </a>,
         <a
           key="edit"
           onClick={() => {
-            setDrawerOpen({ open: true, openType: Edit });
+            setDrawerOpen({ open: true, openType: Edit, record });
           }}
         >
           编辑

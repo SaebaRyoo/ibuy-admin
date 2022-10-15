@@ -10,6 +10,7 @@ export default defineConfig({
   request: {},
   initialState: {},
   model: {},
+  dva: {}, // 启用dva
   layout: {
     // https://umijs.org/zh-CN/plugins/plugin-layout
     locale: true,

@@ -95,6 +95,7 @@ const SelectList: React.FC<SelectListProps> = ({
       <List
         itemLayout="horizontal"
         dataSource={dataSource}
+        className={styles.list}
         rowKey="id"
         renderItem={(item) => (
           <List.Item
@@ -115,10 +116,16 @@ const SelectList: React.FC<SelectListProps> = ({
 };
 
 const Content_1: React.FC<{ openType: any }> = ({ openType }) => {
-  const [category1List, setCategory1List] = useState<API.Category[]>([]);
-  const [category2List, setCategory2List] = useState<API.Category[]>([]);
-  const [category3List, setCategory3List] = useState<API.Category[]>([]);
-  const { spu, setSpu } = useModel('goods');
+  const {
+    spu,
+    setSpu,
+    category1List,
+    setCategory1List,
+    category2List,
+    setCategory2List,
+    category3List,
+    setCategory3List,
+  } = useModel('goods');
   const { category1Id, category2Id, category3Id } = spu;
 
   const c1 = category1List.find((item) => item.id === category1Id);

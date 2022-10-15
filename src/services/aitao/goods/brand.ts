@@ -20,6 +20,13 @@ export async function brandList(
   });
 }
 
+// 查询全部数据
+export async function findAllBrands(params?: any, options?: { [key: string]: any }) {
+  return request<API.RuleList>(`/api/brand`, {
+    method: 'GET',
+    ...(options || {}),
+  });
+}
 // 添加角色
 export async function addBrand(params: API.Brand, options?: { [key: string]: any }) {
   return request<API.RuleList>(`/api/brand`, {
