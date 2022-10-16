@@ -53,3 +53,11 @@ export async function delSpu(params: { id: number }, options?: { [key: string]: 
     ...(options || {}),
   });
 }
+
+// 根据spuId查询sku
+export async function findSkuBySpuId(params: { spuId: number }, options?: { [key: string]: any }) {
+  return request<API.RuleList>(`/api/sku/spu/${params.spuId}`, {
+    method: 'GET',
+    ...(options || {}),
+  });
+}

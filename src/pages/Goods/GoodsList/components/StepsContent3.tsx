@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import { useModel } from 'umi';
 import { Checkbox, Modal, Upload, Form, Select, Button } from 'antd';
@@ -8,6 +8,9 @@ import styles from './StepsContent3.less';
 import { EditableProTable } from '@ant-design/pro-components';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import { findSkuBySpuId } from '@/services/aitao/goods/goods';
+import { Edit, Watch } from '@/utils/common/constant';
+import { CheckboxValueType } from 'antd/lib/checkbox/Group';
 
 type Item = {
   id: number;
@@ -29,22 +32,22 @@ type Item = {
 // 一个spu(标准产品单位)下的所有规格数据,
 // 用户根据选择的产品分类的template_id获取(tb_spec表)对应的数据
 // 比如以下以手机这个标准产品获取的数据
-const specMap = {
-  网络: ['联通2G', '联通3G', '联通4G', '联通5G', '移动2G', '移动3G', '移动4G', '移动5G'],
-  手机屏幕尺寸: ['5寸', '5.5寸'],
-  机身内存: ['16G', '32G', '128G', '256G'],
-  像素: ['300万像素', '800万像素', '2000万像素'],
-};
+// const specMap = {
+//   网络: ['联通2G', '联通3G', '联通4G', '联通5G', '移动2G', '移动3G', '移动4G', '移动5G'],
+//   手机屏幕尺寸: ['5寸', '5.5寸'],
+//   机身内存: ['16G', '32G', '128G', '256G'],
+//   像素: ['300万像素', '800万像素', '2000万像素'],
+// };
 
 // spu.paraItems
 // '{"出厂年份":"2022","版本":"1"}';
 
 // 一个spu(标准产品单位)下的所有参数数据,
 // 用户根据选择的产品分类的template_id获取(tb_para表)对应的数据
-const paraMap = {
-  出厂年份: ['2001', '2002', '2003', '2004', '20021', '2022'],
-  版本: ['1.0', '2.0', '3.0'],
-};
+// const paraMap = {
+//   出厂年份: ['2001', '2002', '2003', '2004', '20021', '2022'],
+//   版本: ['1.0', '2.0', '3.0'],
+// };
 
 const getBase64 = (file: RcFile): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -258,15 +261,24 @@ const RichTextComponent: React.FC = () => {
  */
 const Content3: React.FC<{ openType: any }> = ({ openType }) => {
   const [specColumns, setSpecColumns] = useState<any[]>([]);
-  const { spu, setSpu, skuList, setSkuList } = useModel('goods');
-  const { specItems, paraItems } = spu;
+  const { spu, setSpu, skuList, setSkuList, specs, paras } = useModel('goods');
+  const { id, specItems, paraItems } = spu;
+  const specMap: { [x: string]: any } = {};
+  const paraMap: { [x: string]: any } = {};
+
+  specs?.forEach((spec) => {
+    specMap[spec.name] = spec.options?.split(',');
+  });
+  paras?.forEach((para) => {
+    paraMap[para.name] = para.options?.split(',');
+  });
 
   // 每个标准产品的规格数据是一个hashMap 字符串，需要转为object
   const specConvertData = specItems ? JSON.parse(specItems) : {};
   // 参数数据
   const paraConvertData = paraItems ? JSON.parse(paraItems) : {};
-  // console.log('specConvertData-----> ', specConvertData);
-  console.log('paraConvertData-----> ', paraConvertData);
+  console.log('specConvertData-----> ', specConvertData);
+  // console.log('paraConvertData-----> ', paraConvertData);
 
   const otherColumns = [
     {
@@ -318,35 +330,34 @@ const Content3: React.FC<{ openType: any }> = ({ openType }) => {
     },
   ];
 
-  const handleCheckbox = (value: string, key: string) => {
-    // 如果没有数据，则初始化一个
-    if (specConvertData[key] === undefined) {
-      specConvertData[key] = [];
-    }
-    if (specConvertData[key]?.includes(value)) {
-      specConvertData[key]?.forEach((val: string, i: number) => {
-        if (val === value) {
-          specConvertData[key]?.splice(i, 1);
-          if (specConvertData[key].length <= 0) {
-            delete specConvertData[key];
-          }
-          return;
+  useEffect(() => {
+    (async () => {
+      if (openType === Watch || openType === Edit) {
+        const { data, success } = await findSkuBySpuId({ spuId: id });
+        if (success) {
+          setSkuList(data);
         }
-      });
-    } else {
-      specConvertData[key].push(value);
+      }
+    })();
+  }, []);
+
+  const handleCheckbox = (checkedValues: CheckboxValueType[], key: string) => {
+    console.log('checked = ', checkedValues, '----- key = ', key);
+    const copyData = { ...specConvertData };
+
+    if (copyData[key] === undefined) {
+      copyData[key] = [];
     }
-
-    // 根据选择的规格数据, 初始化sku数据
-    genSkuData(specConvertData);
-
+    copyData[key] = checkedValues;
     // 设置spu数据
     setSpu((prev) => {
       return {
         ...prev,
-        specItems: JSON.stringify(specConvertData),
+        specItems: JSON.stringify(copyData),
       };
     });
+    // 设置sku的数据
+    genSkuData(copyData);
   };
 
   // spec1 _ 生成规格列表
@@ -354,30 +365,14 @@ const Content3: React.FC<{ openType: any }> = ({ openType }) => {
     return Object.keys(data).map((key) => (
       <div key={key} className={styles.specListItem}>
         <span>{key}: </span>
-        <Checkbox.Group className={styles.specCheckboxWrapper}>
-          {genSpecCheckbox(data[key], key)}
-        </Checkbox.Group>
+        <Checkbox.Group
+          className={styles.specCheckboxWrapper}
+          options={data[key].map((item: any) => ({ label: item, value: item }))}
+          value={specConvertData[key]}
+          onChange={(checkedValues: CheckboxValueType[]) => handleCheckbox(checkedValues, key)}
+        />
       </div>
     ));
-  };
-
-  // spec2 _ 规格列表中的checkbox
-  const genSpecCheckbox = (data: string[], key: string) => {
-    return data.map((item, i) => {
-      // 判断某个规格是否已经被选中
-      const checked = specConvertData[key]?.includes(item);
-      return (
-        <div key={item}>
-          <Checkbox
-            checked={checked}
-            onChange={(e) => handleCheckbox(e.target.value, key)}
-            value={item}
-          >
-            {item}
-          </Checkbox>
-        </div>
-      );
-    });
   };
 
   // 生成sku初始数据
@@ -460,11 +455,6 @@ const Content3: React.FC<{ openType: any }> = ({ openType }) => {
         loading={false}
         columns={skuColumns}
         recordCreatorProps={false}
-        // request={async () => ({
-        //   data: defaultData,
-        //   total: 3,
-        //   success: true,
-        // })}
         value={dataSource}
         editable={{
           type: 'multiple',

@@ -20,6 +20,13 @@ export async function specList(
   });
 }
 
+// 查询全部数据
+export async function findAllSpecs(params?: any, options?: { [key: string]: any }) {
+  return request<API.RuleList>(`/api/spec`, {
+    method: 'GET',
+    ...(options || {}),
+  });
+}
 // 添加规格
 export async function addSpec(params: API.Spec, options?: { [key: string]: any }) {
   return request<API.RuleList>(`/api/spec`, {

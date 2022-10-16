@@ -150,8 +150,8 @@ declare namespace API {
   // 规格类型
   type Spec = {
     id: number;
-    name?: string;
-    options?: string;
+    name: string;
+    options: string;
     seq: number;
     templateId?: number;
   };
@@ -159,7 +159,7 @@ declare namespace API {
   // 参数类型
   type Para = {
     id: number;
-    name?: string;
+    name: string;
     options?: string;
     seq: number;
     templateId?: number;
