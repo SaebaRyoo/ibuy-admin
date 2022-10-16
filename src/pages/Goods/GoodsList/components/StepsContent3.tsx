@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import { useModel } from 'umi';
 import { Checkbox, Modal, Upload, Form, Select, Button } from 'antd';
@@ -8,7 +8,9 @@ import styles from './StepsContent3.less';
 import { EditableProTable } from '@ant-design/pro-components';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import spec from 'mock/goods/spec';
+import { findSkuBySpuId } from '@/services/aitao/goods/goods';
+import { Edit, Watch } from '@/utils/common/constant';
+import { CheckboxValueType } from 'antd/lib/checkbox/Group';
 
 type Item = {
   id: number;
@@ -260,7 +262,7 @@ const RichTextComponent: React.FC = () => {
 const Content3: React.FC<{ openType: any }> = ({ openType }) => {
   const [specColumns, setSpecColumns] = useState<any[]>([]);
   const { spu, setSpu, skuList, setSkuList, specs, paras } = useModel('goods');
-  const { specItems, paraItems } = spu;
+  const { id, specItems, paraItems } = spu;
   const specMap: { [x: string]: any } = {};
   const paraMap: { [x: string]: any } = {};
 
@@ -328,35 +330,34 @@ const Content3: React.FC<{ openType: any }> = ({ openType }) => {
     },
   ];
 
-  const handleCheckbox = (value: string, key: string) => {
-    // 如果没有数据，则初始化一个
-    if (specConvertData[key] === undefined) {
-      specConvertData[key] = [];
-    }
-    if (specConvertData[key]?.includes(value)) {
-      specConvertData[key]?.forEach((val: string, i: number) => {
-        if (val === value) {
-          specConvertData[key]?.splice(i, 1);
-          if (specConvertData[key].length <= 0) {
-            delete specConvertData[key];
-          }
-          return;
+  useEffect(() => {
+    (async () => {
+      if (openType === Watch || openType === Edit) {
+        const { data, success } = await findSkuBySpuId({ spuId: id });
+        if (success) {
+          setSkuList(data);
         }
-      });
-    } else {
-      specConvertData[key].push(value);
+      }
+    })();
+  }, []);
+
+  const handleCheckbox = (checkedValues: CheckboxValueType[], key: string) => {
+    console.log('checked = ', checkedValues, '----- key = ', key);
+    const copyData = { ...specConvertData };
+
+    if (copyData[key] === undefined) {
+      copyData[key] = [];
     }
-
-    // 根据选择的规格数据, 初始化sku数据
-    genSkuData(specConvertData);
-
+    copyData[key] = checkedValues;
     // 设置spu数据
     setSpu((prev) => {
       return {
         ...prev,
-        specItems: JSON.stringify(specConvertData),
+        specItems: JSON.stringify(copyData),
       };
     });
+    // 设置sku的数据
+    genSkuData(copyData);
   };
 
   // spec1 _ 生成规格列表
@@ -364,35 +365,14 @@ const Content3: React.FC<{ openType: any }> = ({ openType }) => {
     return Object.keys(data).map((key) => (
       <div key={key} className={styles.specListItem}>
         <span>{key}: </span>
-        {/* <Checkbox.Group className={styles.specCheckboxWrapper}>
-          {genSpecCheckbox(data[key], key)}
-        </Checkbox.Group> */}
-
-        <div className={styles.specCheckboxWrapper}>{genSpecCheckbox(data[key], key)}</div>
+        <Checkbox.Group
+          className={styles.specCheckboxWrapper}
+          options={data[key].map((item: any) => ({ label: item, value: item }))}
+          value={specConvertData[key]}
+          onChange={(checkedValues: CheckboxValueType[]) => handleCheckbox(checkedValues, key)}
+        />
       </div>
     ));
-  };
-
-  // spec2 _ 规格列表中的checkbox
-  const genSpecCheckbox = (data: string[], key: string) => {
-    return data.map((item, i) => {
-      // 判断某个规格是否已经被选中
-      const checked = specConvertData[key]?.includes(item);
-      // console.log(
-      //   `item:${item} had checked:${checked}, specConvertData[key]: ${specConvertData[key]}`,
-      // );
-      return (
-        <div key={item}>
-          <Checkbox
-            checked={checked}
-            onChange={(e) => handleCheckbox(e.target.value, key)}
-            // value={item}
-          >
-            {item}
-          </Checkbox>
-        </div>
-      );
-    });
   };
 
   // 生成sku初始数据
@@ -475,11 +455,6 @@ const Content3: React.FC<{ openType: any }> = ({ openType }) => {
         loading={false}
         columns={skuColumns}
         recordCreatorProps={false}
-        // request={async () => ({
-        //   data: defaultData,
-        //   total: 3,
-        //   success: true,
-        // })}
         value={dataSource}
         editable={{
           type: 'multiple',
