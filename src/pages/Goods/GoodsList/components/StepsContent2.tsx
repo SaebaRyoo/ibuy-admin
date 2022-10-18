@@ -72,8 +72,8 @@ const Content2: React.FC<{ openType: any }> = ({ openType }) => {
       >
         <Input
           value={name}
-          onChange={(value) => {
-            handleFormChange('name', value);
+          onChange={(e) => {
+            handleFormChange('name', e.target.value);
           }}
         />
       </Form.Item>
@@ -85,8 +85,8 @@ const Content2: React.FC<{ openType: any }> = ({ openType }) => {
       >
         <Input
           value={caption}
-          onChange={(value) => {
-            handleFormChange('caption', value);
+          onChange={(e) => {
+            handleFormChange('caption', e.target.value);
           }}
         />
       </Form.Item>
@@ -119,19 +119,15 @@ const Content2: React.FC<{ openType: any }> = ({ openType }) => {
         />
       </Form.Item>
 
-      <Form.Item
-        label="运费模板"
-        name="freightId"
-        rules={[{ required: true, message: '请选择运费模板' }]}
-      >
+      <Form.Item label="运费模板" name="freightId">
         <Select
           value={freightId}
           onChange={(value) => {
             handleFormChange('freightId', value);
           }}
         >
-          <Option value="1">模板1</Option>
-          <Option value="2">模板2</Option>
+          <Option value="1">包邮</Option>
+          <Option value="2">6块</Option>
         </Select>
       </Form.Item>
 
@@ -139,8 +135,8 @@ const Content2: React.FC<{ openType: any }> = ({ openType }) => {
       <Form.Item label="商品货号" name="sn" rules={[{ required: true, message: '商品货号' }]}>
         <Input
           value={sn}
-          onChange={(value) => {
-            handleFormChange('sn', value);
+          onChange={(e) => {
+            handleFormChange('sn', e.target.value);
           }}
         />
       </Form.Item>

@@ -20,6 +20,18 @@ export async function spuList(
   });
 }
 
+// 添加商品
+export async function addGoods(
+  params: { spu: API.Spu; skuList: API.Sku[] },
+  options?: { [key: string]: any },
+) {
+  return request<API.RuleList>(`/api/spu/save`, {
+    method: 'POST',
+    data: params,
+    ...(options || {}),
+  });
+}
+
 // 添加Sku
 export async function addSpu(params: API.Spu, options?: { [key: string]: any }) {
   return request<API.RuleList>(`/api/spu`, {

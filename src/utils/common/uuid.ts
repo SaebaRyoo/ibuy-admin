@@ -1,7 +1,7 @@
 // @ts-ignore
 /* eslint-disable */
 // 指定长度和基数
-export function uuid(len: number, radix: number) {
+export function uuid(len?: number, radix?: number) {
   const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
   const uid = [];
   let i;

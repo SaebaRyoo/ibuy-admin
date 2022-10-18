@@ -56,7 +56,7 @@ declare namespace API {
   /*******  商品相关  *************************************************************/
 
   type Spu = {
-    id: number;
+    id?: number;
     sn?: string;
     name?: string;
     caption?: string;
