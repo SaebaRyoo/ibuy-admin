@@ -1,11 +1,12 @@
 import React, { useRef, useState } from 'react';
-import { spuList } from '@/services/aitao/goods/goods';
+import { addGoods, spuList, spuAudit, spuPut, spuPull } from '@/services/aitao/goods/goods';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
-import { Button, message, Switch } from 'antd';
+import { Button, message, Modal, Switch } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import AddGoods from './AddGoods';
 import { Add, Edit, Watch } from '@/utils/common/constant';
+import { handleModalOperation } from '@/utils/common/handleModalOperation';
 
 /**
  *  Delete node
@@ -31,6 +32,7 @@ const Goods: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const [selectedRowsState, setSelectedRows] = useState<API.Spu[]>([]);
   const [drawerOpen, setDrawerOpen] = useState<ModalProps>({ open: false, openType: '' });
+  const [modal, contextHolder] = Modal.useModal();
 
   const columns: ProColumns<API.Spu>[] = [
     {
@@ -64,7 +66,23 @@ const Goods: React.FC = () => {
         return (
           <>
             {flag ? '已上架' : '已下架'}&nbsp;&nbsp;
-            <Switch key="" defaultChecked={flag} />
+            <Switch
+              key=""
+              onChange={() => {
+                if (flag) {
+                  handleModalOperation(
+                    async () => await spuPull(record.id),
+                    () => actionRef.current?.reset && actionRef.current.reset(),
+                  );
+                } else {
+                  handleModalOperation(
+                    async () => await spuPut(record.id),
+                    () => actionRef.current?.reset && actionRef.current.reset(),
+                  );
+                }
+              }}
+              defaultChecked={flag}
+            />
           </>
         );
       },
@@ -120,10 +138,45 @@ const Goods: React.FC = () => {
         </a>,
         // <a key="logs">日志</a>, //TODO: 待完成
         <a key="del">删除</a>,
-        <a key="check">审核</a>,
+        record.status !== '1' && (
+          <a
+            key="check"
+            onClick={(e) => {
+              e.stopPropagation();
+              modal.confirm({
+                title: '审核',
+                content: '请确认商品无误再上传',
+                onOk: async () => {
+                  handleModalOperation(
+                    async () => await spuAudit(record.id),
+                    () => actionRef.current?.reset && actionRef.current.reset(),
+                  );
+                },
+              });
+            }}
+          >
+            审核
+          </a>
+        ),
       ],
     },
   ];
+
+  const handleClose = () => {
+    setDrawerOpen({ open: false, openType: '' });
+  };
+
+  const handleConfirm = async (goods: { spu: API.Spu; skuList: API.Sku[] }) => {
+    setDrawerOpen({ open: false, openType: '' });
+    const { spu, skuList } = goods;
+    const { success } = await addGoods({ spu: spu, skuList: skuList });
+    if (success) {
+      message.success('添加成功');
+    } else {
+      message.error('添加失败');
+    }
+    actionRef.current?.reset && actionRef.current.reset();
+  };
 
   return (
     <PageContainer>
@@ -185,7 +238,8 @@ const Goods: React.FC = () => {
           <Button type="primary">批量审批</Button>
         </FooterToolbar>
       )}
-      <AddGoods drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} />
+      {contextHolder}
+      <AddGoods drawerOpen={drawerOpen} handleClose={handleClose} handleConfirm={handleConfirm} />
     </PageContainer>
   );
 };
