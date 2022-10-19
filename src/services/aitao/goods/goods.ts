@@ -32,6 +32,42 @@ export async function addGoods(
   });
 }
 
+/**
+ * 商品审核
+ * @param params
+ * @param options
+ */
+export async function spuAudit(id: number, options?: { [key: string]: any }) {
+  return request<API.RuleList>(`/api/spu/audit/${id}`, {
+    method: 'PUT',
+    ...(options || {}),
+  });
+}
+
+/**
+ * 商品上架
+ * @param params
+ * @param options
+ */
+export async function spuPut(id: number, options?: { [key: string]: any }) {
+  return request<API.RuleList>(`/api/spu//put/${id}`, {
+    method: 'PUT',
+    ...(options || {}),
+  });
+}
+
+/**
+ *商品下架
+ * @param params
+ * @param options
+ */
+export async function spuPull(id: number, options?: { [key: string]: any }) {
+  return request<API.RuleList>(`/api/spu//pull/${id}`, {
+    method: 'PUT',
+    ...(options || {}),
+  });
+}
+
 // 添加Sku
 export async function addSpu(params: API.Spu, options?: { [key: string]: any }) {
   return request<API.RuleList>(`/api/spu`, {

@@ -5,7 +5,7 @@ import StepsContent2 from './components/StepsContent2';
 import StepsContent3 from './components/StepsContent3';
 import { Add, Edit, Watch } from '@/utils/common/constant';
 import { useModel } from '@umijs/max';
-import { addGoods, findSpu } from '@/services/aitao/goods/goods';
+import { findSpu } from '@/services/aitao/goods/goods';
 import { listByPid } from '@/services/aitao/goods/category';
 import { findAllBrands } from '@/services/aitao/goods/brand';
 import { findAllParas } from '@/services/aitao/goods/para';
@@ -22,9 +22,10 @@ const TitleMap = {
 
 type AddGoodsPropsType = {
   drawerOpen: ModalProps;
-  setDrawerOpen: Function;
+  handleClose: () => void;
+  handleConfirm: (goods: { spu: API.Spu; skuList: API.Sku[] }) => void;
 };
-const AddGoods: React.FC<AddGoodsPropsType> = ({ drawerOpen, setDrawerOpen }) => {
+const AddGoods: React.FC<AddGoodsPropsType> = ({ drawerOpen, handleClose, handleConfirm }) => {
   const [current, setCurrent] = useState(0);
   const {
     spu,
@@ -112,7 +113,7 @@ const AddGoods: React.FC<AddGoodsPropsType> = ({ drawerOpen, setDrawerOpen }) =>
   }, [open]);
 
   const next = () => {
-    const { category1Id, category2Id, category3Id, name, caption, introduction, sn } = spu;
+    const { category1Id, category2Id, category3Id, name, caption, sn } = spu;
     // 第一步判断
     if (current === 0) {
       if (category1Id && category2Id && category3Id) {
@@ -121,25 +122,17 @@ const AddGoods: React.FC<AddGoodsPropsType> = ({ drawerOpen, setDrawerOpen }) =>
         message.error('请选择商品的分类');
       }
     } else if (current === 1) {
-      // 第二部判断
-      if (name && caption && introduction && sn) {
+      // 第二步判断
+      if (name && caption && sn) {
         setCurrent(current + 1);
       } else {
         message.error('请填写完整商品的信息');
       }
-    } else if (current === 2) {
-      // 第三步判断
     }
   };
 
   const prev = () => {
     setCurrent(current - 1);
-  };
-
-  const handleClose = () => {
-    setCurrent(0);
-    setSpu({});
-    setDrawerOpen({ open: false, openType: '' });
   };
 
   const steps = [
@@ -166,7 +159,15 @@ const AddGoods: React.FC<AddGoodsPropsType> = ({ drawerOpen, setDrawerOpen }) =>
       destroyOnClose={true}
       extra={
         <Space>
-          <Button onClick={handleClose}>Cancel</Button>
+          <Button
+            onClick={() => {
+              setCurrent(0);
+              setSpu({});
+              handleClose();
+            }}
+          >
+            Cancel
+          </Button>
         </Space>
       }
     >
@@ -195,16 +196,15 @@ const AddGoods: React.FC<AddGoodsPropsType> = ({ drawerOpen, setDrawerOpen }) =>
         {current === steps.length - 1 && (
           <Button
             type="primary"
+            disabled={openType === Watch}
             onClick={async () => {
-              console.log('spu----->', spu);
-              console.log('skuList------>', skuList);
-              const { success } = await addGoods({ spu: spu, skuList: skuList });
-              if (success) {
-                message.success('添加成功');
-              } else {
-                message.error('添加失败');
+              // console.log('spu----->', spu);
+              // console.log('skuList------>', skuList);
+              const copySpu = { ...spu };
+              if (openType === Edit) {
+                copySpu.id = record.id;
               }
-              handleClose();
+              handleConfirm({ spu: copySpu, skuList: skuList });
             }}
           >
             提交审核

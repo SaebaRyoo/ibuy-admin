@@ -27,6 +27,9 @@ const Content2: React.FC<{ openType: any }> = ({ openType }) => {
   const c2 = category2List.find((item) => item.id === category2Id);
   const c3 = category3List.find((item) => item.id === category3Id);
 
+  // 查看模式
+  const isWatch = openType === Watch;
+
   useEffect(() => {
     // 编辑和查看时的数据回显
     if (openType === Edit || openType === Watch) {
@@ -72,6 +75,7 @@ const Content2: React.FC<{ openType: any }> = ({ openType }) => {
       >
         <Input
           value={name}
+          disabled={isWatch}
           onChange={(e) => {
             handleFormChange('name', e.target.value);
           }}
@@ -85,6 +89,7 @@ const Content2: React.FC<{ openType: any }> = ({ openType }) => {
       >
         <Input
           value={caption}
+          disabled={isWatch}
           onChange={(e) => {
             handleFormChange('caption', e.target.value);
           }}
@@ -98,14 +103,18 @@ const Content2: React.FC<{ openType: any }> = ({ openType }) => {
       >
         <Select
           value={caption}
+          disabled={isWatch}
           onChange={(value) => {
             handleFormChange('brandId', value);
           }}
-          options={brands.map((brand) => ({ label: brand.name, value: brand.id }))}
+          options={brands.map((brand: { name: any; id: any }) => ({
+            label: brand.name,
+            value: brand.id,
+          }))}
         />
       </Form.Item>
 
-      <Form.Item
+      {/* <Form.Item
         label="商品介绍"
         name="introduction"
         rules={[{ required: true, message: '请输入商品介绍' }]}
@@ -117,11 +126,12 @@ const Content2: React.FC<{ openType: any }> = ({ openType }) => {
             handleFormChange('introduction', value);
           }}
         />
-      </Form.Item>
+      </Form.Item> */}
 
       <Form.Item label="运费模板" name="freightId">
         <Select
           value={freightId}
+          disabled={isWatch}
           onChange={(value) => {
             handleFormChange('freightId', value);
           }}
@@ -135,6 +145,7 @@ const Content2: React.FC<{ openType: any }> = ({ openType }) => {
       <Form.Item label="商品货号" name="sn" rules={[{ required: true, message: '商品货号' }]}>
         <Input
           value={sn}
+          disabled={isWatch}
           onChange={(e) => {
             handleFormChange('sn', e.target.value);
           }}
@@ -143,6 +154,7 @@ const Content2: React.FC<{ openType: any }> = ({ openType }) => {
 
       <Form.Item label="服务保证" name="saleService">
         <Checkbox.Group
+          disabled={isWatch}
           options={[
             { label: '无忧退货', value: '0' },
             { label: '快速退款', value: '1' },

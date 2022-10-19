@@ -68,6 +68,9 @@ const Content3: React.FC<{ openType: any }> = ({ openType }) => {
   const specMap: { [x: string]: any } = {};
   const paraMap: { [x: string]: any } = {};
 
+  // 查看模式
+  const isWatch = openType === Watch;
+
   // 生成Map
   specs?.forEach((spec) => {
     specMap[spec.name] = spec.options?.split(',');
@@ -190,6 +193,7 @@ const Content3: React.FC<{ openType: any }> = ({ openType }) => {
       <div key={key} className={styles.specListItem}>
         <span>{key}: </span>
         <Checkbox.Group
+          disabled={isWatch}
           className={styles.specCheckboxWrapper}
           options={data[key].map((item: any) => ({ label: item, value: item }))}
           value={specConvertData[key]}
@@ -314,11 +318,16 @@ const Content3: React.FC<{ openType: any }> = ({ openType }) => {
       <div className={styles.specList}>{genSpecList(specMap)}</div>
       <div className={styles.specTable}>{genSkuTable()}</div>
       <div className={styles.header}>商品参数</div>
-      <GoodsParaComponent optionData={paraMap} data={paraConvertData} setSpu={setSpu} />
+      <GoodsParaComponent
+        isWatch={isWatch}
+        optionData={paraMap}
+        data={paraConvertData}
+        setSpu={setSpu}
+      />
       <div className={styles.header}>商品相册</div>
-      <GoodsImages />
+      <GoodsImages isWatch={isWatch} />
       <div className={styles.header}>商品描述</div>
-      <RichTextComponent />
+      <RichTextComponent isWatch={isWatch} />
     </div>
   );
 };
@@ -326,13 +335,16 @@ const Content3: React.FC<{ openType: any }> = ({ openType }) => {
 type GoodsParaProps = {
   optionData: { [x: string]: string[] };
   data: { [x: string]: any };
+  isWatch: boolean;
   setSpu: (arg0: any) => void;
 };
 
 /**
  * 商品属性组件
  */
-const GoodsParaComponent = ({ optionData, data, setSpu }: GoodsParaProps) => {
+const GoodsParaComponent = ({ optionData, data, setSpu, isWatch }: GoodsParaProps) => {
+  // console.log('data---->', data);
+  const [form] = Form.useForm();
   const handleChange = (key: string, value: any) => {
     const copyData = { ...data };
     copyData[key] = value;
@@ -342,9 +354,18 @@ const GoodsParaComponent = ({ optionData, data, setSpu }: GoodsParaProps) => {
     }));
   };
 
+  // 初始化数据
+  useEffect(() => {
+    Object.keys(optionData).length > 0 &&
+      Object.keys(optionData).map((key) => {
+        form.setFieldValue(key, data[key]);
+      });
+  }, []);
+
   return (
     <Form
       className={styles.paraItems}
+      form={form}
       name="basic"
       labelCol={{ span: 2 }}
       wrapperCol={{ span: 6 }}
@@ -355,6 +376,7 @@ const GoodsParaComponent = ({ optionData, data, setSpu }: GoodsParaProps) => {
           <Form.Item key={key} label={key} name={key}>
             <Select
               value={data[key]}
+              disabled={isWatch}
               options={
                 optionData[key].length > 0
                   ? optionData[key].map((value: any) => ({ label: value, value: value }))
@@ -371,7 +393,7 @@ const GoodsParaComponent = ({ optionData, data, setSpu }: GoodsParaProps) => {
 /**
  * 商品相册组件
  */
-const GoodsImages: React.FC = () => {
+const GoodsImages: React.FC<{ isWatch: boolean }> = ({ isWatch }) => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
@@ -450,11 +472,14 @@ const GoodsImages: React.FC = () => {
         fileList={fileList}
         onPreview={handlePreview}
         onChange={handleChange}
+        disabled={isWatch}
       >
         {fileList.length >= 5 ? null : uploadButton}
       </Upload>
       <div className={styles.goodsImage_footer}>
-        <Button type="primary">从图库中选择</Button>
+        <Button disabled={isWatch} type="primary">
+          从图库中选择
+        </Button>
         <span>按住ctrl可同时批量选择多张图片上传，最多可以上传5张图片，建议尺寸800*800px</span>
       </div>
       <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
@@ -510,7 +535,7 @@ const Editor: { modules: StringMap | undefined; formats: string[] | undefined } 
     'video',
   ],
 };
-const RichTextComponent: React.FC = () => {
+const RichTextComponent: React.FC<{ isWatch: boolean }> = ({ isWatch }) => {
   const [value, setValue] = useState('');
   const { spu, setSpu } = useModel('goods');
 

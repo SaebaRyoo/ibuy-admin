@@ -5,6 +5,7 @@ import cx from 'classnames';
 import styles from './StepsContent1.less';
 import { RightOutlined, RightCircleOutlined } from '@ant-design/icons';
 import { listByPid } from '@/services/aitao/goods/category';
+import { Watch } from '@/utils/common/constant';
 
 // const data = [
 //   {
@@ -71,6 +72,7 @@ type SelectListProps = {
   id?: number;
   dataSource?: any[];
   changeKey: string;
+  isWatch: boolean;
   handleOnClick: (id: number, changeKey: string) => void;
 };
 
@@ -79,6 +81,7 @@ const SelectList: React.FC<SelectListProps> = ({
   id,
   dataSource,
   changeKey,
+  isWatch,
   handleOnClick,
 }) => {
   return (
@@ -100,6 +103,7 @@ const SelectList: React.FC<SelectListProps> = ({
         renderItem={(item) => (
           <List.Item
             onClick={() => {
+              if (isWatch) return;
               handleOnClick(item.id, changeKey);
             }}
             className={cx(styles.listItem, {
@@ -131,6 +135,9 @@ const Content_1: React.FC<{ openType: any }> = ({ openType }) => {
   const c1 = category1List.find((item) => item.id === category1Id);
   const c2 = category2List.find((item) => item.id === category2Id);
   const c3 = category3List.find((item) => item.id === category3Id);
+
+  // 查看模式
+  const isWatch = openType === Watch;
 
   // 根据pid获取分类列表
   const fetchCategoryListByPid = async (pid: number) => {
@@ -178,6 +185,7 @@ const Content_1: React.FC<{ openType: any }> = ({ openType }) => {
           dataSource={category1List}
           handleOnClick={handleOnClick}
           changeKey={Category1}
+          isWatch={isWatch}
         />
         {category1Id ? (
           <>
@@ -188,6 +196,7 @@ const Content_1: React.FC<{ openType: any }> = ({ openType }) => {
               dataSource={category2List}
               handleOnClick={handleOnClick}
               changeKey={Category2}
+              isWatch={isWatch}
             />
           </>
         ) : null}
@@ -200,6 +209,7 @@ const Content_1: React.FC<{ openType: any }> = ({ openType }) => {
               dataSource={category3List}
               handleOnClick={handleOnClick}
               changeKey={Category3}
+              isWatch={isWatch}
             />
           </>
         ) : null}
