@@ -1,16 +1,16 @@
+import { findAllBrands } from '@/services/ibuy/goods/brand';
+import { listByPid } from '@/services/ibuy/goods/category';
+import { findSpu } from '@/services/ibuy/goods/goods';
+import { findAllParas } from '@/services/ibuy/goods/para';
+import { findAllSpecs } from '@/services/ibuy/goods/spec';
+import { Add, Edit, Watch } from '@/utils/common/constant';
+import { useModel } from '@umijs/max';
 import { Button, Drawer, message, Space, Steps } from 'antd';
 import React, { useEffect, useState } from 'react';
+import styles from './AddGoods.less';
 import StepsContent1 from './components/StepsContent1';
 import StepsContent2 from './components/StepsContent2';
 import StepsContent3 from './components/StepsContent3';
-import { Add, Edit, Watch } from '@/utils/common/constant';
-import { useModel } from '@umijs/max';
-import { findSpu } from '@/services/aitao/goods/goods';
-import { listByPid } from '@/services/aitao/goods/category';
-import { findAllBrands } from '@/services/aitao/goods/brand';
-import { findAllParas } from '@/services/aitao/goods/para';
-import { findAllSpecs } from '@/services/aitao/goods/spec';
-import styles from './AddGoods.less';
 
 const { Step } = Steps;
 

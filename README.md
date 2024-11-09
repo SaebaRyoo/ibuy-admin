@@ -1,1 +1,1 @@
-# aitao-admin-web
+# ibuy-admin-web

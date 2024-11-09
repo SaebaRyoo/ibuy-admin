@@ -1,11 +1,11 @@
-import { Card, List } from 'antd';
-import React, { useEffect, useState } from 'react';
-import { useModel } from 'umi';
-import cx from 'classnames';
-import styles from './StepsContent1.less';
-import { RightOutlined, RightCircleOutlined } from '@ant-design/icons';
-import { listByPid } from '@/services/aitao/goods/category';
+import { listByPid } from '@/services/ibuy/goods/category';
 import { Watch } from '@/utils/common/constant';
+import { RightCircleOutlined, RightOutlined } from '@ant-design/icons';
+import { Card, List } from 'antd';
+import cx from 'classnames';
+import React, { useEffect } from 'react';
+import { useModel } from 'umi';
+import styles from './StepsContent1.less';
 
 // const data = [
 //   {

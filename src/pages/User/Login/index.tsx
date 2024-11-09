@@ -1,5 +1,5 @@
 import Footer from '@/components/Footer';
-import { login } from '@/services/aitao/login/login';
+import { login } from '@/services/ibuy/login/login';
 import {
   AlipayCircleOutlined,
   LockOutlined,
@@ -8,8 +8,8 @@ import {
   WeiboCircleOutlined,
 } from '@ant-design/icons';
 import { LoginForm, ProFormText } from '@ant-design/pro-components';
-import { history, useModel } from '@umijs/max';
-import { Alert, message, Tabs } from 'antd';
+import { history } from '@umijs/max';
+import { Alert, message } from 'antd';
 import React, { useState } from 'react';
 import styles from './index.less';
 
@@ -42,13 +42,13 @@ const Login: React.FC = () => {
 
   const handleSubmit = async (values: API.LoginParams) => {
     try {
-      values.scope = 'sys';
+      // values.scope = 'sys';
       // 登录
       const result = await login({ ...values });
 
-      if (result.code === 20000) {
+      if (result.code === 200) {
         message.success('登录成功！');
-        localStorage.setItem('satoken', result.data.saToken);
+        localStorage.setItem('token', result.data.access_token);
         // await fetchUserInfo();
         const urlParams = new URL(window.location.href).searchParams;
         history.push(urlParams.get('redirect') || '/');
@@ -88,7 +88,7 @@ const Login: React.FC = () => {
           {code === 20002 && <LoginMessage content="账户或密码错误(admin/ant.design)" />}
           <>
             <ProFormText
-              name="username"
+              name="login_name"
               fieldProps={{
                 size: 'large',
                 prefix: <UserOutlined className={styles.prefixIcon} />,

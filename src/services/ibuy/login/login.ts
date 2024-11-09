@@ -2,19 +2,19 @@
 /* eslint-disable */
 import { request } from '@umijs/max';
 
-/** 退出登录接口 POST /api/login/outLogin */
+/** 退出登录接口 POST /api/v1/login/outLogin */
 export async function outLogin(options?: { [key: string]: any }) {
-  return request<Record<string, any>>('/api/login/outLogin', {
+  return request<Record<string, any>>('/api/v1/login/outLogin', {
     method: 'POST',
     ...(options || {}),
   });
 }
 
-/** 登录接口 POST /api/login/account */
+/** 登录接口 POST /api/v1/login/account */
 export async function login(body: API.LoginParams, options?: { [key: string]: any }) {
-  return request<API.LoginResult>('/api/sso/login', {
-    method: 'GET',
-    params: body,
+  return request<API.LoginResult>('/api/v1/auth/login', {
+    method: 'POST',
+    data: body,
     ...(options || {}),
   });
 }

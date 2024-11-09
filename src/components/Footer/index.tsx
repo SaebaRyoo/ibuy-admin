@@ -14,7 +14,7 @@ const Footer: React.FC = () => {
         {
           key: 'github',
           title: <GithubOutlined />,
-          href: 'https://github.com/SaebaRyoo/aitao-admin-web',
+          href: 'https://github.com/SaebaRyoo/ibuy-admin-web',
           blankTarget: true,
         },
       ]}

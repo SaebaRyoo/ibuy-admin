@@ -2,7 +2,7 @@
 /* eslint-disable */
 import { request } from '@umijs/max';
 
-/** 获取menu列表 GET /api/menu */
+/** 获取menu列表 GET /api/v1/menu */
 // export async function menuList(
 //   params: {
 //     // query
@@ -13,7 +13,7 @@ import { request } from '@umijs/max';
 //   },
 //   options?: { [key: string]: any },
 // ) {
-//   return request<API.RuleList>(`/api/menu/search/${params.current}/${params.pageSize}`, {
+//   return request<API.RuleList>(`/api/v1/menu/list/${params.current}/${params.pageSize}`, {
 //     method: 'POST',
 //     // params: {
 //     //   ...params,
@@ -24,7 +24,7 @@ import { request } from '@umijs/max';
 
 // 查询全部数据
 export async function menuList(options?: { [key: string]: any }) {
-  return request<API.RuleList>(`/api/menu/`, {
+  return request<API.RuleList>(`/api/v1/menu/`, {
     method: 'GET',
     ...(options || {}),
   });
@@ -32,7 +32,7 @@ export async function menuList(options?: { [key: string]: any }) {
 
 // 添加菜单
 export async function addMenu(params: API.Menu_T, options?: { [key: string]: any }) {
-  return request<API.RuleList>(`/api/menu`, {
+  return request<API.RuleList>(`/api/v1/menu`, {
     method: 'POST',
     data: params,
     ...(options || {}),
@@ -41,7 +41,7 @@ export async function addMenu(params: API.Menu_T, options?: { [key: string]: any
 
 // 根据id查询数据
 export async function findMenu(params: { id: string }, options?: { [key: string]: any }) {
-  return request<API.RuleList>(`/api/menu/${params.id}`, {
+  return request<API.RuleList>(`/api/v1/menu/${params.id}`, {
     method: 'GET',
     ...(options || {}),
   });
@@ -49,7 +49,7 @@ export async function findMenu(params: { id: string }, options?: { [key: string]
 
 // 更新菜单
 export async function editMenu(params: API.Menu_T, options?: { [key: string]: any }) {
-  return request<API.RuleList>(`/api/menu/${params.id}`, {
+  return request<API.RuleList>(`/api/v1/menu/${params.id}`, {
     method: 'PUT',
     data: params,
     ...(options || {}),
@@ -58,7 +58,7 @@ export async function editMenu(params: API.Menu_T, options?: { [key: string]: an
 
 // 根据id删除数据
 export async function delMenu(params: { id: string }, options?: { [key: string]: any }) {
-  return request<API.RuleList>(`/api/menu/${params.id}`, {
+  return request<API.RuleList>(`/api/v1/menu/${params.id}`, {
     method: 'DELETE',
     ...(options || {}),
   });

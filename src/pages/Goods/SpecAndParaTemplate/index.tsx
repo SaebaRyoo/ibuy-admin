@@ -1,16 +1,16 @@
-import React, { useRef, useState } from 'react';
 import {
   addTemplate,
-  templateList,
-  editTemplate,
   delTemplate,
-} from '@/services/aitao/goods/template';
+  editTemplate,
+  templateList,
+} from '@/services/ibuy/goods/template';
+import { handleModalOperation } from '@/utils/common/handleModalOperation';
+import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
 import { Button, Modal } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import React, { useRef, useState } from 'react';
 import UpdateModal from './UpdateModal';
-import { handleModalOperation } from '@/utils/common/handleModalOperation';
 
 const Add = 'add';
 const Edit = 'edit';
@@ -111,7 +111,7 @@ const Goods: React.FC = () => {
         request={async (params, sort, filter) => {
           const { data } = await templateList(params);
           return {
-            data: data.list || [],
+            data: data.data || [],
             // success 请返回 true，
             // 不然 table 会停止解析数据，即使有数据
             success: true,

@@ -1,12 +1,12 @@
-import React, { useRef, useState } from 'react';
-import { addGoods, spuList, spuAudit, spuPut, spuPull } from '@/services/aitao/goods/goods';
+import { addGoods, spuAudit, spuList, spuPull, spuPut } from '@/services/ibuy/goods/goods';
+import { Add, Edit, Watch } from '@/utils/common/constant';
+import { handleModalOperation } from '@/utils/common/handleModalOperation';
+import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { Button, message, Modal, Switch } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import React, { useRef, useState } from 'react';
 import AddGoods from './AddGoods';
-import { Add, Edit, Watch } from '@/utils/common/constant';
-import { handleModalOperation } from '@/utils/common/handleModalOperation';
 
 /**
  *  Delete node
@@ -190,7 +190,7 @@ const Goods: React.FC = () => {
         request={async (params, sort, filter) => {
           const { data } = await spuList(params);
           return {
-            data: data.list || [],
+            data: data.data || [],
             // success 请返回 true，
             // 不然 table 会停止解析数据，即使有数据
             success: true,

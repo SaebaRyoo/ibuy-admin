@@ -1,5 +1,5 @@
-import { CloudUploadOutlined, LoadingOutlined, PlusOutlined } from '@ant-design/icons';
-import { Modal, Form, Input, Button, Upload, Select, message, UploadFile, UploadProps } from 'antd';
+import { CloudUploadOutlined, LoadingOutlined } from '@ant-design/icons';
+import { Button, Form, message, Modal, Upload, UploadFile, UploadProps } from 'antd';
 import { RcFile, UploadChangeParam } from 'antd/lib/upload';
 import React, { useEffect, useState } from 'react';
 
@@ -106,9 +106,9 @@ const UploadModal: React.FC<UpdateModalProps> = ({
             name="file"
             listType="picture-card"
             showUploadList={false}
-            action="/api/file/upload"
+            action="/api/v1/file/upload"
             headers={{
-              satoken: localStorage.getItem('satoken') || '',
+              token: localStorage.getItem('token') || '',
             }}
             beforeUpload={beforeUpload}
             onChange={handleChange}

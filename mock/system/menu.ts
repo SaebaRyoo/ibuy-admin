@@ -51,5 +51,5 @@ function getRule(req: Request, res: Response, u: string) {
 }
 
 export default {
-  'GET /api/mock/menu': getRule,
+  'GET /api/v1/mock/menu': getRule,
 };

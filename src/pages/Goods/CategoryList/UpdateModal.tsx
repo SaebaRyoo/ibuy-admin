@@ -1,6 +1,6 @@
-import { Modal, Form, Input, Select, Radio, Button } from 'antd';
+import { findAll, findCategory } from '@/services/ibuy/goods/category';
+import { Button, Form, Input, Modal, Radio, Select } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { findAll, findCategory } from '@/services/aitao/goods/category';
 
 const Add = 'add';
 const Edit = 'edit';

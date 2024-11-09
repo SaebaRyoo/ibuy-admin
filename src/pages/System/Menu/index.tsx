@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { menuList, addMenu, editMenu, delMenu } from '@/services/aitao/system/menu';
-import { Button, message, Spin, Tree, Modal } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
-import UpdateModal from './UpdateModal';
-import styles from './index.less';
-import { DataNode } from 'antd/lib/tree';
-import { useRequest } from '@/utils/hooks/useRequest';
+import { addMenu, delMenu, editMenu, menuList } from '@/services/ibuy/system/menu';
 import { handleModalOperation } from '@/utils/common/handleModalOperation';
+import { useRequest } from '@/utils/hooks/useRequest';
+import { PlusOutlined } from '@ant-design/icons';
+import { Button, Modal, Spin, Tree } from 'antd';
+import { DataNode } from 'antd/lib/tree';
+import React, { useState } from 'react';
+import styles from './index.less';
+import UpdateModal from './UpdateModal';
 
 const Add = 'add';
 const Edit = 'edit';

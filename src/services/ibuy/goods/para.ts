@@ -2,7 +2,7 @@
 /* eslint-disable */
 import { request } from '@umijs/max';
 
-/** 获取para列表 GET /api/para */
+/** 获取para列表 GET /api/v1/para */
 export async function paraList(
   params: {
     // query
@@ -13,7 +13,7 @@ export async function paraList(
   },
   options?: { [key: string]: any },
 ) {
-  return request<API.RuleList>(`/api/para/search/${params.current}/${params.pageSize}`, {
+  return request<API.RuleList>(`/api/v1/para/list/${params.current}/${params.pageSize}`, {
     method: 'POST',
     data: params,
     ...(options || {}),
@@ -22,14 +22,14 @@ export async function paraList(
 
 // 查询全部数据
 export async function findAllParas(params?: any, options?: { [key: string]: any }) {
-  return request<API.RuleList>(`/api/para`, {
+  return request<API.RuleList>(`/api/v1/para`, {
     method: 'GET',
     ...(options || {}),
   });
 }
 // 添加参数
 export async function addPara(params: API.Para, options?: { [key: string]: any }) {
-  return request<API.RuleList>(`/api/para`, {
+  return request<API.RuleList>(`/api/v1/para`, {
     method: 'POST',
     data: params,
     ...(options || {}),
@@ -38,7 +38,7 @@ export async function addPara(params: API.Para, options?: { [key: string]: any }
 
 // 根据id查询数据
 export async function findPara(params: { id: string }, options?: { [key: string]: any }) {
-  return request<API.RuleList>(`/api/para/${params.id}`, {
+  return request<API.RuleList>(`/api/v1/para/${params.id}`, {
     method: 'GET',
     ...(options || {}),
   });
@@ -46,7 +46,7 @@ export async function findPara(params: { id: string }, options?: { [key: string]
 
 // 更新参数
 export async function editPara(params: API.Para, options?: { [key: string]: any }) {
-  return request<API.RuleList>(`/api/para/${params.id}`, {
+  return request<API.RuleList>(`/api/v1/para/${params.id}`, {
     method: 'PUT',
     data: params,
     ...(options || {}),
@@ -55,7 +55,7 @@ export async function editPara(params: API.Para, options?: { [key: string]: any 
 
 // 根据id删除数据
 export async function delPara(params: { id: number }, options?: { [key: string]: any }) {
-  return request<API.RuleList>(`/api/para/${params.id}`, {
+  return request<API.RuleList>(`/api/v1/para/${params.id}`, {
     method: 'DELETE',
     ...(options || {}),
   });

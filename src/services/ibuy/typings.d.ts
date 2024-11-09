@@ -23,9 +23,9 @@ declare namespace API {
   };
 
   type LoginParams = {
-    username?: string;
+    login_name?: string;
     password?: string;
-    scope: string;
+    // scope: string;
   };
 
   type ErrorResponse = {
@@ -42,7 +42,7 @@ declare namespace API {
     code: number;
     message: string;
     data: {
-      saToken: string;
+      access_token: string;
       username: string;
     };
     // currentAuthority?: string;

@@ -1,5 +1,5 @@
-import { findTemplate } from '@/services/aitao/goods/template';
-import { Modal, Form, Input, Button } from 'antd';
+import { findTemplate } from '@/services/ibuy/goods/template';
+import { Button, Form, Input, Modal } from 'antd';
 import React, { useEffect } from 'react';
 
 const Add = 'add';

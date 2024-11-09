@@ -1,8 +1,8 @@
-import { outLogin } from '@/services/aitao/login/login';
-import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
+import { outLogin } from '@/services/ibuy/login/login';
+import { LogoutOutlined } from '@ant-design/icons';
 import { history, useModel } from '@umijs/max';
 import { Avatar, Menu, Spin } from 'antd';
-import type { ItemType } from 'antd/lib/menu/hooks/useItems';
+import { ItemType } from 'antd/es/menu/interface';
 import { stringify } from 'querystring';
 import type { MenuInfo } from 'rc-menu/lib/interface';
 import React, { useCallback } from 'react';

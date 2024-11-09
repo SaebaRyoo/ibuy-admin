@@ -1,11 +1,11 @@
-import React, { useRef, useState } from 'react';
-import { adminList, addAdmin, editAdmin, delAdmin } from '@/services/aitao/system/sysuser';
+import { addAdmin, adminList, delAdmin, editAdmin } from '@/services/ibuy/system/sysuser';
+import { handleModalOperation } from '@/utils/common/handleModalOperation';
+import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { Button, message, Modal, Switch } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import React, { useRef, useState } from 'react';
 import UpdateModal from './UpdateModal';
-import { handleModalOperation } from '@/utils/common/handleModalOperation';
 
 const Add = 'add';
 const Edit = 'edit';
@@ -124,7 +124,7 @@ const Menu: React.FC = () => {
         request={async (params, sort, filter) => {
           const { data } = await adminList(params);
           return {
-            data: data.list || [],
+            data: data.data || [],
             // success 请返回 true，
             // 不然 table 会停止解析数据，即使有数据
             success: true,

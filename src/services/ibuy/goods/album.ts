@@ -8,13 +8,13 @@ import { request } from '@umijs/max';
  * @param options
  */
 export async function findALlAlbums(params?: any, options?: { [key: string]: any }) {
-  return request<API.RuleList>(`/api/album`, {
+  return request<API.RuleList>(`/api/v1/album`, {
     method: 'GET',
     ...(options || {}),
   });
 }
 
-/** 获取album列表 GET /api/album */
+/** 获取album列表 GET /api/v1/album */
 export async function albumList(
   params: {
     // query
@@ -25,7 +25,7 @@ export async function albumList(
   },
   options?: { [key: string]: any },
 ) {
-  return request<API.RuleList>(`/api/album/search/${params.current}/${params.pageSize}`, {
+  return request<API.RuleList>(`/api/v1/album/list/${params.current}/${params.pageSize}`, {
     method: 'POST',
     data: params,
     ...(options || {}),
@@ -34,7 +34,7 @@ export async function albumList(
 
 // 添加角色
 export async function addAlbum(params: API.Album, options?: { [key: string]: any }) {
-  return request<API.RuleList>(`/api/album`, {
+  return request<API.RuleList>(`/api/v1/album`, {
     method: 'POST',
     data: params,
     ...(options || {}),
@@ -43,7 +43,7 @@ export async function addAlbum(params: API.Album, options?: { [key: string]: any
 
 // 根据id查询数据
 export async function findAlbum(params: { id: string }, options?: { [key: string]: any }) {
-  return request<API.RuleList>(`/api/album/${params.id}`, {
+  return request<API.RuleList>(`/api/v1/album/${params.id}`, {
     method: 'GET',
     ...(options || {}),
   });
@@ -51,7 +51,7 @@ export async function findAlbum(params: { id: string }, options?: { [key: string
 
 // 更新角色
 export async function editAlbum(params: API.Album, options?: { [key: string]: any }) {
-  return request<API.RuleList>(`/api/album/${params.id}`, {
+  return request<API.RuleList>(`/api/v1/album/${params.id}`, {
     method: 'PUT',
     data: params,
     ...(options || {}),
@@ -60,7 +60,7 @@ export async function editAlbum(params: API.Album, options?: { [key: string]: an
 
 // 根据id删除数据
 export async function delAlbum(params: { id: number }, options?: { [key: string]: any }) {
-  return request<API.RuleList>(`/api/album/${params.id}`, {
+  return request<API.RuleList>(`/api/v1/album/${params.id}`, {
     method: 'DELETE',
     ...(options || {}),
   });

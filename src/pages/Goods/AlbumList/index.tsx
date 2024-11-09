@@ -1,12 +1,12 @@
-import React, { useRef, useState } from 'react';
-import { albumList, addAlbum, editAlbum, delAlbum } from '@/services/aitao/goods/album';
+import { addAlbum, albumList, delAlbum, editAlbum } from '@/services/ibuy/goods/album';
+import { handleModalOperation } from '@/utils/common/handleModalOperation';
+import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { Button, message, Modal } from 'antd';
-import AlbumOperateModal from './AlbumOperateModal';
-import { PlusOutlined } from '@ant-design/icons';
+import React, { useRef, useState } from 'react';
 import { history } from 'umi';
-import { handleModalOperation } from '@/utils/common/handleModalOperation';
+import AlbumOperateModal from './AlbumOperateModal';
 
 const Add = 'add';
 const Edit = 'edit';
@@ -137,7 +137,7 @@ const Goods: React.FC = () => {
         request={async (params, sort, filter) => {
           const { data } = await albumList(params);
           return {
-            data: data.list || [],
+            data: data.data || [],
             // success 请返回 true，
             // 不然 table 会停止解析数据，即使有数据
             success: true,

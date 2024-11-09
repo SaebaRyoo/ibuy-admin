@@ -2,7 +2,7 @@
 /* eslint-disable */
 import { request } from '@umijs/max';
 
-/** 获取brand列表 GET /api/brand */
+/** 获取brand列表 GET /api/v1/brand */
 export async function brandList(
   params: {
     // query
@@ -13,7 +13,7 @@ export async function brandList(
   },
   options?: { [key: string]: any },
 ) {
-  return request<API.RuleList>(`/api/brand/search/${params.current}/${params.pageSize}`, {
+  return request<API.RuleList>(`/api/v1/brand/list/${params.current}/${params.pageSize}`, {
     method: 'POST',
     data: params,
     ...(options || {}),
@@ -22,14 +22,14 @@ export async function brandList(
 
 // 查询全部数据
 export async function findAllBrands(params?: any, options?: { [key: string]: any }) {
-  return request<API.RuleList>(`/api/brand`, {
+  return request<API.RuleList>(`/api/v1/brand`, {
     method: 'GET',
     ...(options || {}),
   });
 }
 // 添加角色
 export async function addBrand(params: API.Brand, options?: { [key: string]: any }) {
-  return request<API.RuleList>(`/api/brand`, {
+  return request<API.RuleList>(`/api/v1/brand`, {
     method: 'POST',
     data: params,
     ...(options || {}),
@@ -38,7 +38,7 @@ export async function addBrand(params: API.Brand, options?: { [key: string]: any
 
 // 根据id查询数据
 export async function findBrand(params: { id: string }, options?: { [key: string]: any }) {
-  return request<API.RuleList>(`/api/brand/${params.id}`, {
+  return request<API.RuleList>(`/api/v1/brand/${params.id}`, {
     method: 'GET',
     ...(options || {}),
   });
@@ -46,7 +46,7 @@ export async function findBrand(params: { id: string }, options?: { [key: string
 
 // 更新角色
 export async function editBrand(params: API.Brand, options?: { [key: string]: any }) {
-  return request<API.RuleList>(`/api/brand/${params.id}`, {
+  return request<API.RuleList>(`/api/v1/brand/${params.id}`, {
     method: 'PUT',
     data: params,
     ...(options || {}),
@@ -55,7 +55,7 @@ export async function editBrand(params: API.Brand, options?: { [key: string]: an
 
 // 根据id删除数据
 export async function delBrand(params: { id: number }, options?: { [key: string]: any }) {
-  return request<API.RuleList>(`/api/brand/${params.id}`, {
+  return request<API.RuleList>(`/api/v1/brand/${params.id}`, {
     method: 'DELETE',
     ...(options || {}),
   });

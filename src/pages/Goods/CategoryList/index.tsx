@@ -1,16 +1,16 @@
-import React, { useRef, useState } from 'react';
 import {
-  categoryList,
   addCategory,
-  editCategory,
+  categoryList,
   delCategory,
-} from '@/services/aitao/goods/category';
+  editCategory,
+} from '@/services/ibuy/goods/category';
+import { handleModalOperation } from '@/utils/common/handleModalOperation';
+import { ArrowLeftOutlined, PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { FooterToolbar, PageContainer, ProTable } from '@ant-design/pro-components';
 import { Button, message, Modal } from 'antd';
-import { PlusOutlined, ArrowLeftOutlined } from '@ant-design/icons';
+import React, { useRef, useState } from 'react';
 import UpdateModal from './UpdateModal';
-import { handleModalOperation } from '@/utils/common/handleModalOperation';
 
 const Add = 'add';
 const Edit = 'edit';
@@ -197,7 +197,7 @@ const Goods: React.FC = () => {
           // console.log('params----->', params);
           const { data } = await categoryList(params);
           return {
-            data: data.list || [],
+            data: data.data || [],
             // success 请返回 true，
             // 不然 table 会停止解析数据，即使有数据
             success: true,

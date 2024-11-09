@@ -1,8 +1,8 @@
+import { findBrand } from '@/services/ibuy/goods/brand';
 import { CloudUploadOutlined, LoadingOutlined } from '@ant-design/icons';
-import { Modal, Form, Input, Button, Upload, message } from 'antd';
-import { findBrand } from '@/services/aitao/goods/brand';
-import React, { useEffect, useState } from 'react';
+import { Button, Form, Input, message, Modal, Upload } from 'antd';
 import { RcFile, UploadChangeParam, UploadFile, UploadProps } from 'antd/lib/upload';
+import React, { useEffect, useState } from 'react';
 const Add = 'add';
 const Edit = 'edit';
 const TitleMap = {
@@ -144,9 +144,9 @@ const UpdateModal: React.FC<UpdateModalProps> = ({ openParam, handleConfirm, han
             name="file"
             listType="picture-card"
             showUploadList={false}
-            action="/api/file/upload"
+            action="/api/v1/file/upload"
             headers={{
-              satoken: localStorage.getItem('satoken') || '',
+              token: localStorage.getItem('token') || '',
             }}
             beforeUpload={beforeUpload}
             onChange={handleChange}

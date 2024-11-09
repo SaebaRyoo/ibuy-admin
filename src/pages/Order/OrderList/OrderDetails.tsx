@@ -1,7 +1,7 @@
+import { orderItemList } from '@/services/ibuy/order/orderItem';
 import { ExclamationCircleOutlined, TagOutlined } from '@ant-design/icons';
 import { ProColumns, ProTable } from '@ant-design/pro-components';
-import { orderItemList } from '@/services/aitao/order/orderItem';
-import { Button, Drawer, Radio, Space, Steps } from 'antd';
+import { Button, Drawer, Space, Steps } from 'antd';
 import React, { useEffect, useState } from 'react';
 import styles from './OrderDetails.less';
 const { Step } = Steps;

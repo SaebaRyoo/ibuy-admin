@@ -2,7 +2,7 @@
 /* eslint-disable */
 import { request } from '@umijs/max';
 
-/** 获取spec列表 GET /api/spec */
+/** 获取spec列表 GET /api/v1/spec */
 export async function specList(
   params: {
     // query
@@ -13,7 +13,7 @@ export async function specList(
   },
   options?: { [key: string]: any },
 ) {
-  return request<API.RuleList>(`/api/spec/search/${params.current}/${params.pageSize}`, {
+  return request<API.RuleList>(`/api/v1/spec/list/${params.current}/${params.pageSize}`, {
     method: 'POST',
     data: params,
     ...(options || {}),
@@ -22,14 +22,14 @@ export async function specList(
 
 // 查询全部数据
 export async function findAllSpecs(params?: any, options?: { [key: string]: any }) {
-  return request<API.RuleList>(`/api/spec`, {
+  return request<API.RuleList>(`/api/v1/spec`, {
     method: 'GET',
     ...(options || {}),
   });
 }
 // 添加规格
 export async function addSpec(params: API.Spec, options?: { [key: string]: any }) {
-  return request<API.RuleList>(`/api/spec`, {
+  return request<API.RuleList>(`/api/v1/spec`, {
     method: 'POST',
     data: params,
     ...(options || {}),
@@ -38,7 +38,7 @@ export async function addSpec(params: API.Spec, options?: { [key: string]: any }
 
 // 根据id查询数据
 export async function findSpec(params: { id: string }, options?: { [key: string]: any }) {
-  return request<API.RuleList>(`/api/spec/${params.id}`, {
+  return request<API.RuleList>(`/api/v1/spec/${params.id}`, {
     method: 'GET',
     ...(options || {}),
   });
@@ -46,7 +46,7 @@ export async function findSpec(params: { id: string }, options?: { [key: string]
 
 // 更新规格
 export async function editSpec(params: API.Spec, options?: { [key: string]: any }) {
-  return request<API.RuleList>(`/api/spec/${params.id}`, {
+  return request<API.RuleList>(`/api/v1/spec/${params.id}`, {
     method: 'PUT',
     data: params,
     ...(options || {}),
@@ -55,7 +55,7 @@ export async function editSpec(params: API.Spec, options?: { [key: string]: any 
 
 // 根据id删除数据
 export async function delSpec(params: { id: number }, options?: { [key: string]: any }) {
-  return request<API.RuleList>(`/api/spec/${params.id}`, {
+  return request<API.RuleList>(`/api/v1/spec/${params.id}`, {
     method: 'DELETE',
     ...(options || {}),
   });

@@ -2,7 +2,7 @@
 /* eslint-disable */
 import { request } from '@umijs/max';
 
-/** 获取role列表 GET /api/role */
+/** 获取role列表 GET /api/v1/role */
 export async function roleList(
   params: {
     // query
@@ -13,7 +13,7 @@ export async function roleList(
   },
   options?: { [key: string]: any },
 ) {
-  return request<API.RuleList>(`/api/role/search/${params.current}/${params.pageSize}`, {
+  return request<API.RuleList>(`/api/v1/role/list/${params.current}/${params.pageSize}`, {
     method: 'POST',
     data: params,
     ...(options || {}),
@@ -22,7 +22,7 @@ export async function roleList(
 
 // 添加角色
 export async function addRole(params: API.Role, options?: { [key: string]: any }) {
-  return request<API.RuleList>(`/api/role`, {
+  return request<API.RuleList>(`/api/v1/role`, {
     method: 'POST',
     data: params,
     ...(options || {}),
@@ -31,7 +31,7 @@ export async function addRole(params: API.Role, options?: { [key: string]: any }
 
 // 根据id查询数据
 export async function findRole(params: { id: string }, options?: { [key: string]: any }) {
-  return request<API.RuleList>(`/api/role/${params.id}`, {
+  return request<API.RuleList>(`/api/v1/role/${params.id}`, {
     method: 'GET',
     ...(options || {}),
   });
@@ -39,7 +39,7 @@ export async function findRole(params: { id: string }, options?: { [key: string]
 
 // 更新角色
 export async function editRole(params: API.Role, options?: { [key: string]: any }) {
-  return request<API.RuleList>(`/api/role/${params.id}`, {
+  return request<API.RuleList>(`/api/v1/role/${params.id}`, {
     method: 'PUT',
     data: params,
     ...(options || {}),
@@ -48,7 +48,7 @@ export async function editRole(params: API.Role, options?: { [key: string]: any 
 
 // 根据id删除数据
 export async function delRole(params: { id: number }, options?: { [key: string]: any }) {
-  return request<API.RuleList>(`/api/role/${params.id}`, {
+  return request<API.RuleList>(`/api/v1/role/${params.id}`, {
     method: 'DELETE',
     ...(options || {}),
   });

@@ -1,5 +1,5 @@
 export default {
-  '/api/auth_routes': {
+  '/api/v1/auth_routes': {
     '/form/advanced-form': { authority: ['admin', 'user'] },
   },
 };

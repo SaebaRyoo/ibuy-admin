@@ -3,15 +3,13 @@ import RightContent from '@/components/RightContent';
 import type { Settings as LayoutSettings } from '@ant-design/pro-components';
 import type { RunTimeLayoutConfig } from '@umijs/max';
 import { history } from '@umijs/max';
-import defaultSettings from '../config/defaultSettings';
 import type { RequestConfig } from 'umi';
+import defaultSettings from '../config/defaultSettings';
 const loginPath = '/user/login';
 
 const authHeaderInterceptor = (url: string, options: RequestConfig) => {
-  const saToken = localStorage.getItem('satoken');
-  // const authHeader = { Authorization: 'Bearer xxxxxx' };
-
-  const authHeader = { saToken: saToken };
+  const Token = localStorage.getItem('token');
+  const authHeader = { Authorization: `Bearer ${Token}` };
   return {
     url: `${url}`,
     options: { ...options, interceptors: true, headers: authHeader },
@@ -81,7 +79,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
       const { location } = history;
       console.log(history);
       // 如果没有登录，重定向到 login
-      if (!localStorage.getItem('satoken') && location.pathname !== loginPath) {
+      if (!localStorage.getItem('token') && location.pathname !== loginPath) {
         history.push(loginPath);
       }
     },

@@ -2,7 +2,7 @@
 /* eslint-disable */
 import { request } from '@umijs/max';
 
-/** 获取orderItem列表 GET /api/mock/orderItem */
+/** 获取orderItem列表 GET /api/v1/mock/orderItem */
 export async function orderItemList(
   params: {
     // query
@@ -13,7 +13,7 @@ export async function orderItemList(
   },
   options?: { [key: string]: any },
 ) {
-  return request<API.RuleList>('/api/mock/orderItem', {
+  return request<API.RuleList>('/api/v1/mock/orderItem', {
     method: 'GET',
     params: {
       ...params,
@@ -22,9 +22,9 @@ export async function orderItemList(
   });
 }
 
-/** 删除orderItem DELETE /api/mock/orderItem */
+/** 删除orderItem DELETE /api/v1/mock/orderItem */
 export async function removeOrderItem(options?: { [key: string]: any }) {
-  return request<Record<string, any>>('/api/mock/orderItem', {
+  return request<Record<string, any>>('/api/v1/mock/orderItem', {
     method: 'DELETE',
     ...(options || {}),
   });

@@ -32,7 +32,7 @@ export default defineConfig({
     primaryColor: 'e2285f',
   },
   ignoreMomentLocale: true,
-  proxy: proxy['dev'],
+  proxy: proxy[REACT_APP_ENV as string],
   manifest: {
     basePath: '/',
   },

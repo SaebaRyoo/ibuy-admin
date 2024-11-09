@@ -1,7 +1,7 @@
-import { Modal, Form, Input, Button, Select } from 'antd';
+import { findSpec } from '@/services/ibuy/goods/spec';
+import { findAllTemplates } from '@/services/ibuy/goods/template';
+import { Button, Form, Input, Modal, Select } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { findSpec } from '@/services/aitao/goods/spec';
-import { findAllTemplates } from '@/services/aitao/goods/template';
 
 const Add = 'add';
 const Edit = 'edit';

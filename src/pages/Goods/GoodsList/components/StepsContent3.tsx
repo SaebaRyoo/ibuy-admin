@@ -1,17 +1,17 @@
-import React, { ReactElement, useEffect, useState } from 'react';
+import { findSkuBySpuId } from '@/services/ibuy/goods/goods';
+import { Edit, Watch } from '@/utils/common/constant';
+import { uuid } from '@/utils/common/uuid';
 import { ExclamationCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import { useModel } from 'umi';
-import { Checkbox, Modal, Upload, Form, Select, Button, Tooltip, message } from 'antd';
+import { EditableProTable } from '@ant-design/pro-components';
+import { Button, Checkbox, Form, message, Modal, Select, Tooltip, Upload } from 'antd';
 import type { RcFile, UploadProps } from 'antd/es/upload';
 import type { UploadFile } from 'antd/es/upload/interface';
-import styles from './StepsContent3.less';
-import { EditableProTable } from '@ant-design/pro-components';
+import { CheckboxValueType } from 'antd/lib/checkbox/Group';
+import React, { ReactElement, useEffect, useState } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import { findSkuBySpuId } from '@/services/aitao/goods/goods';
-import { Edit, Watch } from '@/utils/common/constant';
-import { CheckboxValueType } from 'antd/lib/checkbox/Group';
-import { uuid } from '@/utils/common/uuid';
+import { useModel } from 'umi';
+import styles from './StepsContent3.less';
 
 type Item = {
   id: number;
@@ -452,9 +452,9 @@ const GoodsImages: React.FC<{ isWatch: boolean }> = ({ isWatch }) => {
     <div className={styles.goodsImages}>
       <Upload
         name="file"
-        action="/api/file/upload"
+        action="/api/v1/file/upload"
         headers={{
-          satoken: localStorage.getItem('satoken') || '',
+          token: localStorage.getItem('token') || '',
         }}
         beforeUpload={beforeUpload}
         itemRender={(originNode: ReactElement, file: UploadFile) => (

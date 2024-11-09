@@ -49,5 +49,5 @@ function getRule(req: Request, res: Response, u: string) {
 }
 
 export default {
-  'GET /api/mock/sysuser': getRule,
+  'GET /api/v1/mock/sysuser': getRule,
 };

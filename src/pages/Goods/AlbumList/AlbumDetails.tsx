@@ -1,14 +1,13 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react';
-import type { CheckboxChangeEvent } from 'antd/es/checkbox';
+import { editAlbum, findALlAlbums } from '@/services/ibuy/goods/album';
+import { uuid } from '@/utils/common/uuid';
+import { FooterToolbar } from '@ant-design/pro-components';
 import { Button, Checkbox, message, Modal } from 'antd';
+import type { CheckboxChangeEvent } from 'antd/es/checkbox';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { history } from 'umi';
 import styles from './AlbumDetails.less';
-import { FooterToolbar } from '@ant-design/pro-components';
-import UploadModal from './UploadModal';
 import TransferModal from './TransferModal';
-import { findALlAlbums, editAlbum } from '@/services/aitao/goods/album';
-import { uuid } from '@/utils/common/uuid';
-import { values } from 'lodash';
+import UploadModal from './UploadModal';
 
 // const sleep = (delay: number | undefined) => new Promise((resolve) => setTimeout(resolve, delay));
 
