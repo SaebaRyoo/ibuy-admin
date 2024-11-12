@@ -54,7 +54,7 @@ export async function findCategory(params: { id: string }, options?: { [key: str
 // 更新分类
 export async function editCategory(params: API.Category, options?: { [key: string]: any }) {
   return request<API.RuleList>(`/api/v1/category/${params.id}`, {
-    method: 'PUT',
+    method: 'PATCH',
     data: params,
     ...(options || {}),
   });

@@ -1,4 +1,4 @@
-import { Modal, Form, Input, Button } from 'antd';
+import { Button, Form, Input, Modal } from 'antd';
 import React, { useEffect } from 'react';
 
 const Add = 'add';
@@ -24,10 +24,10 @@ const UpdateModal: React.FC<UpdateModalProps> = ({ openParms, handleConfirm, han
     });
   };
   useEffect(() => {
-    const { username, password } = record;
+    const { loginName, password } = record;
     if (openType === Edit) {
       form.setFieldsValue({
-        username,
+        loginName,
         password,
       });
     }
@@ -59,7 +59,7 @@ const UpdateModal: React.FC<UpdateModalProps> = ({ openParms, handleConfirm, han
       >
         <Form.Item
           label="用户名称"
-          name="username"
+          name="loginName"
           rules={[{ required: true, message: '请填写用户名称' }]}
         >
           <Input />

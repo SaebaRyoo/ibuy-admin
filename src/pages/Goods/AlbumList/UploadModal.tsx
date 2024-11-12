@@ -52,7 +52,7 @@ const UploadModal: React.FC<UpdateModalProps> = ({
     if (info.file.status === 'done') {
       message.success('上传成功');
       // get the real url from server
-      setImageUrl(info.file.response.data);
+      setImageUrl(info.file.response.data.imgUrl);
     }
   };
 
@@ -106,9 +106,9 @@ const UploadModal: React.FC<UpdateModalProps> = ({
             name="file"
             listType="picture-card"
             showUploadList={false}
-            action="/api/v1/file/upload"
+            action="/api/v1/file/upload?path=album"
             headers={{
-              token: localStorage.getItem('token') || '',
+              Authorization: `Bearer ${localStorage.getItem('token') || ''}`,
             }}
             beforeUpload={beforeUpload}
             onChange={handleChange}

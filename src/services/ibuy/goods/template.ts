@@ -48,7 +48,7 @@ export async function findTemplate(params: { id: string }, options?: { [key: str
 // 更新模板
 export async function editTemplate(params: API.Template, options?: { [key: string]: any }) {
   return request<API.RuleList>(`/api/v1/template/${params.id}`, {
-    method: 'PUT',
+    method: 'PATCH',
     data: params,
     ...(options || {}),
   });

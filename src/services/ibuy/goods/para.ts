@@ -47,7 +47,7 @@ export async function findPara(params: { id: string }, options?: { [key: string]
 // 更新参数
 export async function editPara(params: API.Para, options?: { [key: string]: any }) {
   return request<API.RuleList>(`/api/v1/para/${params.id}`, {
-    method: 'PUT',
+    method: 'PATCH',
     data: params,
     ...(options || {}),
   });

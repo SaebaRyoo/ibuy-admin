@@ -1,4 +1,4 @@
-import { Modal, Form, Button, Select } from 'antd';
+import { Button, Form, Modal, Select } from 'antd';
 import React, { useEffect } from 'react';
 
 type TransferModalProps = {
@@ -52,7 +52,7 @@ const TransferModal: React.FC<TransferModalProps> = ({
           name="name"
           rules={[{ required: true, message: '请选择转移相册' }]}
         >
-          <Select options={albumList?.map((album) => ({ label: album.title, value: album.id }))} />
+          <Select options={albumList?.map((album) => ({ label: album.name, value: album.id }))} />
         </Form.Item>
       </Form>
     </Modal>

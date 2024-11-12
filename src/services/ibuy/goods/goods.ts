@@ -41,7 +41,7 @@ export async function addGoods(
  */
 export async function spuAudit(id: number, options?: { [key: string]: any }) {
   return request<API.RuleList>(`/api/v1/spu/audit/${id}`, {
-    method: 'PUT',
+    method: 'PATCH',
     ...(options || {}),
   });
 }
@@ -53,7 +53,7 @@ export async function spuAudit(id: number, options?: { [key: string]: any }) {
  */
 export async function spuPut(id: number, options?: { [key: string]: any }) {
   return request<API.RuleList>(`/api/v1/spu//put/${id}`, {
-    method: 'PUT',
+    method: 'PATCH',
     ...(options || {}),
   });
 }
@@ -65,7 +65,7 @@ export async function spuPut(id: number, options?: { [key: string]: any }) {
  */
 export async function spuPull(id: number, options?: { [key: string]: any }) {
   return request<API.RuleList>(`/api/v1/spu//pull/${id}`, {
-    method: 'PUT',
+    method: 'PATCH',
     ...(options || {}),
   });
 }
@@ -90,7 +90,7 @@ export async function findSpu(params: { id: string }, options?: { [key: string]:
 // 更新Sku
 export async function editSpu(params: API.Spu, options?: { [key: string]: any }) {
   return request<API.RuleList>(`/api/v1/spu/${params.id}`, {
-    method: 'PUT',
+    method: 'PATCH',
     data: params,
     ...(options || {}),
   });

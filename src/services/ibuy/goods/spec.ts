@@ -47,7 +47,7 @@ export async function findSpec(params: { id: string }, options?: { [key: string]
 // 更新规格
 export async function editSpec(params: API.Spec, options?: { [key: string]: any }) {
   return request<API.RuleList>(`/api/v1/spec/${params.id}`, {
-    method: 'PUT',
+    method: 'PATCH',
     data: params,
     ...(options || {}),
   });

@@ -52,7 +52,7 @@ export async function findAlbum(params: { id: string }, options?: { [key: string
 // 更新角色
 export async function editAlbum(params: API.Album, options?: { [key: string]: any }) {
   return request<API.RuleList>(`/api/v1/album/${params.id}`, {
-    method: 'PUT',
+    method: 'PATCH',
     data: params,
     ...(options || {}),
   });

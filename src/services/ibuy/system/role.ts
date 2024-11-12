@@ -40,7 +40,7 @@ export async function findRole(params: { id: string }, options?: { [key: string]
 // 更新角色
 export async function editRole(params: API.Role, options?: { [key: string]: any }) {
   return request<API.RuleList>(`/api/v1/role/${params.id}`, {
-    method: 'PUT',
+    method: 'PATCH',
     data: params,
     ...(options || {}),
   });

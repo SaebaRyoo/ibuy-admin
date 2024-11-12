@@ -74,7 +74,7 @@ const UpdateModal: React.FC<UpdateModalProps> = ({ openParam, handleConfirm, han
     if (info.file.status === 'done') {
       message.success('上传成功');
       // get the real url from server
-      setImageUrl(info.file.response.data);
+      setImageUrl(info.file.response.data.imgUrl);
     }
   };
 
@@ -139,7 +139,7 @@ const UpdateModal: React.FC<UpdateModalProps> = ({ openParam, handleConfirm, han
             showUploadList={false}
             action="/api/v1/file/upload"
             headers={{
-              token: localStorage.getItem('token') || '',
+              Authorization: `Bearer ${localStorage.getItem('token') || ''}`,
             }}
             beforeUpload={beforeUpload}
             onChange={handleChange}

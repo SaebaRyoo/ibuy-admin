@@ -42,7 +42,7 @@ const Menu: React.FC = () => {
     },
     {
       title: '用户名',
-      dataIndex: 'username',
+      dataIndex: 'loginName',
     },
     {
       title: '密码',

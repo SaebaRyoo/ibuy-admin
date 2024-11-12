@@ -122,11 +122,11 @@ const Content3: React.FC<{ openType: any }> = ({ openType }) => {
       dataIndex: 'id',
       key: 'id',
       width: 250,
-      formItemProps: () => {
-        return {
-          rules: [{ required: true, message: '此项为必填项' }],
-        };
-      },
+      // formItemProps: () => {
+      //   return {
+      //     rules: [{ required: true, message: '此项为必填项' }],
+      //   };
+      // },
     },
     {
       title: '操作',
@@ -459,7 +459,7 @@ const GoodsImages: React.FC<{ isWatch: boolean }> = ({ isWatch }) => {
     <div className={styles.goodsImages}>
       <Upload
         name="file"
-        action="/api/v1/file/upload"
+        action={`/api/v1/file/upload`}
         headers={{
           Authorization: `Bearer ${localStorage.getItem('token') || ''}`,
         }}

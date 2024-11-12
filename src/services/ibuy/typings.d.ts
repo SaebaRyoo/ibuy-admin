@@ -121,7 +121,7 @@ declare namespace API {
   // 图片管理
   type Album = {
     id: number;
-    title?: string; // 相册名称
+    name?: string; // 相册名称
     image?: string; // 相册封面
     imageItems?: string; // 图片列表
     desc?: string; // 相册描述

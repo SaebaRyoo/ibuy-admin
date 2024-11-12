@@ -50,7 +50,7 @@ export async function findMenu(params: { id: string }, options?: { [key: string]
 // 更新菜单
 export async function editMenu(params: API.Menu_T, options?: { [key: string]: any }) {
   return request<API.RuleList>(`/api/v1/menu/${params.id}`, {
-    method: 'PUT',
+    method: 'PATCH',
     data: params,
     ...(options || {}),
   });
