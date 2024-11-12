@@ -3,6 +3,7 @@ import RightContent from '@/components/RightContent';
 import type { Settings as LayoutSettings } from '@ant-design/pro-components';
 import type { RunTimeLayoutConfig } from '@umijs/max';
 import { history } from '@umijs/max';
+import { message } from 'antd';
 import type { RequestConfig } from 'umi';
 import defaultSettings from '../config/defaultSettings';
 const loginPath = '/user/login';
@@ -26,7 +27,13 @@ export const request: RequestConfig = {
   timeout: 1000 * 30,
   // other axios options you want
   errorConfig: {
-    errorHandler() {},
+    errorHandler(error: any) {
+      // console.log(error);
+      if (error.response.data.status === 401) {
+        message.error(error.response.data.message);
+        history.push(loginPath);
+      }
+    },
     errorThrower() {},
   },
   requestInterceptors: [authHeaderInterceptor],

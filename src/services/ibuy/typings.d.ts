@@ -23,7 +23,7 @@ declare namespace API {
   };
 
   type LoginParams = {
-    login_name?: string;
+    loginName?: string;
     password?: string;
     // scope: string;
   };
@@ -70,8 +70,8 @@ declare namespace API {
     images?: string;
     saleService?: string;
     introduction?: string;
-    specItems?: string;
-    paraItems?: string;
+    specItems?: any;
+    paraItems?: any;
     saleNum?: number;
     commentNum?: number;
     isMarketable?: string;
@@ -92,7 +92,7 @@ declare namespace API {
     image?: string;
     images?: string;
     spuId?: number;
-    spec: string;
+    spec: any;
     weight?: number;
     createTime?: string;
     updateTime?: string;

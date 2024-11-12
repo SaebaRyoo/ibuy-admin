@@ -6,7 +6,6 @@ import { EditableProTable } from '@ant-design/pro-components';
 import { Button, Checkbox, Form, message, Modal, Select, Tooltip, Upload } from 'antd';
 import type { RcFile, UploadProps } from 'antd/es/upload';
 import type { UploadFile } from 'antd/es/upload/interface';
-import { CheckboxValueType } from 'antd/lib/checkbox/Group';
 import React, { ReactElement, useEffect, useState } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -18,7 +17,7 @@ type Item = {
   idx: number;
   sn: string;
   key: string;
-  spec: string;
+  spec: any;
   price: number;
   num: number;
   saleNum: number;
@@ -68,6 +67,7 @@ const Content3: React.FC<{ openType: any }> = ({ openType }) => {
   const specMap: { [x: string]: any } = {};
   const paraMap: { [x: string]: any } = {};
 
+  // console.log('skuList-----> ', skuList);
   // 查看模式
   const isWatch = openType === Watch;
 
@@ -79,12 +79,9 @@ const Content3: React.FC<{ openType: any }> = ({ openType }) => {
     paraMap[para.name] = para.options?.split(',');
   });
 
-  // 每个标准产品的规格数据是一个hashMap 字符串，需要转为object
-  const specConvertData = specItems ? JSON.parse(specItems) : {};
-  // 参数数据
-  const paraConvertData = paraItems ? JSON.parse(paraItems) : {};
-  // console.log('specConvertData-----> ', specConvertData);
-  // console.log('paraConvertData-----> ', paraConvertData);
+  // console.log('specMap--->', specMap);
+  // console.log('specItems-----> ', specItems);
+  // console.log('paraItems-----> ', paraItems);
 
   const otherColumns = [
     {
@@ -144,10 +141,12 @@ const Content3: React.FC<{ openType: any }> = ({ openType }) => {
     (async () => {
       if (openType === Watch || openType === Edit) {
         const { data, success } = await findSkuBySpuId({ spuId: id });
+
+        const specItemsKey = Object.keys(specItems ?? {});
         if (success) {
           const columns: any[] = [];
           // 生成columns
-          Object.keys(specConvertData).forEach((key) => {
+          specItemsKey.forEach((key) => {
             columns.push({
               title: key,
               dataIndex: key,
@@ -156,7 +155,7 @@ const Content3: React.FC<{ openType: any }> = ({ openType }) => {
             });
           });
 
-          if (Object.keys(specConvertData).length > 0) {
+          if (specItemsKey.length > 0) {
             setSpecColumns(columns);
           } else {
             setSpecColumns([]);
@@ -168,9 +167,9 @@ const Content3: React.FC<{ openType: any }> = ({ openType }) => {
     })();
   }, []);
 
-  const handleCheckbox = (checkedValues: CheckboxValueType[], key: string) => {
+  const handleCheckbox = (checkedValues: any[], key: string) => {
     // console.log('checked = ', checkedValues, '----- key = ', key);
-    const copyData = { ...specConvertData };
+    const copyData = { ...(specItems ?? {}) };
 
     if (copyData[key] === undefined) {
       copyData[key] = [];
@@ -180,7 +179,7 @@ const Content3: React.FC<{ openType: any }> = ({ openType }) => {
     setSpu((prev) => {
       return {
         ...prev,
-        specItems: JSON.stringify(copyData),
+        specItems: copyData,
       };
     });
     // 设置sku的数据
@@ -188,36 +187,41 @@ const Content3: React.FC<{ openType: any }> = ({ openType }) => {
   };
 
   // spec1 _ 生成规格列表
-  const genSpecList = (data: any) => {
-    return Object.keys(data).map((key) => (
+  const genSpecList = (specMap: any) => {
+    return Object.keys(specMap).map((key) => (
       <div key={key} className={styles.specListItem}>
         <span>{key}: </span>
         <Checkbox.Group
           disabled={isWatch}
           className={styles.specCheckboxWrapper}
-          options={data[key].map((item: any) => ({ label: item, value: item }))}
-          value={specConvertData[key]}
-          onChange={(checkedValues: CheckboxValueType[]) => handleCheckbox(checkedValues, key)}
+          options={specMap[key].map((item: any) => ({ label: item, value: item }))}
+          value={(specItems ?? {})[key]}
+          onChange={(checkedValues) => handleCheckbox(checkedValues, key)}
         />
       </div>
     ));
   };
 
   // 生成sku初始数据
-  const genSkuData = (data: any) => {
+  const genSkuData = (newSpecItems: any) => {
+    console.log('newSpecItems-->', newSpecItems);
     const specList: any[] = [];
     const columns: any[] = [];
-    Object.keys(data).forEach((key) => {
-      columns.push({
-        title: key,
-        dataIndex: key,
-        key: key,
-        editable: false,
-      });
-      specList.push(data[key]);
+    Object.keys(newSpecItems).forEach((key) => {
+      const specItem = newSpecItems[key];
+      // 排除掉空数组
+      if (Array.isArray(specItem) && specItem.length > 0) {
+        columns.push({
+          title: key,
+          dataIndex: key,
+          key: key,
+          editable: false,
+        });
+        specList.push(specItem);
+      }
     });
 
-    if (Object.keys(specConvertData).length > 0) {
+    if (Object.keys(specItems ?? {}).length > 0) {
       setSpecColumns(columns);
     } else {
       setSpecColumns([]);
@@ -240,7 +244,7 @@ const Content3: React.FC<{ openType: any }> = ({ openType }) => {
         spec[columns[i].title] = x;
       });
       return {
-        spec: JSON.stringify(spec),
+        spec,
         sn: uuid(),
         price: 0,
         num: 0,
@@ -257,14 +261,15 @@ const Content3: React.FC<{ openType: any }> = ({ openType }) => {
   const genSkuTable = () => {
     const skuColumns = specColumns.concat(otherColumns);
     const editableKeys: React.Key[] | undefined = [];
+
     const dataSource: Item[] = skuList.map((sku: API.Sku, idx: number) => {
-      const spec = sku.spec ? JSON.parse(sku.spec) : '{}';
-      editableKeys.push(sku.spec);
+      const spec = sku.spec;
+      editableKeys.push(JSON.stringify(sku.spec));
       const obj: Item = {
         id: sku.id,
         idx: idx,
         sn: sku.sn,
-        key: sku.spec,
+        key: JSON.stringify(sku.spec),
         spec: sku.spec,
         name: sku.name,
         price: sku.price,
@@ -278,6 +283,8 @@ const Content3: React.FC<{ openType: any }> = ({ openType }) => {
 
       return obj;
     });
+
+    // console.log('editableKeys--->', editableKeys);
     return (
       <EditableProTable<Item>
         rowKey="key"
@@ -321,7 +328,7 @@ const Content3: React.FC<{ openType: any }> = ({ openType }) => {
       <GoodsParaComponent
         isWatch={isWatch}
         optionData={paraMap}
-        data={paraConvertData}
+        data={paraItems ?? {}}
         setSpu={setSpu}
       />
       <div className={styles.header}>商品相册</div>
@@ -350,7 +357,7 @@ const GoodsParaComponent = ({ optionData, data, setSpu, isWatch }: GoodsParaProp
     copyData[key] = value;
     setSpu((prev: any) => ({
       ...prev,
-      paraItems: JSON.stringify(copyData),
+      paraItems: copyData,
     }));
   };
 
@@ -454,7 +461,7 @@ const GoodsImages: React.FC<{ isWatch: boolean }> = ({ isWatch }) => {
         name="file"
         action="/api/v1/file/upload"
         headers={{
-          token: localStorage.getItem('token') || '',
+          Authorization: `Bearer ${localStorage.getItem('token') || ''}`,
         }}
         beforeUpload={beforeUpload}
         itemRender={(originNode: ReactElement, file: UploadFile) => (

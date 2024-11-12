@@ -1,8 +1,8 @@
+import { Edit, Watch } from '@/utils/common/constant';
+import { Checkbox, Form, Input, Select } from 'antd';
 import React, { useEffect } from 'react';
 import { useModel } from 'umi';
-import { Checkbox, Form, Input, Select } from 'antd';
 import styles from './StepsContent2.less';
-import { Edit, Watch } from '@/utils/common/constant';
 
 const Option = Select.Option;
 const TextArea = Input.TextArea;
@@ -107,6 +107,7 @@ const Content2: React.FC<{ openType: any }> = ({ openType }) => {
           onChange={(value) => {
             handleFormChange('brandId', value);
           }}
+          showSearch
           options={brands.map((brand: { name: any; id: any }) => ({
             label: brand.name,
             value: brand.id,

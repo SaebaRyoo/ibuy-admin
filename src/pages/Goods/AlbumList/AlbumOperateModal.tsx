@@ -37,14 +37,14 @@ const UpdateModal: React.FC<UpdateModalProps> = ({ openParam, handleConfirm, han
   const { id } = record;
   const fetchAlbum = async () => {
     const { data = {} } = await findAlbum({ id });
-    const { title, image, desc } = data;
+    const { name, image, desc } = data;
     // console.log('data---->', data);
 
     const file = {
       url: image,
     };
     form.setFieldsValue({
-      title,
+      name,
       image: [file],
       desc,
     });
@@ -121,7 +121,7 @@ const UpdateModal: React.FC<UpdateModalProps> = ({ openParam, handleConfirm, han
       >
         <Form.Item
           label="相册名称"
-          name="title"
+          name="name"
           rules={[{ required: true, message: '请填写相册名称' }]}
         >
           <Input />

@@ -88,7 +88,7 @@ const Login: React.FC = () => {
           {code === 20002 && <LoginMessage content="账户或密码错误(admin/ant.design)" />}
           <>
             <ProFormText
-              name="login_name"
+              name="loginName"
               fieldProps={{
                 size: 'large',
                 prefix: <UserOutlined className={styles.prefixIcon} />,

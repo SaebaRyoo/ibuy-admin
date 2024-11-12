@@ -43,7 +43,7 @@ const Goods: React.FC = () => {
     },
     {
       title: '相册名称',
-      dataIndex: 'title',
+      dataIndex: 'name',
       sorter: true,
       hideInForm: true,
     },
