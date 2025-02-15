@@ -47,6 +47,11 @@
     "@ant-design/icons": "^4.8.1",
     "@ant-design/pro-components": "^2.6.48",
     "@umijs/route-utils": "^2.2.2",
+    "@umijs/fabric": "^2.14.1",
+    "@umijs/lint": "^4.1.1",
+    "@umijs/max": "^4.1.1",
+    "umi-presets-pro": "^2.0.3",
+    "umi-serve": "^1.9.11",
     "antd": "^5.13.2",
     "antd-style": "^3.6.1",
     "classnames": "^2.5.1",
@@ -73,9 +78,6 @@
     "@types/react": "^18.2.48",
     "@types/react-dom": "^18.2.18",
     "@types/react-helmet": "^6.1.11",
-    "@umijs/fabric": "^2.14.1",
-    "@umijs/lint": "^4.1.1",
-    "@umijs/max": "^4.1.1",
     "cross-env": "^7.0.3",
     "eslint": "^8.56.0",
     "eslint-plugin-unicorn": "^56.0.0",
@@ -90,9 +92,7 @@
     "react-dev-inspector": "^2.0.1",
     "swagger-ui-dist": "^4.19.1",
     "ts-node": "^10.9.2",
-    "typescript": "^5.3.3",
-    "umi-presets-pro": "^2.0.3",
-    "umi-serve": "^1.9.11"
+    "typescript": "^5.3.3"
   },
   "engines": {
     "node": ">=12.0.0"
