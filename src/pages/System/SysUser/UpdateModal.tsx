@@ -39,7 +39,7 @@ const UpdateModal: React.FC<UpdateModalProps> = ({ openParms, handleConfirm, han
 
   return (
     <Modal
-      title={TitleMap[openType]}
+      title={TitleMap[openType as keyof typeof TitleMap]}
       open={open}
       footer={
         <div>

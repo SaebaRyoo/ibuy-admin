@@ -1,4 +1,4 @@
-import { Modal, Form, Input, Button, Select } from 'antd';
+import { Button, Form, Input, Modal, Select } from 'antd';
 import React, { useEffect } from 'react';
 
 const Add = 'add';
@@ -46,7 +46,7 @@ const UpdateModal: React.FC<UpdateModalProps> = ({ openParms, handleConfirm, han
 
   return (
     <Modal
-      title={TitleMap[openType]}
+      title={TitleMap[openType as keyof typeof TitleMap]}
       open={open}
       footer={
         <div>
@@ -65,7 +65,7 @@ const UpdateModal: React.FC<UpdateModalProps> = ({ openParms, handleConfirm, han
         scrollToFirstError
       >
         <Form.Item
-          // extra="在添加菜单时，你写的id只需要填‘1’， ‘2’， ‘3’或者其他的合法字符,程序会自动加上父节点前缀，比如选中在2-1节点下创建子节点，那么最终创建的节点id为2-1-1"
+          tooltip="在添加菜单时，你写的id只需要填‘1’， ‘2’， ‘3’或者其他的合法字符,程序会自动加上父节点前缀，比如选中在2-1节点下创建子节点，那么最终创建的节点id为2-1-1"
           label="菜单ID"
           name="id"
           rules={[{ required: true, message: '请填写菜单ID' }]}
