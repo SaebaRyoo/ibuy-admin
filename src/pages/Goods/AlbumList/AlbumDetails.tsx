@@ -175,9 +175,9 @@ const AlbumDetails: React.FC = () => {
             <img
               alt="img"
               src={img.url}
-              onError={(e: any) => {
-                e.target.src = '/icons/icon-128x128.png';
-              }}
+              // onError={(e: any) => {
+              //   e.target.src = '/icons/icon-128x128.png';
+              // }}
             />
             <div>
               <Checkbox
