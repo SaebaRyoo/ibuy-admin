@@ -1,9 +1,9 @@
 # 当前工作流的名称
-name: sub-web-deploy
+name: web-deploy
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs: # 构建的任务，一个工作流有多个构建任务，
   build-and-deploy:
