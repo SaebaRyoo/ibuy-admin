@@ -1,9 +1,9 @@
 # 当前工作流的名称
 name: web-deploy
 on:
-  push:
+  push: # 什么时候触发
     branches:
-      - main
+      - main # 哪个分支
 
 jobs: # 构建的任务，一个工作流有多个构建任务，
   build-and-deploy:
@@ -37,7 +37,9 @@ jobs: # 构建的任务，一个工作流有多个构建任务，
           REMOTE_USER: ${{ secrets.REMOTE_USER }}
           # Source directory, path relative to `$GITHUB_WORKSPACE` root, eg: `dist/`
           SOURCE: '/dist/'
-          # Script to run on host machine before rsync
-          SCRIPT_BEFORE: 'mkdir -p /home/work/ibuy-admin'
-          # Target directory
-          TARGET: '/home/work/ibuy-admin'
+          # 在执行 rsync 前, 先创建静态资源目录
+          SCRIPT_BEFORE: |
+            mkdir -p /usr/local/docker-volumes/nginx/html/dist
+            rm -rf /usr/local/docker-volumes/nginx/html/dist/*
+          # 静态资源目标目录
+          TARGET: '/usr/local/docker-volumes/nginx/html/dist'
