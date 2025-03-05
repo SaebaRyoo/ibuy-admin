@@ -19,10 +19,9 @@ export async function login(body: API.LoginParams, options?: { [key: string]: an
   });
 }
 
-export async function getCurrentUser(body: API.LoginUser, options?: { [key: string]: any }) {
-  return request<API.LoginResult>('', {
+// 获取当前用户信息
+export async function getCurrentUser() {
+  return request<API.LoginResult>(`/api/v1/auth/profile`, {
     method: 'GET',
-    params: body,
-    ...(options || {}),
   });
 }

@@ -8,7 +8,7 @@ import {
   WeiboCircleOutlined,
 } from '@ant-design/icons';
 import { LoginForm, ProFormText } from '@ant-design/pro-components';
-import { history } from '@umijs/max';
+import { history, useModel } from '@umijs/max';
 import { Alert, message } from 'antd';
 import React, { useState } from 'react';
 import styles from './index.less';
@@ -30,15 +30,11 @@ const LoginMessage: React.FC<{
 
 const Login: React.FC = () => {
   const [userLoginState, setUserLoginState] = useState<API.LoginResult>({});
-  // const { initialState, setInitialState } = useModel('@@initialState');
+  const { setInitialState } = useModel('@@initialState');
 
-  // const fetchUserInfo = async () => {
-  //   const userInfo = await initialState?.fetchUserInfo?.();
-
-  //   if (userInfo) {
-  //     await setInitialState((s) => ({ ...s, currentUser: userInfo }));
-  //   }
-  // };
+  const fetchUserInfo = async (userInfo: API.UserProfile) => {
+    await setInitialState((s) => ({ ...s, currentUser: userInfo }));
+  };
 
   const handleSubmit = async (values: API.LoginParams) => {
     try {
@@ -49,7 +45,7 @@ const Login: React.FC = () => {
       if (result.code === 200) {
         message.success('登录成功！');
         localStorage.setItem('token', result.data.access_token);
-        // await fetchUserInfo();
+        await fetchUserInfo(result.data.userInfo);
         const urlParams = new URL(window.location.href).searchParams;
         history.push(urlParams.get('redirect') || '/');
         return;

@@ -6,6 +6,7 @@ import { history } from '@umijs/max';
 import { message } from 'antd';
 import type { RequestConfig } from 'umi';
 import defaultSettings from '../config/defaultSettings';
+import { getCurrentUser } from './services/ibuy/login/login';
 const loginPath = '/user/login';
 
 const authHeaderInterceptor = (url: string, options: RequestConfig) => {
@@ -45,30 +46,29 @@ export const request: RequestConfig = {
  * */
 export async function getInitialState(): Promise<{
   settings?: Partial<LayoutSettings>;
-  currentUser?: API.LoginUser;
+  currentUser?: any;
   loading?: boolean;
-  fetchUserInfo?: () => Promise<API.LoginUser | undefined>;
+  fetchUserInfo?: () => Promise<any | undefined>;
 }> {
-  // const fetchUserInfo = async () => {
-  //   try {
-  //     const msg = await queryCurrentUser();
-  //     return msg.data;
-  //   } catch (error) {
-  //     history.push(loginPath);
-  //   }
-  //   return undefined;
-  // };
-  // // 如果不是登录页面，执行
-  // if (history.location.pathname !== loginPath) {
-  //   const currentUser = await fetchUserInfo();
-  //   return {
-  //     fetchUserInfo,
-  //     currentUser,
-  //     settings: defaultSettings,
-  //   };
-  // }
+  const fetchUserInfo = async () => {
+    try {
+      const msg = await getCurrentUser();
+      return msg.data;
+    } catch (error) {
+      history.push(loginPath);
+    }
+    return undefined;
+  };
+  // 如果不是登录页面，执行
+  if (history.location.pathname !== loginPath) {
+    const currentUser = await fetchUserInfo();
+    return {
+      currentUser: currentUser,
+      settings: defaultSettings,
+    };
+  }
   return {
-    // fetchUserInfo,
+    fetchUserInfo,
     settings: defaultSettings,
   };
 }
@@ -79,7 +79,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     rightContentRender: () => <RightContent />,
     disableContentMargin: false,
     waterMarkProps: {
-      content: initialState?.currentUser?.name,
+      content: initialState?.currentUser?.loginName,
     },
     footerRender: () => <Footer />,
     onPageChange: () => {

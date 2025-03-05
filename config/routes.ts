@@ -13,7 +13,6 @@ export default [
     path: '/goods',
     icon: 'crown',
     name: '商品管理',
-    // access: 'canAdmin',
     routes: [
       { path: '/goods/goods', name: '商品列表', icon: 'smile', component: './Goods/GoodsList' },
       { path: '/goods/brand', name: '品牌列表', icon: 'smile', component: './Goods/BrandList' },
@@ -65,6 +64,7 @@ export default [
     path: '/system',
     icon: 'crown',
     name: '系统管理',
+    access: 'isAdmin',
     routes: [
       {
         path: '/system/menu',

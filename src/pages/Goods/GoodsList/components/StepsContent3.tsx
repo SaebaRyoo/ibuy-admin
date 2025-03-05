@@ -316,6 +316,12 @@ const Content3: React.FC<{ openType: any }> = ({ openType }) => {
 
   return (
     <div>
+      {/*
+        TODO: 选择商品模板，商品模板绑定了spu所具有的spec和para。
+        后续的 商品规格 和 商品属性 都应该依据这个template来查找对应的数据，
+        但是目前的数据源是查找的所有的spec和para，这也需要修改
+       */}
+      <div className={styles.header}>商品模板</div>
       <div className={styles.header}>
         商品规格
         <Tooltip placement="top" title="请注意，在编辑规格的时候sku信息会重新生成">

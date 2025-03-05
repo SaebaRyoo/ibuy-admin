@@ -1,9 +1,13 @@
+const AdminRole = 1;
+
 /**
  * @see https://umijs.org/zh-CN/plugins/plugin-access
  * */
-export default function access(initialState: { currentUser?: API.LoginUser } | undefined) {
+export default function access(initialState: { currentUser?: API.UserProfile } | undefined) {
   const { currentUser } = initialState ?? {};
+
+  console.log('currentUser--->', currentUser);
   return {
-    canAdmin: currentUser && currentUser.role?.includes(1),
+    isAdmin: currentUser && currentUser.roles?.includes(AdminRole),
   };
 }

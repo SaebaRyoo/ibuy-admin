@@ -9,7 +9,7 @@ declare namespace API {
     email?: string; //email
     token?: string; // 用户登录token
     group?: string; // 部门
-    role?: number[]; // 角色列表
+    roles?: number[]; // 角色列表
     menu?: string[]; // 可访问菜单列表
     phone?: string;
     // notifyCount?: number;
@@ -20,6 +20,13 @@ declare namespace API {
     //   province?: { label?: string; key?: string };
     //   city?: { label?: string; key?: string };
     // };
+  };
+
+  type UserProfile = {
+    id: number;
+    loginName: string;
+    roles: number[];
+    // avatar: string;
   };
 
   type LoginParams = {
@@ -43,7 +50,7 @@ declare namespace API {
     message: string;
     data: {
       access_token: string;
-      username: string;
+      userInfo: any;
     };
     // currentAuthority?: string;
   };
