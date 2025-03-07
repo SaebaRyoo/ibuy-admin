@@ -2,11 +2,10 @@ import Footer from '@/components/Footer';
 import RightContent from '@/components/RightContent';
 import type { Settings as LayoutSettings } from '@ant-design/pro-components';
 import type { RunTimeLayoutConfig } from '@umijs/max';
-import { history } from '@umijs/max';
-import { message } from 'antd';
+import { request as axios, history } from '@umijs/max';
 import type { RequestConfig } from 'umi';
 import defaultSettings from '../config/defaultSettings';
-import { getCurrentUser } from './services/ibuy/login/login';
+import { getCurrentUser, refreshToken } from './services/ibuy/login/login';
 const loginPath = '/user/login';
 
 const authHeaderInterceptor = (url: string, options: RequestConfig) => {
@@ -18,27 +17,73 @@ const authHeaderInterceptor = (url: string, options: RequestConfig) => {
   };
 };
 
-const responseInterceptors = (response: any) => {
-  // 不再需要异步处理读取返回体内容，可直接在data中读出，部分字段可在 config 中找到
-  // do something
-  return response;
+let isRefreshing = false;
+let requests: any[] = [];
+
+const handleRefreshToken = async (error: any) => {
+  const { response } = error;
+
+  if (!isRefreshing) {
+    isRefreshing = true;
+    try {
+      // 调用刷新token的接口
+      const result = await refreshToken();
+      if (result?.data?.access_token) {
+        // 更新localStorage中的token
+        localStorage.setItem('token', result.data.access_token);
+        // 重试当前请求
+        const originalRequest = response.config;
+        originalRequest.headers.Authorization = `Bearer ${localStorage.getItem('token')}`;
+        const retryResponse = await axios(originalRequest.url, originalRequest);
+        // 重试其他失败的请求
+        requests.forEach((cb) => cb());
+        requests = [];
+
+        // 使用较温和的方式重新加载页面
+        // TODO: 有没有别的方法？
+        // window.location.reload();
+        return retryResponse;
+      } else {
+        history.push(loginPath);
+        return Promise.reject(error);
+      }
+    } catch (refreshError) {
+      history.push(loginPath);
+      return Promise.reject(refreshError);
+    } finally {
+      isRefreshing = false;
+    }
+  }
+
+  // 将其他并发请求添加到队列
+  return new Promise((resolve) => {
+    requests.push(async () => {
+      try {
+        const originalRequest = response.config;
+        originalRequest.headers.Authorization = `Bearer ${localStorage.getItem('token')}`;
+        const retryResponse = await axios(originalRequest.url, originalRequest);
+        resolve(retryResponse);
+      } catch (retryError) {
+        resolve(Promise.reject(retryError));
+      }
+    });
+  });
 };
 
 export const request: RequestConfig = {
   timeout: 1000 * 30,
-  // other axios options you want
   errorConfig: {
-    errorHandler(error: any) {
-      // console.log(error);
-      if (error.response.data.status === 401) {
-        message.error(error.response.data.message);
-        history.push(loginPath);
+    errorHandler: async (error: any) => {
+      if (error.response?.status === 401) {
+        return handleRefreshToken(error);
       }
+      // 其他错误正常抛出
+      throw error;
     },
     errorThrower() {},
   },
   requestInterceptors: [authHeaderInterceptor],
-  responseInterceptors: [responseInterceptors],
+  responseInterceptors: [],
 };
 
 /**
