@@ -150,7 +150,17 @@ const Order: React.FC = () => {
         search={{
           labelWidth: 120,
         }}
-        request={orderList}
+        request={async (params, sort, filter) => {
+          const { data } = await orderList(params);
+          return {
+            data: data.data || [],
+            // success 请返回 true，
+            // 不然 table 会停止解析数据，即使有数据
+            success: true,
+            // 不传会使用 data 的长度，如果是分页一定要传
+            total: data.total,
+          };
+        }}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => {

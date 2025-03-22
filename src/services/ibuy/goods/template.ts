@@ -61,3 +61,14 @@ export async function delTemplate(params: { id: number }, options?: { [key: stri
     ...(options || {}),
   });
 }
+
+// 根据模板id获取参数和规格数据
+export async function findParaAndSpecByTemplateId(
+  params: { id: number },
+  options?: { [key: string]: any },
+) {
+  return request<API.RuleList>(`/api/v1/template/${params.id}/paraAndSpec`, {
+    method: 'GET',
+    ...(options || {}),
+  });
+}

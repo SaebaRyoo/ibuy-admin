@@ -1,4 +1,5 @@
 import { findSkuBySpuId } from '@/services/ibuy/goods/goods';
+import { findAllTemplates, findParaAndSpecByTemplateId } from '@/services/ibuy/goods/template';
 import { Edit, Watch } from '@/utils/common/constant';
 import { uuid } from '@/utils/common/uuid';
 import { ExclamationCircleOutlined, PlusOutlined } from '@ant-design/icons';
@@ -61,13 +62,23 @@ const getBase64 = (file: RcFile): Promise<string> =>
  * 添加商品： 步骤3 组件
  */
 const Content3: React.FC<{ openType: any }> = ({ openType }) => {
+  // 模板相关state
+  const [templates, setTemplates] = useState<API.Template[]>([]);
+  const [selectedTemplate, setTemplate] = useState<number>();
   const [specColumns, setSpecColumns] = useState<any[]>([]);
-  const { spu, setSpu, skuList, setSkuList, specs, paras } = useModel('goods');
+  const { spu, setSpu, skuList, setSkuList, specs, paras, setSpecs, setParas } = useModel('goods');
   const { id, specItems, paraItems } = spu;
   const specMap: { [x: string]: any } = {};
   const paraMap: { [x: string]: any } = {};
 
   // console.log('skuList-----> ', skuList);
+
+  const fetchAll = async () => {
+    const { data = [], success } = await findAllTemplates();
+    if (success) {
+      setTemplates(data);
+    }
+  };
   // 查看模式
   const isWatch = openType === Watch;
 
@@ -139,7 +150,10 @@ const Content3: React.FC<{ openType: any }> = ({ openType }) => {
 
   useEffect(() => {
     (async () => {
+      fetchAll();
       if (openType === Watch || openType === Edit) {
+        // 查看和编辑模式下获取sku数据
+        setTemplate(spu.templateId);
         const { data, success } = await findSkuBySpuId({ spuId: id });
 
         const specItemsKey = Object.keys(specItems ?? {});
@@ -322,6 +336,28 @@ const Content3: React.FC<{ openType: any }> = ({ openType }) => {
         但是目前的数据源是查找的所有的spec和para，这也需要修改
        */}
       <div className={styles.header}>商品模板</div>
+
+      <div className={styles.specList}>
+        <Select
+          options={templates?.map((template) => ({ label: template.name, value: template.id }))}
+          value={selectedTemplate}
+          placeholder="请选择商品模板"
+          onChange={async (value) => {
+            setSpu((prev: any) => ({
+              ...prev,
+              templateId: value,
+            }));
+            setTemplate(value);
+            if (value) {
+              const { data, success } = await findParaAndSpecByTemplateId({ id: value });
+              if (success) {
+                setSpecs(data.spec);
+                setParas(data.para);
+              }
+            }
+          }}
+        />
+      </div>
       <div className={styles.header}>
         商品规格
         <Tooltip placement="top" title="请注意，在编辑规格的时候sku信息会重新生成">

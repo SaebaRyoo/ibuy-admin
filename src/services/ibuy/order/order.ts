@@ -13,10 +13,11 @@ export async function orderList(
   },
   options?: { [key: string]: any },
 ) {
-  return request<API.RuleList>('/api/v1/mock/order', {
-    method: 'GET',
+  const { current, pageSize } = params;
+  return request<API.RuleList>(`/api/v1/order/list/${current}/${pageSize}`, {
+    method: 'POST',
     params: {
-      ...params,
+      // ...params,
     },
     ...(options || {}),
   });
@@ -24,7 +25,7 @@ export async function orderList(
 
 /** 删除order DELETE /api/v1/mock/order */
 export async function removeOrder(options?: { [key: string]: any }) {
-  return request<Record<string, any>>('/api/v1/mock/order', {
+  return request<Record<string, any>>('/api/v1/order', {
     method: 'DELETE',
     ...(options || {}),
   });

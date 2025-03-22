@@ -45,6 +45,7 @@ const AddGoods: React.FC<AddGoodsPropsType> = ({ drawerOpen, handleClose, handle
     if (openType === Edit || openType === Watch) {
       const { data } = await findSpu({ id: record.id });
       setSpu(data);
+
       return data;
     }
     return {};
@@ -86,17 +87,18 @@ const AddGoods: React.FC<AddGoodsPropsType> = ({ drawerOpen, handleClose, handle
     }
   };
   // 获取属性数据
-  const fetchSpecs = async () => {
+  const fetchSpecs = async (id: any) => {
     const { data, success } = await findAllSpecs();
     if (success) {
-      setSpecs(data);
+      //
+      setSpecs(data.filter((item: { templateId: number }) => item.templateId === id));
     }
   };
   // 获取参数数据
-  const fetchParas = async () => {
+  const fetchParas = async (id: any) => {
     const { data, success } = await findAllParas();
     if (success) {
-      setParas(data);
+      setParas(data.filter((item: { templateId: number }) => item.templateId === id));
     }
   };
 
@@ -104,9 +106,11 @@ const AddGoods: React.FC<AddGoodsPropsType> = ({ drawerOpen, handleClose, handle
     (async () => {
       if (open) {
         fetchBrands();
-        fetchSpecs();
-        fetchParas();
         const spu: API.Spu = await fetchSpu();
+        if (spu.templateId) {
+          fetchSpecs(spu.templateId);
+          fetchParas(spu.templateId);
+        }
         fetchCategoryData(spu);
       }
     })();
